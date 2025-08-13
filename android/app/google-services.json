@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "562102601805",
+    "project_id": "jovera-finance-3021c",
+    "storage_bucket": "jovera-finance-3021c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:562102601805:android:b6e34f88d2b7f1ff397404",
+        "android_client_info": {
+          "package_name": "com.joveragroup.finance"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "562102601805-avbicon3be5524h7luhege176vpp3m0c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.joveragroup.finance",
+            "certificate_hash": "12a8d386fdc49b17c0b32ac1b0c9412bcf2f886d"
+          }
+        },
+        {
+          "client_id": "562102601805-ibq7h4les6m09opgl1g4nitnv9nmpu13.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7IUdWdhAhIUaUYP0aWKmwgjMkZRzSwME"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "562102601805-ibq7h4les6m09opgl1g4nitnv9nmpu13.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

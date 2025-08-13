@@ -1,0 +1,25 @@
+appleuser@Apples-MacBook-Pro jovera_finance % keytool -list -v \
+  -alias androiddebugkey \
+  -keystore ~/.android/debug.keystore \
+  -storepass android \
+  -keypass android
+
+Alias name: androiddebugkey
+Creation date: 30-Jun-2022
+Entry type: PrivateKeyEntry
+Certificate chain length: 1
+Certificate[1]:
+Owner: C=US, O=Android, CN=Android Debug
+Issuer: C=US, O=Android, CN=Android Debug
+Serial number: 1
+Valid from: Thu Jun 30 09:59:40 GST 2022 until: Sat Jun 22 09:59:40 GST 2052
+Certificate fingerprints:
+         SHA1: 56:46:B7:33:28:8F:C1:5B:A8:20:74:4F:00:48:B3:E0:5A:E8:45:4A
+         SHA256: D8:65:91:E4:D1:64:D0:73:97:70:49:2C:3F:B4:37:87:78:F4:CA:7C:1A:D7:67:BA:0A:1A:22:C1:33:FD:15:36
+Signature algorithm name: SHA1withRSA (weak)
+Subject Public Key Algorithm: 2048-bit RSA key
+Version: 1
+
+Warning:
+The certificate uses the SHA1withRSA signature algorithm which is considered a security risk. This algorithm will be disabled in a future update.
+appleuser@Apples-MacBook-Pro jovera_finance % 
