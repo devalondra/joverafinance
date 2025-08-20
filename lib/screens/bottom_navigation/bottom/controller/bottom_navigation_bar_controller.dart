@@ -55,8 +55,11 @@ class BottomNavigationBarController extends GetxController {
           : isLogin.value
           ? LoginView()
           : SignupView(),
-
-      const DashboardView(),
+      loggedIn()
+          ? const DashboardView()
+          : isLogin.value
+          ? LoginView()
+          : SignupView(),
     ];
 
     language.value = selectedLanguage.value == 'en_US';
@@ -92,7 +95,11 @@ class BottomNavigationBarController extends GetxController {
           : isLogin.value
           ? LoginView()
           : SignupView(),
-      const DashboardView(),
+      loggedIn()
+          ? const DashboardView()
+          : isLogin.value
+          ? LoginView()
+          : SignupView(),
     ];
     widgetOptions.refresh();
   }
