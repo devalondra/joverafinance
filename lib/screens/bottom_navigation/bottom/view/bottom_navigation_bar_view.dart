@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:jovera_finance/screens/main_drawer/widget/drawer_widget.dart';
 import 'package:jovera_finance/screens/bottom_navigation/chat/controller/chat_controller.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/screens/bottom_navigation/bottom/controller/bottom_navigation_bar_controller.dart';
@@ -10,7 +11,6 @@ import 'package:jovera_finance/widgets/main_text.dart';
 class BottomnavigationBarView extends GetView<BottomNavigationBarController> {
   const BottomnavigationBarView({super.key});
 
-  /// GetX-friendly exit dialog
   Future<bool> _showExitDialog() async {
     return await Get.dialog<bool>(
           AlertDialog(
@@ -122,7 +122,7 @@ class BottomnavigationBarView extends GetView<BottomNavigationBarController> {
               ),
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
-                  "assets/icons/user_profile_icon.svg",
+                  "assets/icons/tracking_icon.svg",
                   colorFilter: ColorFilter.mode(
                     controller.selectedIndex.value == 4
                         ? AppColors.primary
@@ -130,7 +130,7 @@ class BottomnavigationBarView extends GetView<BottomNavigationBarController> {
                     BlendMode.srcIn,
                   ),
                 ),
-                label: "Profile".tr,
+                label: "Track".tr,
 
                 backgroundColor: AppColors.black2,
               ),
@@ -155,84 +155,8 @@ class BottomnavigationBarView extends GetView<BottomNavigationBarController> {
             ),
             child: Drawer(
               backgroundColor: AppColors.black2,
-              child: SafeArea(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Drawer Header
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      color: AppColors.primary,
-                      width: double.infinity,
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 28,
-                            backgroundColor: Colors.white,
-                            child: SvgPicture.asset(
-                              "assets/icons/user_profile_icon.svg",
-                              width: 28,
-                              colorFilter: ColorFilter.mode(
-                                AppColors.primary,
-                                BlendMode.srcIn,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              MainText(text: "John Doe", color: Colors.white),
-                              MainText(
-                                text: "john@example.com",
-                                color: Colors.white,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
 
-                    const SizedBox(height: 8),
-
-                    ListTile(
-                      leading: SvgPicture.asset(
-                        "assets/icons/user_profile_icon.svg",
-                        width: 24,
-                        colorFilter: ColorFilter.mode(
-                          AppColors.primary,
-                          BlendMode.srcIn,
-                        ),
-                      ),
-                      title: MainText(text: "Profile", color: Colors.white),
-                      onTap: () {},
-                    ),
-
-                    ListTile(
-                      leading: Icon(Icons.lock, color: AppColors.primary),
-                      title: MainText(
-                        text: "Change Password",
-                        color: Colors.white,
-                      ),
-                      onTap: () {},
-                    ),
-
-                    ListTile(
-                      leading: Icon(Icons.settings, color: AppColors.primary),
-                      title: MainText(text: "Settings", color: Colors.white),
-                      onTap: () {},
-                    ),
-
-                    Divider(color: Colors.grey.shade700),
-
-                    ListTile(
-                      leading: Icon(Icons.logout, color: Colors.red),
-                      title: MainText(text: "Logout", color: Colors.red),
-                      onTap: () {},
-                    ),
-                  ],
-                ),
-              ),
+              child: DrawerWidget(),
             ),
           ),
         ),

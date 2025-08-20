@@ -1,19 +1,35 @@
 import 'dart:io';
-
+import 'dart:math';
+import 'package:dio/dio.dart' as mp;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:jovera_finance/screens/bottom_navigation/bottom/view/bottom_navigation_bar_view.dart';
+import 'package:jovera_finance/screens/bottom_navigation/home/binding/bottom_navigation_bar_binding.dart';
 import 'package:jovera_finance/screens/bottom_navigation/services/model/document_model.dart';
+import 'package:jovera_finance/screens/mortgage/provider/mortgage_provider.dart';
+import 'package:jovera_finance/utilities/authentication/auth_manager.dart';
+import 'package:jovera_finance/widgets/app_loading_controller.dart';
 import 'package:jovera_finance/widgets/document_picker_widget.dart';
 
 class MortgageController extends GetxController {
-  RxString applicantType = "".obs;
+  RxString applicantType = "Salary".obs;
   RxString mobileCountryCode = "+971".obs;
+  RxDouble propertyPrice = 8000000.0.obs;
+  RxDouble advancePayment = 26.0.obs;
+  RxDouble interestRate = 4.5.obs;
+  RxInt propertyPeriod = 15.obs;
+  RxDouble advancePercentage = 0.2.obs;
+  RxString advance = "20%".obs;
+  RxString calculatorType = "UAE National".obs;
+  AuthManager authManager = Get.find();
+  AppLoadingController appLoadingController = AppLoadingController();
   Rx<TextEditingController> personalNameController =
       TextEditingController().obs;
-  Rx<TextEditingController> personalNationalityController =
-      TextEditingController().obs;
+  // Rx<TextEditingController> personalNationalityController =
+  //     TextEditingController().obs;
   Rx<TextEditingController> personalPhoneNumberController =
       TextEditingController().obs;
   Rx<TextEditingController> personalEmailController =
@@ -27,6 +43,7 @@ class MortgageController extends GetxController {
   Rx<DocumentModel> tradeLicenseDocument = DocumentModel().obs;
   Rx<DocumentModel> fourVATPaymentsDocument = DocumentModel().obs;
 
+  RxString nationalityType = 'UAE National'.obs;
   RxString propertyType = 'Villa'.obs;
   RxString propertyLocation = 'Abu Dhabi'.obs;
   RxString propertyCondition = 'New'.obs;
@@ -39,8 +56,115 @@ class MortgageController extends GetxController {
     "Ras Al Khaimah",
     "Fujairah",
   ];
-  List conditions = ["New", "Old"];
+  List nationalities = ["UAE National", "Expat"];
+  List conditions = ["New", "Old", "Off Plan"];
   List properties = ["Villa", "Apartment", "Townhouse", "Land"];
+
+  @override
+  onInit() {
+    advancePayment.value = advancePercentage * propertyPrice.value;
+
+    super.onInit();
+  }
+
+  @override
+  onReady() {
+    advancePayment.value = advancePercentage * propertyPrice.value;
+    calculateEMI();
+    super.onReady();
+  }
+
+  Future<void> applyMortgageLoan() async {
+    Map<String, dynamic> resultMap = await getMortgageLoanData();
+    appLoadingController.loading();
+    MortgageProvider().applyMortgageLoan(
+      data: mp.FormData.fromMap(resultMap),
+
+      onSuccess: (response) {
+        print(response);
+        appLoadingController.stop();
+        appTools.showSuccessSnackBar(
+          "Your application is successfully submitted. We will get back to you after a short review.",
+        );
+        Get.offAll(
+          () => BottomnavigationBarView(),
+          binding: BottomNavigationBarBinding(),
+        );
+        BottomNavigationBarBinding().dependencies();
+      },
+      onError: (error) {
+        appLoadingController.stop();
+        print(error.response);
+        appTools.showErrorSnackBar(
+          appTools.errorMessage(error) ??
+              'Opps, an error occurred, Please try again later',
+          timer: 0,
+        );
+      },
+    );
+  }
+
+  Future<Map<String, dynamic>> getMortgageLoanData() async {
+    Map<String, dynamic> mortgageLoanData = {};
+
+    mortgageLoanData["client"] = authManager.appUser.value.id;
+
+    mortgageLoanData["product"] = "Mortgage Loan";
+
+    mortgageLoanData["description"] =
+        "Loan Amount: ${propertyPrice.value}, Payment Period: ${propertyPeriod.value} Years, Name: ${personalNameController.value.text}, Nationality: ${nationalityType.value}, Phone: ${mobileCountryCode.value.startsWith("+") ? "" : "+"}${mobileCountryCode.value}${personalPhoneNumberController.value.text}, Email: ${personalEmailController.value.text}, Property Type: ${propertyType.value}, Property Location: ${propertyLocation.value}, Property Condition: ${propertyCondition.value}";
+
+    List<DocumentModel> documents = [
+      passportDocument.value,
+      emiratesIdDocument.value,
+      salaryCertificateDocument.value,
+      bankStatementDocument.value,
+      etihadBureauDocument.value,
+      tradeLicenseDocument.value,
+      fourVATPaymentsDocument.value,
+    ];
+
+    List<mp.MultipartFile> fileList = [];
+
+    for (var doc in documents) {
+      if (doc.filePath != null && doc.filePath!.isNotEmpty) {
+        String ext = doc.filePath!.split('.').last.toLowerCase();
+
+        fileList.add(
+          await mp.MultipartFile.fromFile(
+            doc.filePath!,
+            contentType: MediaType(
+              ext == 'pdf' ? 'application' : 'image',
+              ext == 'jpg' ? 'jpeg' : ext,
+            ),
+            filename: doc.fileName ?? doc.filePath!.split('/').last,
+          ),
+        );
+      }
+    }
+    mortgageLoanData["files"] = fileList;
+    print(mortgageLoanData);
+    return mortgageLoanData;
+  }
+
+  double calculateEMI() {
+    double loanAmount = propertyPrice.value - advancePayment.value;
+    double monthlyRate = interestRate / 12 / 100;
+    int totalMonths = propertyPeriod.value * 12;
+    print(advancePayment);
+    if (monthlyRate == 0) {
+      return loanAmount / totalMonths;
+    }
+
+    double emi =
+        loanAmount *
+        monthlyRate *
+        (pow(1 + monthlyRate, totalMonths)) /
+        (pow(1 + monthlyRate, totalMonths) - 1);
+
+    return emi;
+  }
+
   selectPassportDocument(context) {
     FilePickerResult? photoCopy;
     DocumentPicker().documentPickerWidget(
@@ -70,6 +194,7 @@ class MortgageController extends GetxController {
       () async {
         photoCopy = await pickfromGallery();
         tradeLicenseDocument.value.filePath = getDocument(photoCopy);
+        print(tradeLicenseDocument.value.filePath);
         initTradeLicenseDocument();
       },
       () async {
@@ -232,44 +357,51 @@ class MortgageController extends GetxController {
   }
 
   initPassportDocument() {
-    passportDocument.value.fileName =
-        "passport.${passportDocument.value.filePath?.split('.').last}";
+    if (passportDocument.value.fileName != "")
+      passportDocument.value.fileName =
+          "passport.${passportDocument.value.filePath?.split('.').last}";
     passportDocument.update(passportDocument);
   }
 
   initEmiratesIdDocument() {
-    emiratesIdDocument.value.fileName =
-        "emiratesId.${emiratesIdDocument.value.filePath?.split('.').last}";
+    if (emiratesIdDocument.value.fileName != "")
+      emiratesIdDocument.value.fileName =
+          "emiratesId.${emiratesIdDocument.value.filePath?.split('.').last}";
     emiratesIdDocument.update(emiratesIdDocument);
   }
 
   initTradeLicenseDocument() {
-    tradeLicenseDocument.value.fileName =
-        "trade_license.${tradeLicenseDocument.value.filePath?.split('.').last}";
+    if (tradeLicenseDocument.value.fileName != "")
+      tradeLicenseDocument.value.fileName =
+          "trade_license.${tradeLicenseDocument.value.filePath?.split('.').last}";
     tradeLicenseDocument.update(tradeLicenseDocument);
   }
 
   initSalaryDocument() {
-    salaryCertificateDocument.value.fileName =
-        "salary_certificate.${salaryCertificateDocument.value.filePath?.split('.').last}";
+    if (salaryCertificateDocument.value.fileName != "")
+      salaryCertificateDocument.value.fileName =
+          "salary_certificate.${salaryCertificateDocument.value.filePath?.split('.').last}";
     salaryCertificateDocument.update(salaryCertificateDocument);
   }
 
   initBankStatementDocument() {
-    bankStatementDocument.value.fileName =
-        "bank_statement.${bankStatementDocument.value.filePath?.split('.').last}";
+    if (bankStatementDocument.value.fileName != "")
+      bankStatementDocument.value.fileName =
+          "bank_statement.${bankStatementDocument.value.filePath?.split('.').last}";
     bankStatementDocument.update(bankStatementDocument);
   }
 
   initEtihadDocument() {
-    etihadBureauDocument.value.fileName =
-        "etihad_bureau.${etihadBureauDocument.value.filePath?.split('.').last}";
+    if (etihadBureauDocument.value.fileName != "")
+      etihadBureauDocument.value.fileName =
+          "etihad_bureau.${etihadBureauDocument.value.filePath?.split('.').last}";
     etihadBureauDocument.update(etihadBureauDocument);
   }
 
   initVATDocument() {
-    fourVATPaymentsDocument.value.fileName =
-        "VAT_payments.${fourVATPaymentsDocument.value.filePath?.split('.').last}";
+    if (fourVATPaymentsDocument.value.fileName != "")
+      fourVATPaymentsDocument.value.fileName =
+          "VAT_payments.${fourVATPaymentsDocument.value.filePath?.split('.').last}";
     fourVATPaymentsDocument.update(fourVATPaymentsDocument);
   }
 }

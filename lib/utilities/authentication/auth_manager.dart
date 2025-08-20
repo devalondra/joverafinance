@@ -4,7 +4,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:jovera_finance/screens/auth/login/model/users.dart';
 import 'package:jovera_finance/screens/bottom_navigation/bottom/binding/bottom_navigation_bar_binding.dart';
 import 'package:jovera_finance/screens/bottom_navigation/bottom/view/bottom_navigation_bar_view.dart';
-import 'package:jovera_finance/screens/notification/controller/notification_controller.dart';
+import 'package:jovera_finance/screens/main_drawer/notification/controller/notification_controller.dart';
 import 'package:jovera_finance/utilities/api/api_service.dart';
 import 'package:jovera_finance/utilities/authentication/cache_manager.dart';
 import 'package:jovera_finance/utilities/constants/app_tools.dart';
@@ -42,7 +42,7 @@ class AuthManager extends GetxController with CacheManager {
     isLogged.value = true;
     await saveToken(appUser.value.token);
     final NotificationService notificationService = Get.find();
-
+    //todo
     notificationService.initSocketConnection();
     if (!Get.isRegistered<NotificationController>()) {
       Get.put(NotificationController());
@@ -56,6 +56,7 @@ class AuthManager extends GetxController with CacheManager {
       isLogged.value = true;
       final ApiService apiService = Get.put(ApiService());
       await apiService.getUserDataByToken(token);
+
       if (!Get.isRegistered<NotificationController>()) {
         Get.put(NotificationController());
       }

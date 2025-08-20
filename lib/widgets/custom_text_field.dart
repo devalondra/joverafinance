@@ -16,6 +16,7 @@ class CustomTextField extends StatefulWidget {
   final bool? prefixIconConstraints;
   final String? Function(String?)? validator;
   final int? maxLines;
+  final bool? readOnly;
   final int? maxLength;
   final EdgeInsetsGeometry? contentPadding;
   final bool? disable;
@@ -60,6 +61,7 @@ class CustomTextField extends StatefulWidget {
     this.onSubmitted,
     this.textInputAction,
     this.focusNode,
+    this.readOnly,
   });
 
   @override
@@ -76,7 +78,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
     return IgnorePointer(
       ignoring: widget.disable ?? false,
+
       child: TextFormField(
+        readOnly: widget.readOnly ?? false,
         textInputAction: widget.textInputAction,
         inputFormatters: widget.inputFormatters,
         onFieldSubmitted: widget.onSubmitted,

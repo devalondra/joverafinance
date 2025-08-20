@@ -4,7 +4,8 @@ class AppUser {
   String? email;
   String? picture;
   String? phone;
-  String? countryCode;
+  String? whatsapp;
+
   String? role;
   String? token;
   String? dateOfBirth;
@@ -19,19 +20,17 @@ class AppUser {
     this.token,
     this.dateOfBirth,
     this.gender,
-    this.countryCode,
+    this.whatsapp,
   });
 
   AppUser.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+    id = json['_id'];
     name = json['name'];
     email = json['email'];
-    phone = json['phoneNumber'];
-    countryCode = json['countryCode'];
-    role = json['role'];
+    phone = json['phone'];
+    whatsapp = json['w_phone'];
+
     picture = json['picture'] ?? "";
     token = json['token'];
-    dateOfBirth = json['DateOfBirth'];
-    gender = json['gender'];
   }
 }

@@ -1,9 +1,9 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:jovera_finance/screens/notification/binding/notification_binding.dart';
-import 'package:jovera_finance/screens/notification/controller/notification_controller.dart';
-import 'package:jovera_finance/screens/notification/view/notification_view.dart';
+import 'package:jovera_finance/screens/main_drawer/notification/binding/notification_binding.dart';
+import 'package:jovera_finance/screens/main_drawer/notification/controller/notification_controller.dart';
+import 'package:jovera_finance/screens/main_drawer/notification/view/notification_view.dart';
 
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/widgets/main_text.dart';

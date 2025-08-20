@@ -63,36 +63,36 @@ class SignupOtpVerifyView extends GetView<SignUpController> {
             ),
             SizedBox(height: fullHeight * 0.08),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                MainText(
-                  text: 'Didn\'t get the Code?'.tr,
-                  textAlign: TextAlign.center,
-                  fontSize: 14,
-                  color: AppColors.lightText,
-                  fontWeight: FontWeight.w400,
-                ),
-                SizedBox(width: fullWidth * 0.01),
-                InkWell(
-                  onTap: () {
-                    controller.otpController.value.clear();
-                    controller.resendOtp();
-                  },
-                  child: MainText(
-                    text: 'Resend'.tr,
-                    textAlign: TextAlign.center,
-                    fontSize: 14,
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ],
-            ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: [
+            //     MainText(
+            //       text: 'Didn\'t get the Code?'.tr,
+            //       textAlign: TextAlign.center,
+            //       fontSize: 14,
+            //       color: AppColors.lightText,
+            //       fontWeight: FontWeight.w400,
+            //     ),
+            //     SizedBox(width: fullWidth * 0.01),
+            //     InkWell(
+            //       onTap: () {
+            //         controller.otpController.value.clear();
+            //         controller.resendOtp();
+            //       },
+            //       child: MainText(
+            //         text: 'Resend'.tr,
+            //         textAlign: TextAlign.center,
+            //         fontSize: 14,
+            //         color: AppColors.primary,
+            //         fontWeight: FontWeight.w400,
+            //       ),
+            //     ),
+            //   ],
+            // ),
             SizedBox(height: fullHeight * 0.1),
             CustomButton(
               onPressed: () {
-                controller.verifyOtp();
+                //       controller.verifyOtp();
               },
               text: "Verify".tr,
             ),

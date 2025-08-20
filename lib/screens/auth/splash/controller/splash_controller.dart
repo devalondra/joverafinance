@@ -1,4 +1,3 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -40,9 +39,10 @@ class SplashController extends GetxController {
       Get.off(() => const LanguageView(), binding: LanguageBinding());
     } else {
       Get.lazyPut(() => NotificationService());
-      await Get.putAsync(() => NotificationService().init());
-      FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
+      //  await Get.putAsync(() => NotificationService().init());
+      //todo  FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
       BottomNavigationBarBinding().dependencies();
+
       Get.offAll(
         () => const BottomnavigationBarView(),
         binding: BottomNavigationBarBinding(),

@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "562102601805-avbicon3be5524h7luhege176vpp3m0c.apps.googleusercontent.com",
+          "client_id": "562102601805-ajnq9pv58f9e0i259sdjr7nvuq8209si.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.joveragroup.finance",
-            "certificate_hash": "12a8d386fdc49b17c0b32ac1b0c9412bcf2f886d"
+            "certificate_hash": "6a211d4650edddb2993ca7595dffc6fbe7f88717"
           }
         },
         {
@@ -37,6 +37,13 @@
             {
               "client_id": "562102601805-ibq7h4les6m09opgl1g4nitnv9nmpu13.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "562102601805-dbb8t7hdjnl89fq0veegkq5g4t6ff96m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.joveragroup.finance"
+              }
             }
           ]
         }

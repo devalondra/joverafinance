@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_validators.dart';
@@ -18,7 +17,7 @@ class FillProfileTextFields extends StatelessWidget {
           () => CustomTextField(
             controller: controller.passwordController.value,
             hintText: "Password".tr,
-            textInputAction: TextInputAction.next, // Moves focus to next.
+            textInputAction: TextInputAction.next,
             onSubmitted: (_) => FocusScope.of(context).nextFocus(),
             maxLines: 1,
             validator: (value) {
@@ -88,45 +87,6 @@ class FillProfileTextFields extends StatelessWidget {
                     ),
           ),
         ).paddingOnly(bottom: fullHeight * 0.025),
-
-        Obx(
-          () => InkWell(
-            onTap: () {
-              controller.showCupertinoDialog();
-            },
-            child: CustomTextField(
-              controller: controller.dateOfBirthController.value,
-              hintText: "Date of birth".tr,
-              disable: true,
-              validator: (value) {
-                return AppValidators().textValidation(value);
-              },
-              prefixIcon: SizedBox(
-                width: fullWidth * 0.15,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SvgPicture.asset(
-                      "assets/icons/calender_icon.svg",
-                      width: fullWidth * 0.052,
-                      height: fullWidth * 0.052,
-                    ),
-                    SizedBox(width: fullWidth * 0.023),
-                    Container(
-                      height: fullHeight * 0.025,
-                      width: fullWidth * 0.005,
-                      color: AppColors.lightGrey,
-                    ),
-                  ],
-                ),
-              ),
-              border: true,
-              textColor: AppColors.white,
-              borderColor: AppColors.white,
-              hintStyle: TextStyle(color: AppColors.lightGrey),
-            ).paddingOnly(bottom: fullHeight * 0.025),
-          ),
-        ),
       ],
     );
   }

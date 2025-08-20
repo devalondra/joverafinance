@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:jovera_finance/screens/bottom_navigation/bottom/controller/bottom_navigation_bar_controller.dart';
-// import 'package:jovera_finance/screens/notification/binding/notification_binding.dart';
-// import 'package:jovera_finance/screens/notification/controller/notification_controller.dart';
-// import 'package:jovera_finance/screens/notification/view/notification_view.dart';
+import 'package:jovera_finance/screens/main_drawer/notification/binding/notification_binding.dart';
+import 'package:jovera_finance/screens/main_drawer/notification/controller/notification_controller.dart';
+import 'package:jovera_finance/screens/main_drawer/notification/view/notification_view.dart';
 import 'package:jovera_finance/utilities/authentication/auth_manager.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:socket_io_client/socket_io_client.dart' as i_o;
@@ -21,8 +21,8 @@ class NotificationService extends GetxService {
   bool get IsSocketInitialized => socketInitialized.value;
 
   Future<NotificationService> init() async {
-    await initFirebaseNotification();
-
+    //  await initFirebaseNotification();
+    initSocketConnection();
     return this;
   }
 
@@ -31,6 +31,7 @@ class NotificationService extends GetxService {
     return settings.authorizationStatus == AuthorizationStatus.authorized;
   }
 
+  /// Initialize Firebase Push Notifications
   Future<void> initFirebaseNotification() async {
     NotificationSettings settings = await _firebaseMessaging.requestPermission(
       alert: true,
@@ -63,29 +64,29 @@ class NotificationService extends GetxService {
   }
 
   void handleNotificationTap(RemoteMessage message) async {
-    // if (!Get.isRegistered<NotificationController>()) {
-    //   NotificationBinding().dependencies();
-    //   NotificationController cont = Get.find();
-    //   await cont.getNotifications();
-    // }
+    if (!Get.isRegistered<NotificationController>()) {
+      NotificationBinding().dependencies();
+      NotificationController cont = Get.find();
+      await cont.getNotifications();
+    }
     final BottomNavigationBarController bottomNavController = Get.find();
     bottomNavController.selectedIndex.value = 0;
-   // Get.to(() => const NotificationView(), binding: NotificationBinding());
+    Get.to(() => const NotificationView(), binding: NotificationBinding());
   }
 
   void handleMessage(RemoteMessage? message, {bool fromTapped = false}) async {
     if (message == null) return;
 
     if (fromTapped) {
-      // Get.to(
-      //   () => const NotificationView(),
-      //   binding: NotificationBinding(),
-      //   arguments: message.data,
-      // );
-      // if (Get.isRegistered<NotificationController>()) {
-      //   final NotificationController cont = Get.find();
-      //   cont.getNotifications();
-      // }
+      Get.to(
+        () => const NotificationView(),
+        binding: NotificationBinding(),
+        arguments: message.data,
+      );
+      if (Get.isRegistered<NotificationController>()) {
+        final NotificationController cont = Get.find();
+        cont.getNotifications();
+      }
       return;
     }
 
@@ -96,26 +97,29 @@ class NotificationService extends GetxService {
       backgroundColor: AppColors.black2,
       colorText: AppColors.white,
       onTap: (val) {
-        // Get.to(
-        //   () => const NotificationView(),
-        //   binding: NotificationBinding(),
-        //   arguments: message.data,
-        // );
+        Get.to(
+          () => const NotificationView(),
+          binding: NotificationBinding(),
+          arguments: message.data,
+        );
       },
     );
   }
 
   void initSocketConnection() {
     AuthManager authManager = Get.find();
+    debugPrint('🟢 logout');
     if (authManager.isLogged.value) {
+      debugPrint('🟢 login');
       if (socketInitialized.value) return;
-
+      debugPrint('🟢 nnnnn');
       socket = i_o.io(
-        'https://homeland-explicitly-astrology-year.trycloudflare.com/',
-        //   'https://0sbx6kf1-8080.inc1.devtunnels.ms/',
+        'https://0sbx6kf1-7000.inc1.devtunnels.ms/',
+
         i_o.OptionBuilder()
             .setTransports(['websocket'])
             .disableAutoConnect()
+            .setAuth({'token': authManager.getToken()})
             .build(),
       );
 
@@ -130,8 +134,8 @@ class NotificationService extends GetxService {
         socket.off('new_notification');
         socket.on('new_notification', (data) async {
           debugPrint('📩 Socket notification: $data');
-        // await Get.find<NotificationController>().refreshNotifications();
-          final body = data['body'] ?? data.toString();
+          await Get.find<NotificationController>().refreshNotifications();
+          final body = data['message'] ?? data.toString();
 
           Get.snackbar(
             "Notification",
@@ -143,7 +147,7 @@ class NotificationService extends GetxService {
             colorText: Colors.white,
             mainButton: TextButton(
               onPressed: () async {
-               // Get.to(() => NotificationView());
+                Get.to(() => NotificationView());
               },
               child: Text("View", style: TextStyle(color: Colors.white)),
             ),

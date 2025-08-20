@@ -26,10 +26,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -58,6 +55,17 @@ class DefaultFirebaseOptions {
     messagingSenderId: '562102601805',
     projectId: 'jovera-finance-3021c',
     storageBucket: 'jovera-finance-3021c.firebasestorage.app',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyB2qDt_vqm7OW5vNSQRRz_dnR_U6nT5mhk',
+    appId: '1:562102601805:ios:a571c0a3e562d043397404',
+    messagingSenderId: '562102601805',
+    projectId: 'jovera-finance-3021c',
+    storageBucket: 'jovera-finance-3021c.firebasestorage.app',
+    androidClientId: '562102601805-avbicon3be5524h7luhege176vpp3m0c.apps.googleusercontent.com',
+    iosClientId: '562102601805-dbb8t7hdjnl89fq0veegkq5g4t6ff96m.apps.googleusercontent.com',
+    iosBundleId: 'com.joveragroup.finance',
   );
 
 }

@@ -2,18 +2,24 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CLIENT_ID</key>
+	<string>562102601805-dbb8t7hdjnl89fq0veegkq5g4t6ff96m.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.562102601805-dbb8t7hdjnl89fq0veegkq5g4t6ff96m</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>562102601805-avbicon3be5524h7luhege176vpp3m0c.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyCPCTqhabCSY5Dfk36geKZf3vkyL7ArLBs</string>
+	<string>AIzaSyB2qDt_vqm7OW5vNSQRRz_dnR_U6nT5mhk</string>
 	<key>GCM_SENDER_ID</key>
-	<string>73258065470</string>
+	<string>562102601805</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.joveragroup.finance</string>
 	<key>PROJECT_ID</key>
-	<string>jovera-finance</string>
+	<string>jovera-finance-3021c</string>
 	<key>STORAGE_BUCKET</key>
-	<string>jovera-finance.firebasestorage.app</string>
+	<string>jovera-finance-3021c.firebasestorage.app</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:73258065470:ios:687f4f3ea80be475f6bb6f</string>
+	<string>1:562102601805:ios:a571c0a3e562d043397404</string>
 </dict>
 </plist>

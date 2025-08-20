@@ -4,10 +4,11 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:dio/dio.dart' as mp;
+import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jovera_finance/screens/auth/login/model/users.dart';
 import 'package:jovera_finance/screens/auth/signup/provider/signup_provider.dart';
-import 'package:jovera_finance/screens/auth/signup/view/signup_otp_verify_view.dart';
 import 'package:jovera_finance/screens/bottom_navigation/bottom/binding/bottom_navigation_bar_binding.dart';
 import 'package:jovera_finance/screens/bottom_navigation/bottom/view/bottom_navigation_bar_view.dart';
 import 'package:jovera_finance/utilities/authentication/auth_manager.dart';
@@ -25,6 +26,7 @@ class SignUpController extends GetxController {
   Rx<TextEditingController> genderController = TextEditingController().obs;
   RxBool passwordIsVisible = false.obs;
   RxString countryCode = '971'.obs;
+  RxString whatsappCode = '971'.obs;
   RxString profilePicturePath = ''.obs;
   AppLoadingController appLoadingController = AppLoadingController();
   Rx<TextEditingController> dateOfBirthController = TextEditingController().obs;
@@ -32,85 +34,61 @@ class SignUpController extends GetxController {
   Rx<TextEditingController> nameController = TextEditingController().obs;
   Rx<TextEditingController> lastNameController = TextEditingController().obs;
   Rx<TextEditingController> phoneController = TextEditingController().obs;
+  Rx<TextEditingController> whatsappController = TextEditingController().obs;
   final phoneFocus = FocusNode();
   var selectedDate = DateTime.now().obs;
   RxBool retypePasswordIsVisible = false.obs;
   RxInt otp = 0000.obs;
   final AuthManager authManager = Get.find();
 
-  Map<String, dynamic> getProfileFormData() {
-    return {
-      "name": nameController.value.text,
-      "countryCode": "+${countryCode.value}",
-      "phoneNumber": phoneController.value.text,
-      "password": passwordController.value.text,
-      "email": emailController.value.text,
-    };
+  Future<Map<String, dynamic>> getProfileFormData() async {
+    Map<String, dynamic> profileFormData = {};
+
+    profileFormData["name"] = nameController.value.text;
+
+    profileFormData["phone"] =
+        "+${countryCode.value}${phoneController.value.text}";
+
+    profileFormData["password"] = passwordController.value.text;
+
+    profileFormData["email"] = emailController.value.text;
+    profileFormData["fcmToken"] = await appTools.getFCMTokenForDevice();
+
+    profileFormData["w_phone"] =
+        "+${whatsappCode.value}${whatsappController.value.text}";
+
+    if (profilePicturePath.isNotEmpty) {
+      String ext = profilePicturePath.value.split('.').last.toLowerCase();
+      profileFormData["picture"] = await mp.MultipartFile.fromFile(
+        profilePicturePath.value,
+        contentType: MediaType(
+          ext == 'pdf' ? 'application' : 'image',
+          ext == 'jpg' ? 'jpeg' : ext,
+        ),
+        filename: "profile_picture_${profilePicturePath.value.split('/').last}",
+      );
+    }
+    print(profileFormData);
+    return profileFormData;
   }
 
   Future<void> signup() async {
+    Map<String, dynamic> resultMap = await getProfileFormData();
     appLoadingController.loading();
     SignupProvider().signup(
-      data: getProfileFormData(),
-      onSuccess: (response) {
-        appLoadingController.stop();
-        appTools.showSuccessSnackBar(
-          "Otp Code sent to your email address. Please verify.",
-        );
-        Get.off(() => SignupOtpVerifyView());
-      },
-      onError: (error) {
-        appLoadingController.stop();
-
-        appTools.showErrorSnackBar(
-          appTools.errorMessage(error) ??
-              'Opps, an error occurred during registration, Please try again later',
-          timer: 0,
-        );
-      },
-    );
-  }
-
-  Future<void> verifyOtp() async {
-    appLoadingController.loading();
-    SignupProvider().verifyOtp(
-      email: emailController.value.text,
-      otp: otpController.value.text,
+      data: mp.FormData.fromMap(resultMap),
 
       onSuccess: (response) {
         appLoadingController.stop();
-
         secretLogin();
       },
       onError: (error) {
         appLoadingController.stop();
+        print(error.response);
         appTools.showErrorSnackBar(
           appTools.errorMessage(error) ??
               'Opps, an error occurred during registration, Please try again later',
-          timer: 1,
-        );
-      },
-    );
-  }
-
-  Future<void> resendOtp() async {
-    appLoadingController.loading();
-    SignupProvider().resendOtp(
-      email: emailController.value.text,
-
-      onSuccess: (response) {
-        appLoadingController.stop();
-
-        appTools.showSuccessSnackBar(
-          "OTP sent to your email address. Please verify",
-        );
-      },
-      onError: (error) {
-        appLoadingController.stop();
-        appTools.showErrorSnackBar(
-          appTools.errorMessage(error) ??
-              'Opps, an error occurred while sending otp, Please try again later',
-          timer: 1,
+          timer: 0,
         );
       },
     );
@@ -124,7 +102,7 @@ class SignUpController extends GetxController {
 
       onSuccess: (response) {
         appLoadingController.stop();
-
+        print(response);
         if (response.data is String) {
           final Map<String, dynamic> responseData = json.decode(response.data);
           authManager.appUser.value = AppUser.fromJson(responseData['user']);

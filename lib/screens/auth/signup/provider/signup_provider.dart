@@ -1,14 +1,15 @@
 import 'package:jovera_finance/utilities/api/api_abstract.dart';
 import 'package:jovera_finance/utilities/constants/app_enums.dart';
-
+import 'package:dio/dio.dart' as mp;
 class SignupProvider {
   Future<void> signup({
     Function()? beforeSend,
     Function(dynamic response)? onSuccess,
     Function(dynamic error)? onError,
-    required Map<String,dynamic> data,
+    required mp.FormData data,
+    
   }) async {
-    await ApiAbstract(apiName: '/api/users/signup', data: data).post(
+    await ApiAbstract(apiName: '/api/auth/register', formData: data).post(
       optionsEnum: OptionsEnum.login,
       beforeSend: () => {if (beforeSend != null) beforeSend()},
       onSuccess: (response) => {if (onSuccess != null) onSuccess(response)},
@@ -24,7 +25,7 @@ class SignupProvider {
     String? email,
   }) async {
     await ApiAbstract(
-      apiName: '/api/users/verify-email-otp',
+      apiName: '/api/auth/verify-otp',
       data: {"email": email, "otp": otp},
     ).post(
       optionsEnum: OptionsEnum.login,
@@ -42,7 +43,7 @@ class SignupProvider {
     String? email,
   }) async {
     await ApiAbstract(
-      apiName: '/api/users/resend-otp',
+      apiName: '/api/auth/resend-otp',
       data: {"email": email},
     ).post(
       optionsEnum: OptionsEnum.login,
@@ -60,8 +61,8 @@ class SignupProvider {
     String? email,
   }) async {
     await ApiAbstract(
-      apiName: '/api/users/signin',
-      data: {"email": email, "password": password},
+      apiName: '/api/auth/login',
+      data: {"identifier": email, "password": password},
     ).post(
       optionsEnum: OptionsEnum.login,
       beforeSend: () => {if (beforeSend != null) beforeSend()},

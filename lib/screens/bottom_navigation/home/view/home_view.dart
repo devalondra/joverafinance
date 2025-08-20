@@ -170,7 +170,7 @@ class HomeView extends GetView<HomeController> {
                 InkWell(
                   onTap: () {
                     BottomNavigationBarController cont = Get.find();
-                    cont.selectedIndex.value = 2;
+                    cont.selectedIndex.value = 1;
                   },
                   child: Container(
                     padding: EdgeInsets.symmetric(
@@ -215,28 +215,42 @@ class HomeView extends GetView<HomeController> {
               ),
               itemCount: controller.servicesList.length,
               itemBuilder: (context, index) {
-                return InkWell(
-                  onTap: controller.servicesList[index].onTap,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(fullWidth * 0.04),
-                      gradient: LinearGradient(
-                        begin: Alignment.bottomCenter,
-                        end: Alignment.topCenter,
-                        colors: [
-                          const Color.fromARGB(255, 115, 77, 8),
-                          AppColors.primary,
+                return Obx(
+                  () => InkWell(
+                    onTap: () {
+                      controller.selectedService.value = index;
+                      if (controller.checkLoginStatus()) {
+                        controller.servicesList[index].onTap();
+                      } else {
+                        BottomNavigationBarController cont = Get.find();
+                        cont.selectedIndex.value = 1;
+                      }
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.black2,
+                        borderRadius: BorderRadius.circular(fullWidth * 0.04),
+                        gradient: LinearGradient(
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                          colors:
+                              controller.selectedService.value == index
+                                  ? [
+                                    const Color.fromARGB(255, 115, 77, 8),
+                                    AppColors.primary,
+                                  ]
+                                  : [AppColors.black2, AppColors.black2],
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+                            controller.servicesList[index].iconPath,
+                          ),
+                          MainText(text: controller.servicesList[index].title),
                         ],
                       ),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(
-                          controller.servicesList[index].iconPath,
-                        ),
-                        MainText(text: controller.servicesList[index].title),
-                      ],
                     ),
                   ),
                 );

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:jovera_finance/screens/bottom_navigation/services/controller/services_controller.dart';
@@ -28,26 +27,35 @@ class ServicesView extends GetView<ServicesController> {
           ),
           itemCount: controller.servicesList.length,
           itemBuilder: (context, index) {
-            return InkWell(
-              onTap:  controller.servicesList[index].onTap,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(fullWidth * 0.04),
-                  gradient: LinearGradient(
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
-                    colors: [
-                      const Color.fromARGB(255, 115, 77, 8),
-                      AppColors.primary,
+            return Obx(
+              () => InkWell(
+                onTap: () {
+                  controller.selectedService.value = index;
+                  controller.servicesList[index].onTap();
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.black2,
+                    borderRadius: BorderRadius.circular(fullWidth * 0.04),
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                      colors:
+                          controller.selectedService.value == index
+                              ? [
+                                const Color.fromARGB(255, 115, 77, 8),
+                                AppColors.primary,
+                              ]
+                              : [AppColors.black2, AppColors.black2],
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(controller.servicesList[index].iconPath),
+                      MainText(text: controller.servicesList[index].title),
                     ],
                   ),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SvgPicture.asset(controller.servicesList[index].iconPath),
-                    MainText(text: controller.servicesList[index].title),
-                  ],
                 ),
               ),
             );

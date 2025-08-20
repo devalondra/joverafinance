@@ -33,8 +33,7 @@ class ForgotPasswordController extends GetxController {
 
       onSuccess: (response) {
         appLoadingController.stop();
-
-        // if (response.data is String) {
+        print(response); // if (response.data is String) {
         //   final Map<String, dynamic> responseData = json.decode(response.data);
         //   authManager.appUser.value = AppUser.fromJson(responseData['user']);
         // } else if (response.data is Map<String, dynamic>) {
@@ -46,9 +45,9 @@ class ForgotPasswordController extends GetxController {
         );
 
         Get.to(() => VerifyOtpView());
-
       },
       onError: (error) {
+        print(error.message);
         appLoadingController.stop();
         appTools.showErrorSnackBar(
           appTools.errorMessage(error) ??
@@ -120,12 +119,12 @@ class ForgotPasswordController extends GetxController {
 
       onSuccess: (response) {
         appLoadingController.stop();
-
+        print(response);
         if (response.data is String) {
           final Map<String, dynamic> responseData = json.decode(response.data);
-          authManager.appUser.value = AppUser.fromJson(responseData['user']);
+          authManager.appUser.value = AppUser.fromJson(responseData);
         } else if (response.data is Map<String, dynamic>) {
-          authManager.appUser.value = AppUser.fromJson(response.data['user']);
+          authManager.appUser.value = AppUser.fromJson(response.data);
         }
         authManager.login();
         emailController.value.clear();

@@ -23,11 +23,12 @@ class ApiService {
 
     try {
       await httpClient
-          .get('$baseUrl/api/users/me', options: getApiOptionsWithAuth(token))
+          .get('$baseUrl/api/auth/me', options: getApiOptionsWithAuth(token))
           .then((response) {
             if (response.statusCode == 200) {
+              print(response);
               authManager.appUser.value = AppUser.fromJson(
-                response.data['user'],
+                response.data,
               )..token = token;
               authManager.login();
             }

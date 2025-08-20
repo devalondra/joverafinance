@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
@@ -8,9 +7,9 @@ import 'package:jovera_finance/utilities/constants/app_enums.dart';
 
 class AppTools {
   Future<String>? getFCMTokenForDevice() async {
-    String? fcmToken = await FirebaseMessaging.instance.getToken();
-    debugPrint(fcmToken ?? "");
-    return fcmToken!;
+    // String? fcmToken = await FirebaseMessaging.instance.getToken();
+    // debugPrint(fcmToken ?? "");
+    return "";// fcmToken??"";
   }
 
   void showSnackBar(

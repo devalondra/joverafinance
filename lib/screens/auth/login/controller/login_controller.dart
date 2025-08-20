@@ -47,9 +47,9 @@ class LoginController extends GetxController {
         print(response);
         if (response.data is String) {
           final Map<String, dynamic> responseData = json.decode(response.data);
-          authManager.appUser.value = AppUser.fromJson(responseData['user']);
+          authManager.appUser.value = AppUser.fromJson(responseData);
         } else if (response.data is Map<String, dynamic>) {
-          authManager.appUser.value = AppUser.fromJson(response.data['user']);
+          authManager.appUser.value = AppUser.fromJson(response.data);
         }
         authManager.login();
         emailController.value.clear();

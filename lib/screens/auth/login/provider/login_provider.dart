@@ -11,8 +11,8 @@ class LoginProvider {
     String? fcm,
   }) async {
     await ApiAbstract(
-      apiName: '/api/users/signin',
-      data: {"email": email, "password": password, "fcmToken": fcm},
+      apiName: '/api/auth/login',
+      data: {"identifier": email, "password": password, "fcmToken": fcm},
     ).post(
       optionsEnum: OptionsEnum.login,
       beforeSend: () => {if (beforeSend != null) beforeSend()},

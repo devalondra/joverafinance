@@ -13,10 +13,14 @@ class DocumentViewWidget extends StatelessWidget {
     required this.filePath,
     required this.isPdf,
     required this.onPressed,
+    this.height,
+    this.hideEditButton,
   });
   final bool isPdf;
   final String filePath;
   final Function() onPressed;
+  final double? height;
+  final bool? hideEditButton;
   @override
   Widget build(BuildContext context) {
     return DottedBorder(
@@ -27,29 +31,31 @@ class DocumentViewWidget extends StatelessWidget {
         color: AppColors.darkGrey,
       ),
       child: Container(
-        height: fullHeight * 0.2,
+        height: height ?? fullHeight * 0.2,
         child: Stack(
           children: [
             isPdf
                 ? SizedBox(
-                  height: fullHeight * 0.2,
+                  height: height ?? fullHeight * 0.2,
                   width: fullWidth,
                   child: PDFView(filePath: filePath),
                 )
                 : Image.file(
                   File(filePath),
                   fit: BoxFit.cover,
-                  height: fullHeight * 0.2,
+                  height: height ?? fullHeight * 0.2,
                   width: fullWidth,
                 ),
-            Positioned(
-              top: 0,
-              right: 0,
-              child: IconButton(
-                icon: Icon(Icons.edit_square, color: AppColors.primary),
-                onPressed: onPressed,
-              ),
-            ),
+            hideEditButton == true
+                ? SizedBox()
+                : Positioned(
+                  top: 0,
+                  right: 0,
+                  child: IconButton(
+                    icon: Icon(Icons.edit_square, color: AppColors.primary),
+                    onPressed: onPressed,
+                  ),
+                ),
           ],
         ),
       ),
