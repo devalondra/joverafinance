@@ -66,7 +66,7 @@ class MortgagePersonalDetailsView extends GetView<MortgageController> {
                       borderSide: BorderSide(color: Colors.red),
                     ),
                   ),
-                  value:
+                  initialValue:
                       controller.nationalityType.value.isEmpty
                           ? null
                           : controller.nationalityType.value,

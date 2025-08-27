@@ -15,11 +15,11 @@ class ChangePasswordView extends GetView<BottomNavigationBarController> {
 
   @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: Form(
-        key: _formKey,
+        key: formKey,
         child: Column(
           children: [
             Expanded(
@@ -177,7 +177,7 @@ class ChangePasswordView extends GetView<BottomNavigationBarController> {
 
             CustomButton(
               onPressed: () {
-                if (_formKey.currentState!.validate()) {
+                if (formKey.currentState!.validate()) {
                   if (controller.confirmPasswordController.value.text ==
                       controller.passwordController.value.text) {
                     controller.changePassword();

@@ -15,9 +15,9 @@ class LoginTextFields extends StatelessWidget {
       children: [
         CustomTextField(
           controller: controller.emailController.value,
-          hintText: "Email".tr,
+          hintText: "Email/Phone".tr,
           validator: (value) {
-            return AppValidators().email(value);
+            return AppValidators().textValidation(value);
           },
           border: true,
           textColor: AppColors.white,

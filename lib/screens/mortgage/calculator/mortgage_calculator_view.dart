@@ -230,9 +230,12 @@ class MortgageCalculatorView extends GetView<MortgageController> {
               )
               : CustomButton(
                 onPressed: () {
-                  Get.back();
-                  BottomNavigationBarController cont = Get.find();
-                  cont.selectedIndex.value = 1;
+                  // Get.back();
+                  // Get.back();
+
+                  // BottomNavigationBarController cont = Get.find();
+                  // cont.selectedIndex.value = 4;
+                  goToLoginScreen();
                 },
                 text: "Login to Apply",
               ),

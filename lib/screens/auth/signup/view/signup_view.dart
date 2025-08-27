@@ -15,7 +15,7 @@ class SignupView extends GetView<SignUpController> {
 
   @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
     return Background(
       appLoadingController: controller.appLoadingController,
       child: Column(
@@ -36,7 +36,7 @@ class SignupView extends GetView<SignUpController> {
 
                 SizedBox(height: fullHeight * 0.04),
                 Form(
-                  key: _formKey,
+                  key: formKey,
                   child: SignupTextFields(controller: controller),
                 ),
               ],
@@ -44,10 +44,8 @@ class SignupView extends GetView<SignUpController> {
           ),
           CustomButton(
             onPressed: () {
-              if (_formKey.currentState!.validate()) {
-           
-              Get.to(()=> FillProfileView());
-               
+              if (formKey.currentState!.validate()) {
+                Get.to(() => FillProfileView());
               } else {}
             },
             text: "Next".tr,

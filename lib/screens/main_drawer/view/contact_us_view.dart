@@ -11,7 +11,7 @@ import 'package:jovera_finance/widgets/custom_text_field.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
 class ContactUsView extends GetView<BottomNavigationBarController> {
-  ContactUsView({super.key});
+  const ContactUsView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class ContactUsView extends GetView<BottomNavigationBarController> {
                 notification: false,
                 back: true,
                 title: "Contact us".tr,
-              ).paddingOnly(bottom: fullHeight * 0.05),
+              ).paddingOnly(bottom: fullHeight * 0.01),
               SizedBox(
                 height: fullHeight * 0.13,
 
@@ -110,7 +110,7 @@ class ContactUsView extends GetView<BottomNavigationBarController> {
                           text: "Full name",
                         ).paddingOnly(top: fullHeight * 0.015),
                         CustomTextField(
-                          controller: TextEditingController(),
+                          controller: controller.callBackFullNameController,
                           label: false,
                           bgColor: AppColors.yellow,
                           borderColor: AppColors.yellow,
@@ -119,42 +119,100 @@ class ContactUsView extends GetView<BottomNavigationBarController> {
                           text: "Phone",
                         ).paddingOnly(top: fullHeight * 0.015),
                         CustomTextField(
-                          controller: TextEditingController(),
+                          controller: controller.callBackPhoneController,
                           label: false,
                           bgColor: AppColors.yellow,
                           borderColor: AppColors.yellow,
                         ),
                         MainText(
+                          text: "Email",
+                        ).paddingOnly(top: fullHeight * 0.015),
+                        CustomTextField(
+                          controller: controller.callBackEmailController,
+                          label: false,
+                          bgColor: AppColors.yellow,
+                          borderColor: AppColors.yellow,
+                        ),
+                        MainText(
+                          text: "Loan Type",
+                        ).paddingOnly(top: fullHeight * 0.015),
+                        Obx(
+                          () => Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.yellow,
+                              borderRadius: BorderRadius.circular(
+                                fullWidth * 0.01,
+                              ),
+                              border: Border.all(color: AppColors.yellow),
+                            ),
+                            child: DropdownButton<String>(
+                              value: controller.selectedLoanType.value,
+                              isExpanded: true,
+                              dropdownColor: AppColors.black2,
+                              icon: Icon(
+                                Icons.arrow_drop_down,
+                                color: AppColors.white,
+                              ),
+                              underline: SizedBox(),
+                              items:
+                                  [
+                                    'Business Loan',
+                                    'Mortgage Loan',
+                                    'Personal Loan',
+                                  ].map((String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: MainText(text: value),
+                                    );
+                                  }).toList(),
+                              onChanged: (String? newValue) {
+                                if (newValue != null) {
+                                  controller.selectedLoanType.value = newValue;
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+                        MainText(
                           text: "Message",
                         ).paddingOnly(top: fullHeight * 0.015),
                         CustomTextField(
-                          controller: TextEditingController(),
+                          controller: controller.callBackMessageController,
                           label: false,
 
                           bgColor: AppColors.yellow,
                           maxLines: 4,
                           borderColor: AppColors.yellow,
                         ),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: fullWidth * 0.02,
-                            vertical: fullWidth * 0.01,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(
-                              fullWidth * 0.015,
+                        InkWell(
+                          onTap: () {
+                            controller.requestCallBack();
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: fullWidth * 0.02,
+                              vertical: fullWidth * 0.01,
                             ),
-                            gradient: LinearGradient(
-                              begin: Alignment.bottomCenter,
-                              end: Alignment.topCenter,
-                              colors: [
-                                const Color.fromARGB(255, 172, 150, 104),
-                                AppColors.primary,
-                              ],
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(
+                                fullWidth * 0.015,
+                              ),
+                              gradient: LinearGradient(
+                                begin: Alignment.bottomCenter,
+                                end: Alignment.topCenter,
+                                colors: [
+                                  const Color.fromARGB(255, 172, 150, 104),
+                                  AppColors.primary,
+                                ],
+                              ),
                             ),
-                          ),
-                          child: MainText(text: "Submit"),
-                        ).paddingOnly(top: fullHeight * 0.015),
+                            child: MainText(text: "Submit"),
+                          ).paddingOnly(top: fullHeight * 0.015),
+                        ),
                       ],
                     ),
                   )

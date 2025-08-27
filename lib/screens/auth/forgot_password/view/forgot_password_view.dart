@@ -14,7 +14,7 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
 
   @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
     return Background(
       appLoadingController: controller.appLoadingController,
       // safeAreaBottom: true,
@@ -51,7 +51,7 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
               ),
               SizedBox(height: fullHeight * 0.06),
               Form(
-                key: _formKey,
+                key: formKey,
                 child: CustomTextField(
                   controller: controller.emailController.value,
                   hintText: "Email".tr,
@@ -68,7 +68,7 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
               SizedBox(height: fullHeight * 0.1),
               CustomButton(
                 onPressed: () {
-                  if (_formKey.currentState!.validate()) {
+                  if (formKey.currentState!.validate()) {
                     controller.forgotPassword();
                   }
                 },

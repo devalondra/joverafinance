@@ -18,7 +18,7 @@ class LoginView extends GetView<LoginController> {
 
   @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
     return Background(
       appLoadingController: controller.appLoadingController,
       // safeAreaBottom: true,
@@ -40,7 +40,7 @@ class LoginView extends GetView<LoginController> {
 
               SizedBox(height: fullHeight * 0.04),
               Form(
-                key: _formKey,
+                key: formKey,
                 child: LoginTextFields(controller: controller),
               ),
               Row(
@@ -101,7 +101,7 @@ class LoginView extends GetView<LoginController> {
                   // controller.emailController.value.text =
                   //     "kashufhameed@gmail.com";
                   // controller.passwordController.value.text = "123123";
-                  if (_formKey.currentState!.validate()) {
+                  if (formKey.currentState!.validate()) {
                     controller.login();
                   }
                 },

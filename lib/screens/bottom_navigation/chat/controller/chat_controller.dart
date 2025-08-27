@@ -30,8 +30,8 @@ class ChatController extends GetxController {
   @override
   void onInit() async {
     await getAllMessages();
-    if (notificationService.IsSocketInitialized) {
-      socketInitialized.value = notificationService.IsSocketInitialized;
+    if (notificationService.isSocketInitialized) {
+      socketInitialized.value = notificationService.isSocketInitialized;
 
       debugPrint("££££££££ socket connected");
       socket = notificationService.socketInstance;
@@ -114,8 +114,9 @@ class ChatController extends GetxController {
   Future<Map<String, dynamic>> getProfileFormData() async {
     Map<String, dynamic> profileFormData = {};
 
-    if (textController.value.text.isNotEmpty)
+    if (textController.value.text.isNotEmpty) {
       profileFormData["content"] = textController.value.text;
+    }
 
     if (selectedFilePath.isNotEmpty) {
       String ext = selectedFilePath.value.split('.').last.toLowerCase();
@@ -227,8 +228,8 @@ class ChatController extends GetxController {
 
   @override
   void onReady() {
-    if (notificationService.IsSocketInitialized) {
-      socketInitialized.value = notificationService.IsSocketInitialized;
+    if (notificationService.isSocketInitialized) {
+      socketInitialized.value = notificationService.isSocketInitialized;
       debugPrint("££££££££ socket connected");
       socket = notificationService.socketInstance;
       setupListeners();
@@ -240,8 +241,8 @@ class ChatController extends GetxController {
   }
 
   void printSocket() {
-    if (notificationService.IsSocketInitialized) {
-      socketInitialized.value = notificationService.IsSocketInitialized;
+    if (notificationService.isSocketInitialized) {
+      socketInitialized.value = notificationService.isSocketInitialized;
       debugPrint("££££££££ socket connected");
       socket = notificationService.socketInstance;
       setupListeners();

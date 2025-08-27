@@ -14,12 +14,12 @@ class CreateNewPasswordView extends GetView<ForgotPasswordController> {
 
   @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: SingleChildScrollView(
         child: Form(
-          key: _formKey,
+          key: formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -140,7 +140,7 @@ class CreateNewPasswordView extends GetView<ForgotPasswordController> {
               SizedBox(height: fullHeight * 0.04),
               CustomButton(
                 onPressed: () {
-                  if (_formKey.currentState!.validate()) {
+                  if (formKey.currentState!.validate()) {
                     if (controller.confirmPasswordController.value.text ==
                         controller.passwordController.value.text) {
                       controller.createNewPassword();

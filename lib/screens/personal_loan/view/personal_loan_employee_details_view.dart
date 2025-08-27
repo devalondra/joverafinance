@@ -65,7 +65,7 @@ class PersonalLoanDetailsView extends GetView<PersonalLoanController> {
                       borderSide: BorderSide(color: Colors.red),
                     ),
                   ),
-                  value:
+                  initialValue:
                       controller.nationalityType.value.isEmpty
                           ? null
                           : controller.nationalityType.value,

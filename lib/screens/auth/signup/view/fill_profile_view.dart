@@ -17,7 +17,7 @@ class FillProfileView extends GetView<SignUpController> {
 
   @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
     return Background(
       appLoadingController: controller.appLoadingController,
       child: SafeArea(
@@ -114,7 +114,7 @@ class FillProfileView extends GetView<SignUpController> {
 
                     SizedBox(height: fullHeight * 0.04),
                     Form(
-                      key: _formKey,
+                      key: formKey,
                       child: FillProfileTextFields(controller: controller),
                     ),
                     SizedBox(height: fullHeight * 0.04),
@@ -123,7 +123,7 @@ class FillProfileView extends GetView<SignUpController> {
               ),
               CustomButton(
                 onPressed: () {
-                  if (_formKey.currentState!.validate()) {
+                  if (formKey.currentState!.validate()) {
                     if (controller.passwordController.value.text ==
                         controller.retypePasswordController.value.text) {
                       controller.signup();

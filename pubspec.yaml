@@ -42,6 +42,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_lints: ^5.0.0
   flutter_launcher_icons: 
 
 flutter_launcher_icons:
@@ -52,9 +53,6 @@ flutter_launcher_icons:
   adaptive_icon_foreground: "assets/images/jovera_logo.png"
   remove_alpha_ios: true
 
-
-
-  flutter_lints: ^5.0.0
 
 
 flutter:

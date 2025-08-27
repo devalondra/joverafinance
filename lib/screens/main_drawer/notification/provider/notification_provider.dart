@@ -43,7 +43,7 @@ class NotificationsProvider {
     Function(dynamic error)? onError,
     required String? id,
   }) async {
-    await ApiAbstract(apiName: "/api/notifications/read/${id}").put(
+    await ApiAbstract(apiName: "/api/notifications/read/$id").put(
       optionsEnum: OptionsEnum.auth,
       beforeSend: () => {if (beforeSend != null) beforeSend()},
       onSuccess: (response) => {if (onSuccess != null) onSuccess(response)},

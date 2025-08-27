@@ -55,6 +55,7 @@ class AuthManager extends GetxController with CacheManager {
     if (token != null) {
       isLogged.value = true;
       final ApiService apiService = Get.put(ApiService());
+      print(token);
       await apiService.getUserDataByToken(token);
 
       if (!Get.isRegistered<NotificationController>()) {

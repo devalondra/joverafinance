@@ -57,10 +57,6 @@ class PersonalLoanController extends GetxController {
   List conditions = ["New", "Old", "Off Plan"];
   List properties = ["Villa", "Apartment", "Townhouse", "Land"];
 
-  @override
-  onInit() {
-    super.onInit();
-  }
 
   @override
   onReady() {
@@ -302,37 +298,42 @@ class PersonalLoanController extends GetxController {
   }
 
   initPassportDocument() {
-    if (passportDocument.value.fileName != "")
+    if (passportDocument.value.fileName != "") {
       passportDocument.value.fileName =
           "passport.${passportDocument.value.filePath?.split('.').last}";
-    passportDocument.update(passportDocument);
+    }
+    passportDocument.update(passportDocument.call);
   }
 
   initEmiratesIdDocument() {
-    if (emiratesIdDocument.value.fileName != "")
+    if (emiratesIdDocument.value.fileName != "") {
       emiratesIdDocument.value.fileName =
           "emiratesId.${emiratesIdDocument.value.filePath?.split('.').last}";
-    emiratesIdDocument.update(emiratesIdDocument);
+    }
+    emiratesIdDocument.update(emiratesIdDocument.call);
   }
 
   initSalaryDocument() {
-    if (salaryCertificateDocument.value.fileName != "")
+    if (salaryCertificateDocument.value.fileName != "") {
       salaryCertificateDocument.value.fileName =
           "salary_certificate.${salaryCertificateDocument.value.filePath?.split('.').last}";
-    salaryCertificateDocument.update(salaryCertificateDocument);
+    }
+    salaryCertificateDocument.update(salaryCertificateDocument.call);
   }
 
   initBankStatementDocument() {
-    if (bankStatementDocument.value.fileName != "")
+    if (bankStatementDocument.value.fileName != "") {
       bankStatementDocument.value.fileName =
           "bank_statement.${bankStatementDocument.value.filePath?.split('.').last}";
-    bankStatementDocument.update(bankStatementDocument);
+    }
+    bankStatementDocument.update(bankStatementDocument.call);
   }
 
   initEtihadDocument() {
-    if (etihadBureauDocument.value.fileName != "")
+    if (etihadBureauDocument.value.fileName != "") {
       etihadBureauDocument.value.fileName =
           "etihad_bureau.${etihadBureauDocument.value.filePath?.split('.').last}";
-    etihadBureauDocument.update(etihadBureauDocument);
+    }
+    etihadBureauDocument.update(etihadBureauDocument.call);
   }
 }

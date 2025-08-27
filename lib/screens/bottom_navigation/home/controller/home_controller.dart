@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:jovera_finance/screens/bottom_navigation/home/model/main_service_model.dart';
-import 'package:jovera_finance/screens/business_loan/calculator/business_loan_calculator_view.dart';
-import 'package:jovera_finance/screens/mortgage/calculator/mortgage_calculator_view.dart';
+import 'package:jovera_finance/screens/business_loan/view/business_loan_landing_view.dart';
+import 'package:jovera_finance/screens/mortgage/binding/mortgage_binding.dart';
+import 'package:jovera_finance/screens/mortgage/common/mortgage_landing_view.dart';
 import 'package:jovera_finance/screens/mortgage/controller/mortgage_controller.dart';
 import 'package:jovera_finance/screens/personal_loan/binding/personal_loan_binding.dart';
-import 'package:jovera_finance/screens/personal_loan/view/personal_loan_apply_as_view.dart';
 import 'package:jovera_finance/screens/personal_loan/controller/personal_loan_controller.dart';
+import 'package:jovera_finance/screens/personal_loan/view/personal_loan_landing_view.dart';
 import 'package:jovera_finance/utilities/authentication/auth_manager.dart';
 import 'package:jovera_finance/widgets/app_loading_controller.dart';
 import 'package:jovera_finance/screens/business_loan/binding/business_loan_binding.dart';
@@ -33,7 +34,7 @@ class HomeController extends GetxController {
       iconPath: "assets/icons/mortgage_icon.svg",
       onTap: () {
         Get.lazyPut<MortgageController>(() => MortgageController());
-        Get.to(() => MortgageCalculatorView());
+        Get.to(() => MortgageLandingView(), binding: MortgageBinding());
       },
     ),
     MainServiceModel(
@@ -42,7 +43,7 @@ class HomeController extends GetxController {
       iconPath: "assets/icons/personal_loan_icon.svg",
       onTap: () {
         Get.lazyPut<PersonalLoanController>(() => PersonalLoanController());
-        Get.to(() => PersonalLoanApplyAsView(), binding: PersonalLoanBinding());
+        Get.to(() => PersonalLoanLandingView(), binding: PersonalLoanBinding());
       },
     ),
     MainServiceModel(
@@ -51,10 +52,7 @@ class HomeController extends GetxController {
       iconPath: "assets/icons/business_loan_icon.svg",
       onTap: () {
         Get.lazyPut<BusinessLoanController>(() => BusinessLoanController());
-        Get.to(
-          () => BusinessLoanCalculatorView(),
-          binding: BusinessLoanBinding(),
-        );
+        Get.to(() => BusinessLoanLandingView(), binding: BusinessLoanBinding());
       },
     ),
     MainServiceModel(
@@ -63,10 +61,7 @@ class HomeController extends GetxController {
       iconPath: "assets/icons/car_loan_icon.svg",
       onTap: () {
         Get.lazyPut<BusinessLoanController>(() => BusinessLoanController());
-        Get.to(
-          () => BusinessLoanCalculatorView(),
-          binding: BusinessLoanBinding(),
-        );
+        Get.to(() => BusinessLoanLandingView(), binding: BusinessLoanBinding());
       },
     ),
   ];
@@ -85,8 +80,9 @@ class HomeController extends GetxController {
   bool checkLoginStatus() {
     if (authManager.isLogged.value) {
       return true;
-    } else
+    } else {
       return false;
+    }
   }
 
   List offersCarouselList = [

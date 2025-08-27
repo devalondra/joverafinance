@@ -28,7 +28,7 @@ class FilePreview extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          Container(
+          SizedBox(
             height: fullHeight * 0.2,
             width: fullWidth * 0.49,
             child:

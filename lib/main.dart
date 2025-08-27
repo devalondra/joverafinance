@@ -22,6 +22,7 @@ void main() async {
       minTextAdapt: true,
       designSize: ScreenUtil.defaultSize,
       splitScreenMode: true,
+      
       builder: (_, __) {
         return MyApp();
       },

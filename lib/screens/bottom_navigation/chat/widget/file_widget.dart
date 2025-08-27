@@ -24,7 +24,7 @@ class FileWidget extends StatelessWidget {
         dashPattern: [4, 5],
         color: AppColors.darkGrey,
       ),
-      child: Container(
+      child: SizedBox(
         height: fullHeight * 0.2,
         width: fullWidth * 0.49,
         child:

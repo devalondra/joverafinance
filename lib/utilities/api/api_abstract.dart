@@ -95,7 +95,7 @@ class ApiAbstract {
           });
     } on DioError catch (error) {
       if (error.response != null) {
-        if (error.response?.statusCode == 401) {
+        if (error.response?.statusCode == 404) {
           if (onError != null) onError(error);
         } else {
           if (onError != null) onError(error);

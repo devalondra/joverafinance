@@ -66,7 +66,7 @@ class LoginController extends GetxController {
       },
       onError: (error) {
         appLoadingController.stop();
-        print(error);
+        print(error.response);
         appTools.showErrorSnackBar(
           appTools.errorMessage(error) ??
               'Opps, something went wrong. Please check you internet connection.',

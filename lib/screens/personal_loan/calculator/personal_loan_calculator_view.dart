@@ -218,10 +218,14 @@ class PersonalLoanCalculatorView extends GetView<PersonalLoanController> {
               )
               : CustomButton(
                 onPressed: () {
-                  Get.back();
-                  Get.back();
-                  BottomNavigationBarController cont = Get.find();
-                  cont.selectedIndex.value = 1;
+                  // Get.offAll(
+                  //   () => BottomnavigationBarView(),
+                  //   binding: BottomNavigationBarBinding(),
+                  // );
+
+                  // BottomNavigationBarController cont = Get.find();
+                  // cont.selectedIndex.value = 4;
+                  goToLoginScreen();
                 },
                 text: "Login to Apply",
               ),

@@ -34,8 +34,8 @@ class CalculatorSlider extends StatelessWidget {
             ? Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                MainText(text: "${min.toStringAsFixed(1)}", fontSize: 12),
-                MainText(text: "${max.toStringAsFixed(1)}", fontSize: 12),
+                MainText(text: min.toStringAsFixed(1), fontSize: 12),
+                MainText(text: max.toStringAsFixed(1), fontSize: 12),
               ],
             )
             : Row(

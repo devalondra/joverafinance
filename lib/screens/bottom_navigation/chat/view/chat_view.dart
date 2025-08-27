@@ -16,7 +16,7 @@ class ChatView extends GetView<ChatController> {
 
   @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
     return Background(
       appLoadingController: controller.appLoadingController,
       child: Scaffold(
@@ -89,7 +89,7 @@ class ChatView extends GetView<ChatController> {
               children: [
                 Expanded(
                   child: Form(
-                    key: _formKey,
+                    key: formKey,
                     child: CustomTextField(
                       contentPadding: EdgeInsets.only(
                         top: fullHeight * 0.01,
@@ -125,7 +125,7 @@ class ChatView extends GetView<ChatController> {
                     if (controller.selectedFilePath.value.isNotEmpty) {
                       controller.sendMessage();
                     } else {
-                      if (_formKey.currentState!.validate()) {
+                      if (formKey.currentState!.validate()) {
                         controller.sendMessage();
                       }
                     }

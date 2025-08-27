@@ -32,7 +32,7 @@ final  bool backgroundDecoration;
       child: Center(
         child: DropdownButtonFormField(
           isExpanded: true,
-          value: value,
+          initialValue: value,
 
           validator: (value) {
             return AppValidators().textValidation(value);

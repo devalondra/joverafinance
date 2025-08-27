@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
@@ -7,9 +8,9 @@ import 'package:jovera_finance/utilities/constants/app_enums.dart';
 
 class AppTools {
   Future<String>? getFCMTokenForDevice() async {
-    // String? fcmToken = await FirebaseMessaging.instance.getToken();
-    // debugPrint(fcmToken ?? "");
-    return "";// fcmToken??"";
+    String? fcmToken = await FirebaseMessaging.instance.getToken();
+    debugPrint(fcmToken ?? "");
+    return fcmToken ?? "";
   }
 
   void showSnackBar(
@@ -56,8 +57,22 @@ class AppTools {
   }
 
   String? errorMessage(error) {
-    return jsonDecode(error.response.toString()) == null
-        ? null
-        : jsonDecode(error.response.toString())['message'];
+    if (error.response != null) {
+      if (error.response?.data != null) {
+        if (error.response?.data is String) {
+          return jsonDecode(error.response.toString()) == null
+              ? null
+              : jsonDecode(error.response.toString())['message'];
+        } else {
+          return "Something went wrong. Please check your connection";
+        }
+      } else if (error.response?.data is Map<String, dynamic>) {
+        return error.response?.data['message'];
+      } else {
+        return "Something went wrong. Please check your connection";
+      }
+    } else {
+      return "Something went wrong. Please check your connection";
+    }
   }
 }

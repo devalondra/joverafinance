@@ -30,7 +30,7 @@ class DocumentViewWidget extends StatelessWidget {
         dashPattern: [4, 5],
         color: AppColors.darkGrey,
       ),
-      child: Container(
+      child: SizedBox(
         height: height ?? fullHeight * 0.2,
         child: Stack(
           children: [

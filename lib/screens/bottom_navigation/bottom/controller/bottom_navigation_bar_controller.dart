@@ -31,6 +31,12 @@ import 'package:jovera_finance/widgets/document_picker_widget.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+void goToLoginScreen() {
+  final BottomNavigationBarController navController = Get.find();
+  Get.until((route) => route.settings.name == '/BottomnavigationBarView');
+  navController.onItemTapped(4);
+}
+
 class BottomNavigationBarController extends GetxController {
   RxInt selectedIndex = 0.obs;
   RxInt selectedHomeSubPage = 0.obs;
@@ -44,11 +50,8 @@ class BottomNavigationBarController extends GetxController {
     super.onInit();
     widgetOptions.value = <Widget>[
       const HomeView(),
-      loggedIn()
-          ? const ServicesView()
-          : isLogin.value
-          ? LoginView()
-          : SignupView(),
+      const ServicesView(),
+
       const CalculatorView(),
       loggedIn()
           ? const DashboardView()
@@ -135,6 +138,15 @@ class BottomNavigationBarController extends GetxController {
   RxString selectedLanguage = TranslationService().getLocale().toString().obs;
   AppUser? appUser;
 
+  final TextEditingController callBackFullNameController =
+      TextEditingController();
+  final TextEditingController callBackPhoneController = TextEditingController();
+  final TextEditingController callBackEmailController = TextEditingController();
+  final TextEditingController callBackMessageController =
+      TextEditingController();
+  
+  final RxString selectedLoanType = 'Business Loan'.obs;
+
   void changeLanguage(String languageCode) {
     TranslationService().changeLocale(languageCode);
     selectedLanguage.value = languageCode;
@@ -164,6 +176,39 @@ class BottomNavigationBarController extends GetxController {
         confirmPasswordController.value.clear();
         currentPasswordController.value.clear();
         Get.back();
+      },
+      onError: (error) {
+        appLoadingController.stop();
+        print(error.message);
+        appTools.showErrorSnackBar(
+          appTools.errorMessage(error) ??
+              'Opps, an error occurred during request, Please try again later',
+          timer: 1,
+        );
+      },
+    );
+  }
+
+  Future<void> requestCallBack() async {
+    appLoadingController.loading();
+    MainDrawerProvider().requestCallBack(
+      name: callBackFullNameController.value.text,
+      phone: callBackPhoneController.value.text,
+      email: callBackEmailController.value.text,
+      description: callBackMessageController.value.text,
+      product: selectedLoanType.value,
+
+      onSuccess: (response) {
+        appLoadingController.stop();
+        print(response);
+        Get.back();
+        appTools.showSuccessSnackBar(
+          'Your request has been submitted. We will get back to you soon.',
+        );
+        callBackFullNameController.clear();
+        callBackPhoneController.clear();
+        callBackEmailController.clear();
+        callBackMessageController.clear();
       },
       onError: (error) {
         appLoadingController.stop();
@@ -270,8 +315,9 @@ class BottomNavigationBarController extends GetxController {
   Future<Map<String, dynamic>> getProfileFormData() async {
     Map<String, dynamic> profileFormData = {};
 
-    if (nameController.value.text != appUser?.name)
+    if (nameController.value.text != appUser?.name) {
       profileFormData["name"] = nameController.value.text;
+    }
 
     if (profileWhatsappController.value.text.isNotEmpty &&
         ("${whatsappCountryCode.value}${profileWhatsappController.value.text}" !=

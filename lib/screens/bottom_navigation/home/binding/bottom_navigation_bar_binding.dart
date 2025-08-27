@@ -5,6 +5,7 @@ import 'package:jovera_finance/screens/auth/signup/controller/signup_controller.
 import 'package:jovera_finance/screens/bottom_navigation/bottom/controller/bottom_navigation_bar_controller.dart';
 import 'package:jovera_finance/screens/bottom_navigation/calculator/controller/calculator_controller.dart';
 import 'package:jovera_finance/screens/bottom_navigation/home/controller/home_controller.dart';
+import 'package:jovera_finance/screens/bottom_navigation/services/controller/services_controller.dart';
 
 class BottomNavigationBarBinding extends Bindings {
   @override
@@ -15,6 +16,7 @@ class BottomNavigationBarBinding extends Bindings {
     Get.lazyPut<LanguageController>(() => LanguageController());
     Get.lazyPut<HomeController>(() => HomeController());
     Get.lazyPut<CalculatorController>(() => CalculatorController());
+    Get.lazyPut<ServicesController>(() => ServicesController());
 
     Get.lazyPut<SignUpController>(() => SignUpController());
 

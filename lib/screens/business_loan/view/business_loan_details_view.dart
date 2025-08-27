@@ -66,7 +66,7 @@ class BusinessLoanDetailsView extends GetView<BusinessLoanController> {
                       borderSide: BorderSide(color: Colors.red),
                     ),
                   ),
-                  value:
+                  initialValue:
                       controller.nationalityType.value.isEmpty
                           ? null
                           : controller.nationalityType.value,

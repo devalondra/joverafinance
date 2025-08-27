@@ -14,8 +14,6 @@ class HomeView extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    // final bool hasNotificationController =
-    //     Get.isRegistered<NotificationController>();
 
     return SafeArea(
       child: Scaffold(
@@ -120,35 +118,7 @@ class HomeView extends GetView<HomeController> {
                   child: Icon(Icons.menu, color: AppColors.grey),
                 ),
 
-                // (!hasNotificationController
-                //     ? SizedBox()
-                //     : Obx(() {
-                //       if (controller.authManager.isLogged.value) {
-                //         final notificationController =
-                //             Get.find<NotificationController>();
-
-                //         return InkWell(
-                //           onTap: () {
-                //             Get.to(
-                //               () => NotificationView(),
-                //               binding: NotificationBinding(),
-                //             );
-                //           },
-                //           child:
-                //               notificationController
-                //                       .hasUnreadNotifications
-                //                       .value
-                //                   ? SvgPicture.asset(
-                //                     "assets/icons/unread_notification.svg",
-                //                   )
-                //                   : SvgPicture.asset(
-                //                     "assets/icons/notification_icon.svg",
-                //                   ),
-                //         );
-                //       } else {
-                //         return SizedBox();
-                //       }
-                //     })),
+           
               ],
             ),
 
@@ -205,27 +175,19 @@ class HomeView extends GetView<HomeController> {
             ),
             SizedBox(height: fullHeight * 0.015),
             GridView.builder(
-              shrinkWrap: true, // ✅ lets it size itself inside ListView
+              shrinkWrap: true, 
               physics: NeverScrollableScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, // 2 items per row
+                crossAxisCount: 2,
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
-                childAspectRatio: 1.1, // Adjust card shape
+                childAspectRatio: 1.1, 
               ),
               itemCount: controller.servicesList.length,
               itemBuilder: (context, index) {
                 return Obx(
                   () => InkWell(
-                    onTap: () {
-                      controller.selectedService.value = index;
-                      if (controller.checkLoginStatus()) {
-                        controller.servicesList[index].onTap();
-                      } else {
-                        BottomNavigationBarController cont = Get.find();
-                        cont.selectedIndex.value = 1;
-                      }
-                    },
+                    onTap: () => controller.servicesList[index].onTap(),
                     child: Container(
                       decoration: BoxDecoration(
                         color: AppColors.black2,

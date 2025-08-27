@@ -25,15 +25,16 @@ class ApiService {
       await httpClient
           .get('$baseUrl/api/auth/me', options: getApiOptionsWithAuth(token))
           .then((response) {
+            print(response);
             if (response.statusCode == 200) {
               print(response);
-              authManager.appUser.value = AppUser.fromJson(
-                response.data,
-              )..token = token;
+              authManager.appUser.value = AppUser.fromJson(response.data)
+                ..token = token;
               authManager.login();
             }
           });
-    } on DioException {
+    } on DioException catch (e) {
+      print(e);
       appTools.showErrorSnackBar(
         'Some thing went wrong. Please check your internet connection.',
         timer: 1,

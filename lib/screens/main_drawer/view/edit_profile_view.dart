@@ -43,14 +43,6 @@ class EditProfileView extends GetView<BottomNavigationBarController> {
                             child: CircleAvatar(
                               backgroundColor: AppColors.backgroundColor,
                               radius: fullWidth * 0.21,
-
-                              child:
-                                  controller.profilePicturePath.value == ''
-                                      ? SvgPicture.asset(
-                                        "assets/icons/profile_icon.svg",
-                                        fit: BoxFit.fill,
-                                      )
-                                      : null,
                               backgroundImage:
                                   controller.profilePicturePath.value != ''
                                       ? controller.profilePicturePath.value
@@ -65,6 +57,14 @@ class EditProfileView extends GetView<BottomNavigationBarController> {
                                                   .value,
                                             ),
                                           )
+                                      : null,
+
+                              child:
+                                  controller.profilePicturePath.value == ''
+                                      ? SvgPicture.asset(
+                                        "assets/icons/profile_icon.svg",
+                                        fit: BoxFit.fill,
+                                      )
                                       : null,
                             ),
                           ),

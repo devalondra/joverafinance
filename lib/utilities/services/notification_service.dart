@@ -18,10 +18,10 @@ class NotificationService extends GetxService {
   final RxBool socketInitialized = false.obs;
 
   i_o.Socket get socketInstance => socket;
-  bool get IsSocketInitialized => socketInitialized.value;
+  bool get isSocketInitialized => socketInitialized.value;
 
   Future<NotificationService> init() async {
-    //  await initFirebaseNotification();
+    await initFirebaseNotification();
     initSocketConnection();
     return this;
   }
@@ -108,11 +108,11 @@ class NotificationService extends GetxService {
 
   void initSocketConnection() {
     AuthManager authManager = Get.find();
-    debugPrint('🟢 logout');
+
     if (authManager.isLogged.value) {
-      debugPrint('🟢 login');
+   
       if (socketInitialized.value) return;
-      debugPrint('🟢 nnnnn');
+
       socket = i_o.io(
         'https://0sbx6kf1-7000.inc1.devtunnels.ms/',
 

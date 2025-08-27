@@ -20,7 +20,7 @@ if (keystorePropertiesFile.exists()) {
 }
 android {
     namespace = "com.joveragroup.finance"
-    compileSdk = 35
+    compileSdk = 36
     ndkVersion = "27.0.12077973"
 
     compileOptions {
@@ -34,8 +34,8 @@ android {
 
     defaultConfig {
         applicationId = "com.joveragroup.finance"
-        minSdk = 23
-        targetSdk = 35
+        minSdk = flutter.minSdkVersion
+        targetSdk = 36
         versionCode = 1
         versionName = "1.1.0"
     }

@@ -201,9 +201,16 @@ class BusinessLoanCalculatorView extends GetView<BusinessLoanController> {
               )
               : CustomButton(
                 onPressed: () {
-                  Get.back();
-                  BottomNavigationBarController cont = Get.find();
-                  cont.selectedIndex.value = 1;
+                  // Get.offAll(
+                  //   () => BottomnavigationBarView(),
+                  //   binding: BottomNavigationBarBinding(),
+                  // );
+                  // BottomNavigationBarController cont = Get.find();
+                  // cont.onItemTapped(4);
+                  // Get.until(
+                  //   (route) => Get.currentRoute == '/BottomNavigationBarView',
+                  // );
+                  goToLoginScreen();
                 },
                 text: "Login to Apply",
               ),

@@ -15,14 +15,11 @@ class BottomNavigationBarBinding extends Bindings {
       () => BottomNavigationBarController(),
     );
     Get.lazyPut<ServicesController>(() => ServicesController());
-    Get.lazyPut<DashboardController>(() => DashboardController());
-
     Get.lazyPut<HomeController>(() => HomeController());
     Get.lazyPut<CalculatorController>(() => CalculatorController());
-
     Get.lazyPut<SignUpController>(() => SignUpController());
     Get.lazyPut<ChatController>(() => ChatController());
-
     Get.lazyPut<LoginController>(() => LoginController());
+    Get.lazyPut<DashboardController>(() => DashboardController());
   }
 }
