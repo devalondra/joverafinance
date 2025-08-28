@@ -110,7 +110,6 @@ class NotificationService extends GetxService {
     AuthManager authManager = Get.find();
 
     if (authManager.isLogged.value) {
-   
       if (socketInitialized.value) return;
 
       socket = i_o.io(
@@ -154,11 +153,12 @@ class NotificationService extends GetxService {
           );
         });
 
-        socket.off('receive_message');
-        socket.on('receive_message', (data) {
+        socket.off('chat:message');
+        socket.on('chat:message', (data) {
+          print(data);
           Get.snackbar(
             "Message",
-            data["content"],
+            data['text'] ?? "New message received",
 
             snackPosition: SnackPosition.TOP,
             duration: Duration(seconds: 3),

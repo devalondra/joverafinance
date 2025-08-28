@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:jovera_finance/screens/bottom_navigation/bottom/controller/bottom_navigation_bar_controller.dart';
 import 'package:jovera_finance/screens/bottom_navigation/track/controller/dashboard_controller.dart';
 import 'package:jovera_finance/screens/bottom_navigation/track/model/visa_application_model.dart';
 import 'package:jovera_finance/screens/bottom_navigation/track/widget/tracking_card.dart';
@@ -170,7 +171,9 @@ class TrackingView extends GetView<DashboardController> {
                         ),
 
                         CustomButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            goToHomeScreen();
+                          },
                           color: AppColors.backgroundColor,
                           borderColor: AppColors.white,
                           text: "Home Page".tr,

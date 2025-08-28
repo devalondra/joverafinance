@@ -16,14 +16,13 @@ class ChatProvider {
     );
   }
 
-  Future<void> sendMessage({
+  Future<void> sendFile({
     required mp.FormData data,
     Function()? beforeSend,
     Function(dynamic response)? onSuccess,
     Function(dynamic error)? onError,
   }) async {
-
-    await ApiAbstract(apiName: '/api/chat/send', formData: data).post(
+    await ApiAbstract(apiName: '/api/files/upload', formData: data).post(
       optionsEnum: OptionsEnum.auth,
       beforeSend: () => {if (beforeSend != null) beforeSend()},
       onSuccess: (response) => {if (onSuccess != null) onSuccess(response)},

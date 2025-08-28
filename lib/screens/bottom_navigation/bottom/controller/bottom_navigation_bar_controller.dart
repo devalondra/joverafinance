@@ -14,6 +14,7 @@ import 'package:jovera_finance/screens/auth/login/view/login_view.dart';
 import 'package:jovera_finance/screens/auth/signup/controller/signup_controller.dart';
 import 'package:jovera_finance/screens/auth/signup/view/signup_view.dart';
 import 'package:jovera_finance/screens/bottom_navigation/calculator/view/calculator_view.dart';
+import 'package:jovera_finance/screens/bottom_navigation/chat/view/chat_view.dart';
 import 'package:jovera_finance/screens/bottom_navigation/track/view/dashboard_view.dart';
 import 'package:jovera_finance/screens/bottom_navigation/home/view/home_view.dart';
 import 'package:jovera_finance/screens/bottom_navigation/services/view/services_view.dart';
@@ -37,6 +38,12 @@ void goToLoginScreen() {
   navController.onItemTapped(4);
 }
 
+void goToHomeScreen() {
+  final BottomNavigationBarController navController = Get.find();
+  Get.until((route) => route.settings.name == '/BottomnavigationBarView');
+  navController.onItemTapped(0);
+}
+
 class BottomNavigationBarController extends GetxController {
   RxInt selectedIndex = 0.obs;
   RxInt selectedHomeSubPage = 0.obs;
@@ -54,7 +61,7 @@ class BottomNavigationBarController extends GetxController {
 
       const CalculatorView(),
       loggedIn()
-          ? const DashboardView()
+          ? const ChatView()
           : isLogin.value
           ? LoginView()
           : SignupView(),
@@ -94,7 +101,7 @@ class BottomNavigationBarController extends GetxController {
           : SignupView(),
       const CalculatorView(),
       loggedIn()
-          ? const DashboardView()
+          ? const ChatView()
           : isLogin.value
           ? LoginView()
           : SignupView(),
@@ -144,7 +151,7 @@ class BottomNavigationBarController extends GetxController {
   final TextEditingController callBackEmailController = TextEditingController();
   final TextEditingController callBackMessageController =
       TextEditingController();
-  
+
   final RxString selectedLoanType = 'Business Loan'.obs;
 
   void changeLanguage(String languageCode) {

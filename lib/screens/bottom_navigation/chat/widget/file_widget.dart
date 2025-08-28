@@ -1,3 +1,4 @@
+import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
@@ -29,9 +30,10 @@ class FileWidget extends StatelessWidget {
         width: fullWidth * 0.49,
         child:
             isPdf
-                ?
-                SfPdfViewer.network( filePath)
-                : Image.network(filePath, fit: BoxFit.cover),
+                ? SfPdfViewer.network(filePath)
+                : filePath.startsWith("https")
+                ? Image.network(filePath, fit: BoxFit.cover)
+                : Image.file(File(filePath), fit: BoxFit.cover),
       ),
     );
   }

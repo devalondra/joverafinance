@@ -30,7 +30,6 @@ class ChatView extends GetView<ChatController> {
               children: [
                 Row(
                   children: [
-                   
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -58,12 +57,11 @@ class ChatView extends GetView<ChatController> {
                   itemCount: controller.messages.length,
                   itemBuilder:
                       (context, index) =>
-                          controller.messages[index].senderId ==
-                                  controller.userId
-                              ? SentMessage(
+                          controller.messages[index].recipientModel == "Client"
+                              ? RecievedMessage(
                                 chatModel: controller.messages[index],
                               )
-                              : RecievedMessage(
+                              : SentMessage(
                                 chatModel: controller.messages[index],
                               ),
                 ),
@@ -123,10 +121,10 @@ class ChatView extends GetView<ChatController> {
                 InkWell(
                   onTap: () {
                     if (controller.selectedFilePath.value.isNotEmpty) {
-                      controller.sendMessage();
+                      controller.sendFile();
                     } else {
                       if (formKey.currentState!.validate()) {
-                        controller.sendMessage();
+                        controller.sendMessageViaSocket();
                       }
                     }
                   },

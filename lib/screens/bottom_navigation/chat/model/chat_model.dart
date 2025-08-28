@@ -1,30 +1,43 @@
 class ChatModel {
   String? id;
-  String? senderId;
-  String? senderName;
-  String? picture;
-  String? content;
-  bool? isRead;
-  String? createdAt;
+  String? leadId;
+  String? recipient;
+  String? recipientModel;
+  String? text;
+  String? timestamp;
+  String? status;
   String? fileUrl;
+  String? senderName;
+  String? senderImage;
+  String? senderId;
+
+  List? files;
   ChatModel({
-    this.content,
-    this.createdAt,
+    this.recipient,
+    this.leadId,
     this.id,
-    this.isRead,
-    this.picture,
-    this.senderId,
-    this.senderName,
+    this.recipientModel,
+    this.text,
+    this.timestamp,
+    this.files,
     this.fileUrl,
+    this.status,
+    this.senderName,
+    this.senderImage,
+    this.senderId,
   });
   ChatModel.fromJson(json) {
-    content = json["content"] ?? "";
-    createdAt = json["createdAt"] ?? "";
+    leadId = json["leadId"] ?? "";
+    recipient = json["recipient"] ?? "";
+    recipientModel = json["recipientModel"] ?? "";
+    text = json["text"] ?? "";
+    timestamp = json["timestamp"] ?? "";
     id = json["_id"] ?? "";
-    fileUrl = json["file"] == null ? "" : json["file"]["path"];
-    isRead = json["isRead"] ?? "";
-    picture = json["sender"]["picture"] ?? "";
-    senderId = json["sender"]["_id"] ?? "";
-    senderName = json["sender"]["name"] ?? "";
+    status = json["status"] ?? "";
+    senderId = json["senderId"] ?? "";
+    senderImage = json["senderImage"] ?? "";
+    senderName = json["senderName"] ?? "";
+    files = json["files"] ?? [];
+    fileUrl = json["fileUrl"] ?? "";
   }
 }
