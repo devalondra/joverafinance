@@ -6,8 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:jovera_finance/screens/bottom_navigation/bottom/view/bottom_navigation_bar_view.dart';
-import 'package:jovera_finance/screens/bottom_navigation/home/binding/bottom_navigation_bar_binding.dart';
+import 'package:jovera_finance/screens/bottom_navigation/bottom/controller/bottom_navigation_bar_controller.dart';
 import 'package:jovera_finance/screens/bottom_navigation/services/model/document_model.dart';
 import 'package:jovera_finance/screens/mortgage/provider/mortgage_provider.dart';
 import 'package:jovera_finance/utilities/authentication/auth_manager.dart';
@@ -28,8 +27,7 @@ class MortgageController extends GetxController {
   AppLoadingController appLoadingController = AppLoadingController();
   Rx<TextEditingController> personalNameController =
       TextEditingController().obs;
-  // Rx<TextEditingController> personalNationalityController =
-  //     TextEditingController().obs;
+
   Rx<TextEditingController> personalPhoneNumberController =
       TextEditingController().obs;
   Rx<TextEditingController> personalEmailController =
@@ -80,17 +78,14 @@ class MortgageController extends GetxController {
     MortgageProvider().applyMortgageLoan(
       data: mp.FormData.fromMap(resultMap),
 
-      onSuccess: (response) {
+      onSuccess: (response) async {
         print(response);
         appLoadingController.stop();
         appTools.showSuccessSnackBar(
           "Your application is successfully submitted. We will get back to you after a short review.",
         );
-        Get.offAll(
-          () => BottomnavigationBarView(),
-          binding: BottomNavigationBarBinding(),
-        );
-        BottomNavigationBarBinding().dependencies();
+        goToLoginScreen();
+        await updateData();
       },
       onError: (error) {
         appLoadingController.stop();

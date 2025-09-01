@@ -102,7 +102,7 @@ class PropertyDetailsView extends GetView<MortgageController> {
                     labelText:
                         controller.propertyCondition.value.isEmpty
                             ? ""
-                            : "Property Condition",
+                            : "Property Condition".tr,
                     value:
                         controller.propertyCondition.value.isEmpty
                             ? null

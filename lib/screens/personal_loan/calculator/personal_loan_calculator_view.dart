@@ -78,7 +78,8 @@ class PersonalLoanCalculatorView extends GetView<PersonalLoanController> {
                       children: [
                         HeadingRow(
                           heading: "Payment Period",
-                          value: "${controller.paymentPeriod.value} Months",
+                          value:
+                              "${controller.paymentPeriod.value} ${"Months".tr}",
                         ),
                         CalculatorSlider(
                           isDouble: false,

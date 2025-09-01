@@ -21,6 +21,12 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace = "com.joveragroup.finance"
     compileSdk = 36
+
+    packagingOptions {
+    jniLibs {
+        useLegacyPackaging = false
+    }
+}
     ndkVersion = "27.0.12077973"
 
     compileOptions {

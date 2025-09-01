@@ -26,9 +26,10 @@ class BusinessLoanApplyAsView extends GetView<BusinessLoanController> {
               children: [
                 TransactionTypeWidget(
                   onTap: () {
-                    controller.applicantType.value = "SME";
+                    controller.applicantType.value =
+                        "SME - Small, Medium Company";
                   },
-                  title: "SME",
+                  title: "SME - Small, Medium Company",
                   controller: controller,
                 ),
                 SizedBox(height: fullHeight * 0.02),

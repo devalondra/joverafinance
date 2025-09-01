@@ -134,6 +134,7 @@ class MortgageLandingView extends GetView<MortgageController> {
     "Refinance your property with equity cash",
     "Plot and land purchase",
     "Under construction residential properties",
-    "Final payment",
+    "Final Payment Financing",
+  
   ];
 }

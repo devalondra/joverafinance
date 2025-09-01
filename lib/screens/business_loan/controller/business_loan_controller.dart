@@ -6,8 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:jovera_finance/screens/bottom_navigation/bottom/view/bottom_navigation_bar_view.dart';
-import 'package:jovera_finance/screens/bottom_navigation/home/binding/bottom_navigation_bar_binding.dart';
+import 'package:jovera_finance/screens/bottom_navigation/bottom/controller/bottom_navigation_bar_controller.dart';
 import 'package:jovera_finance/screens/bottom_navigation/services/model/document_model.dart';
 import 'package:jovera_finance/screens/business_loan/provider/business_loan_provider.dart';
 
@@ -16,7 +15,8 @@ import 'package:jovera_finance/widgets/app_loading_controller.dart';
 import 'package:jovera_finance/widgets/document_picker_widget.dart';
 
 class BusinessLoanController extends GetxController {
-  RxString applicantType = "SME".obs;
+  RxString applicantType = "SME - Small, Medium Company".obs;
+
   RxString mobileCountryCode = "+971".obs;
   RxDouble loanAmount = 80000.0.obs;
 
@@ -57,7 +57,6 @@ class BusinessLoanController extends GetxController {
   ];
   List nationalities = ["UAE National", "Expat"];
 
-
   @override
   onReady() {
     calculateEMI();
@@ -70,16 +69,14 @@ class BusinessLoanController extends GetxController {
     BusinessLoanProvider().applyBusinessLoan(
       data: mp.FormData.fromMap(resultMap),
 
-      onSuccess: (response) {
+      onSuccess: (response) async {
         print(response);
         appLoadingController.stop();
         appTools.showSuccessSnackBar(
           "Your application is successfully submitted. We will get back to you after a short review.",
         );
-        Get.offAll(
-          () => BottomnavigationBarView(),
-          binding: BottomNavigationBarBinding(),
-        );
+        goToLoginScreen();
+        await updateData();
       },
       onError: (error) {
         appLoadingController.stop();
@@ -106,7 +103,7 @@ class BusinessLoanController extends GetxController {
     List<DocumentModel> documents = [
       passportDocument.value,
       emiratesIdDocument.value,
-     
+
       bankStatementDocument.value,
       etihadBureauDocument.value,
       tradeLicenseDocument.value,
@@ -196,8 +193,6 @@ class BusinessLoanController extends GetxController {
       },
     );
   }
-
-
 
   selectBankStatementDocument(context) {
     FilePickerResult? photoCopy;
@@ -356,8 +351,6 @@ class BusinessLoanController extends GetxController {
     }
     emiratesIdDocument.update(emiratesIdDocument.call);
   }
-
- 
 
   initBankStatementDocument() {
     if (bankStatementDocument.value.fileName != "") {

@@ -25,8 +25,7 @@ class AppPermissionsView extends GetView<AppPermissionsController> {
             MainText(
               textAlign: TextAlign.center,
 
-              text:
-                  'User Consent Statement'.tr,
+              text: 'User Consent Statement'.tr,
 
               fontSize: 18.sp,
             ),
@@ -34,7 +33,7 @@ class AppPermissionsView extends GetView<AppPermissionsController> {
             MainText(
               textAlign: TextAlign.justify,
               text:
-                  'By using the Jovera Tourism app, you acknowledge and agree that:'
+                  'By using the Jovera Finance app, you acknowledge and agree that:'
                       .tr,
               color: AppColors.primary,
               fontSize: 14.sp,
@@ -44,7 +43,7 @@ class AppPermissionsView extends GetView<AppPermissionsController> {
               textAlign: TextAlign.justify,
 
               text:
-                  'Jovera Tourism L.L.C – O.P.C is a private travel service provider that facilitates the UAE tourist visa application process. Our app guides you through:'
+                  'Jovera Finance is a financial consultancy and loan facilitation service which provides,'
                       .tr,
               fontSize: 13.sp,
             ),
@@ -60,7 +59,7 @@ class AppPermissionsView extends GetView<AppPermissionsController> {
                 MainText(
                   textAlign: TextAlign.start,
 
-                  text: 'Submitting documents'.tr,
+                  text: 'Mortgage loan solutions.'.tr,
                   fontSize: 13.sp,
                 ),
               ],
@@ -77,7 +76,7 @@ class AppPermissionsView extends GetView<AppPermissionsController> {
                 MainText(
                   textAlign: TextAlign.start,
 
-                  text: 'Completing secure payments'.tr,
+                  text: 'Business loan advisory and facilitation.'.tr,
                   fontSize: 13.sp,
                 ),
               ],
@@ -95,9 +94,7 @@ class AppPermissionsView extends GetView<AppPermissionsController> {
                   child: MainText(
                     textAlign: TextAlign.start,
 
-                    text:
-                        'Tracking and receiving updates about your application status'
-                            .tr,
+                    text: 'Personal loan advisory and facilitation.'.tr,
                     fontSize: 13.sp,
                   ),
                 ),
@@ -108,7 +105,7 @@ class AppPermissionsView extends GetView<AppPermissionsController> {
               textAlign: TextAlign.justify,
 
               text:
-                  'We are not a government authority or immigration department, and final visa decisions rest solely with UAE immigration.'
+                  'We act as a financial solutions provider and facilitator, not as a bank or direct lender. Actual loan approval, terms, and conditions are subject to the policies of banks and financial institutions we work with.'
                       .tr,
               fontSize: 12.sp,
             ),
@@ -117,7 +114,7 @@ class AppPermissionsView extends GetView<AppPermissionsController> {
               textAlign: TextAlign.justify,
 
               text:
-                  'By proceeding, you consent to the collection and processing of your information for the purpose of providing visa assistance and related travel services in accordance with our Privacy Policy and'
+                  'By proceeding, you consent to the collection and processing of your information for the purpose of providing assistance and consultation related to financial solutions in accordance with our Privacy Policy and'
                       .tr,
               fontSize: 13.sp,
             ),
@@ -125,12 +122,10 @@ class AppPermissionsView extends GetView<AppPermissionsController> {
             InkWell(
               onTap: () async {
                 await launchUrl(
-                  Uri.parse(
-                    "https://joveratourism.ae/components/termsConditions",
-                  ),
+                  Uri.parse("https://www.jovera.ae/terms-of-service/"),
                 ).onError((error, stackTrace) {
                   appTools.showErrorSnackBar(
-                    'Something went wrong. Please check your connection.',
+                    'Something went wrong. Please check your connection.'.tr,
                   );
                   throw Exception();
                 });
@@ -156,9 +151,7 @@ class AppPermissionsView extends GetView<AppPermissionsController> {
             CustomButton(
               onPressed: () async {
                 await launchUrl(
-                  Uri.parse(
-                    "https://joveratourism.ae/components/privacyPolicy",
-                  ),
+                  Uri.parse("https://www.jovera.ae/privacy-policy/"),
                 ).onError((error, stackTrace) {
                   appTools.showErrorSnackBar(
                     'Something went wrong. Please check your connection.',

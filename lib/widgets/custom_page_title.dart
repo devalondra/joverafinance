@@ -44,7 +44,7 @@ class CustomPageTitle extends StatelessWidget {
               child: Icon(Icons.arrow_back_ios, color: AppColors.white),
             )
             : SizedBox(),
-        MainText(text: title, fontSize: 18.sp, fontWeight: FontWeight.w500),
+        MainText(text: title.tr, fontSize: 18.sp, fontWeight: FontWeight.w500),
         suffix != null
             ? suffix!
             : notification

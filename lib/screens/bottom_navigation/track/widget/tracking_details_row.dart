@@ -18,7 +18,7 @@ class TrackingDetailsRow extends StatelessWidget {
       children: [
         MainText(text: title.tr, fontSize: 14.spMin),
 
-        MainText(text: " : $value", fontSize: 14.spMin),
+        MainText(text: " : ${value.tr}", fontSize: 14.spMin),
       ],
     ).paddingOnly(bottom: fullHeight * 0.01);
   }

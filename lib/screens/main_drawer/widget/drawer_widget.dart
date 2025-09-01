@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:jovera_finance/screens/bottom_navigation/bottom/controller/bottom_navigation_bar_controller.dart';
 import 'package:jovera_finance/screens/main_drawer/notification/binding/notification_binding.dart';
 import 'package:jovera_finance/screens/main_drawer/notification/view/notification_view.dart';
-import 'package:jovera_finance/screens/main_drawer/view/about_view.dart';
 import 'package:jovera_finance/screens/main_drawer/view/contact_us_view.dart';
 import 'package:jovera_finance/screens/main_drawer/view/my_profile_view.dart';
 import 'package:jovera_finance/screens/main_drawer/view/settings_view.dart';
@@ -134,7 +133,7 @@ class DrawerWidget extends StatelessWidget {
                               binding: NotificationBinding(),
                             );
                           },
-                          leadingIconPath: "assets/icons/edit_profile_icon.svg",
+                          leadingIconPath: "assets/icons/notification_icon.svg",
                         ).paddingSymmetric(horizontal: fullWidth * 0.02),
                         Divider(color: AppColors.darkGrey),
                       ],
@@ -159,21 +158,21 @@ class DrawerWidget extends StatelessWidget {
             leadingIconPath: "assets/icons/contact_icon.svg",
           ).paddingSymmetric(horizontal: fullWidth * 0.02),
           Divider(color: AppColors.darkGrey),
-          DrawerCard(
-            title: "About".tr,
-            controller: controller,
-            onTap: () {
-              Get.to(() => AboutView());
-            },
-            leadingIconPath: "assets/icons/about_icon.svg",
-          ).paddingSymmetric(horizontal: fullWidth * 0.02),
-          Divider(color: AppColors.darkGrey),
+          // DrawerCard(
+          //   title: "About".tr,
+          //   controller: controller,
+          //   onTap: () {
+          //     Get.to(() => AboutView());
+          //   },
+          //   leadingIconPath: "assets/icons/about_icon.svg",
+          // ).paddingSymmetric(horizontal: fullWidth * 0.02),
+          // Divider(color: AppColors.darkGrey),
           DrawerCard(
             title: "Privacy Policy".tr,
             controller: controller,
             onTap: () async {
               await launchUrl(
-                Uri.parse("https://joveratourism.ae/components/privacyPolicy"),
+                Uri.parse("https://www.jovera.ae/privacy-policy/"),
               ).onError((error, stackTrace) {
                 appTools.showErrorSnackBar(
                   'Something went wrong. Please check your connection.',
@@ -189,9 +188,7 @@ class DrawerWidget extends StatelessWidget {
             controller: controller,
             onTap: () async {
               await launchUrl(
-                Uri.parse(
-                  "https://joveratourism.ae/components/termsConditions",
-                ),
+                Uri.parse("https://www.jovera.ae/terms-of-service/"),
               ).onError((error, stackTrace) {
                 appTools.showErrorSnackBar(
                   'Something went wrong. Please check your connection.',
@@ -240,8 +237,9 @@ class DrawerWidget extends StatelessWidget {
                   SizedBox(width: fullWidth * 0.02),
                   InkWell(
                     onTap: () {
+                      Get.back();
                       BottomNavigationBarController cont = Get.find();
-                      cont.selectedIndex.value = 2;
+                      cont.selectedIndex.value = 4;
                     },
                     child: MainText(
                       text: "Sign In".tr,

@@ -18,7 +18,6 @@ class PersonalLoanInformationView extends GetView<PersonalLoanController> {
       body: ListView(
         children: [
           SizedBox(height: verticalPagePadding),
-          MainText(text: "Welcome.", fontSize: 22, fontWeight: FontWeight.w600),
           MainText(
             text: "Apply in just minutes.",
             fontSize: 22,

@@ -41,7 +41,7 @@ class ContactUsView extends GetView<BottomNavigationBarController> {
                             controller.selectedContactIndex.value = index;
                           },
                           child: Container(
-                            width: fullHeight * 0.1,
+                            width: fullHeight * 0.12,
                             padding: EdgeInsets.all(fullWidth * 0.02),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(
@@ -72,8 +72,13 @@ class ContactUsView extends GetView<BottomNavigationBarController> {
                                   controller.contactList[index].icon,
                                 ),
                                 SizedBox(height: fullHeight * 0.005),
-                                MainText(
-                                  text: controller.contactList[index].title,
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    MainText(
+                                      text: controller.contactList[index].title,
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
@@ -107,7 +112,7 @@ class ContactUsView extends GetView<BottomNavigationBarController> {
 
                         MainText(text: "Enter your details"),
                         MainText(
-                          text: "Full name",
+                          text: "Full Name",
                         ).paddingOnly(top: fullHeight * 0.015),
                         CustomTextField(
                           controller: controller.callBackFullNameController,
@@ -249,7 +254,8 @@ class ContactUsView extends GetView<BottomNavigationBarController> {
                             SizedBox(width: fullWidth * 0.05),
                             Expanded(
                               child: MainText(
-                                text: "Monday - Saturday\n10 : 00 AM - 6:30 PM",
+                                text:
+                                    "${"Monday - Saturday".tr}\n${"10 : 00 AM - 6:30 PM".tr}",
                               ),
                             ),
                           ],

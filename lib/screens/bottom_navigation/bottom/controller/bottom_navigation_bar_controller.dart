@@ -14,7 +14,9 @@ import 'package:jovera_finance/screens/auth/login/view/login_view.dart';
 import 'package:jovera_finance/screens/auth/signup/controller/signup_controller.dart';
 import 'package:jovera_finance/screens/auth/signup/view/signup_view.dart';
 import 'package:jovera_finance/screens/bottom_navigation/calculator/view/calculator_view.dart';
+import 'package:jovera_finance/screens/bottom_navigation/chat/controller/chat_controller.dart';
 import 'package:jovera_finance/screens/bottom_navigation/chat/view/chat_view.dart';
+import 'package:jovera_finance/screens/bottom_navigation/track/controller/dashboard_controller.dart';
 import 'package:jovera_finance/screens/bottom_navigation/track/view/dashboard_view.dart';
 import 'package:jovera_finance/screens/bottom_navigation/home/view/home_view.dart';
 import 'package:jovera_finance/screens/bottom_navigation/services/view/services_view.dart';
@@ -31,6 +33,16 @@ import 'package:jovera_finance/widgets/app_loading_controller.dart';
 import 'package:jovera_finance/widgets/document_picker_widget.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+updateData() async {
+  //  Get.lazyPut<ChatController>(() => ChatController());
+  // Get.lazyPut<DashboardController>(() => DashboardController());
+  ChatController chatCont = Get.find();
+  await chatCont.getMyApplications();
+
+  DashboardController cont = Get.find();
+  await cont.getMyApplications();
+}
 
 void goToLoginScreen() {
   final BottomNavigationBarController navController = Get.find();

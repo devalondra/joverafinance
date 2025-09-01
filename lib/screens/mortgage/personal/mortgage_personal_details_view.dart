@@ -21,7 +21,6 @@ class MortgagePersonalDetailsView extends GetView<MortgageController> {
       backgroundColor: AppColors.backgroundColor,
       body: Column(
         children: [
-      
           Expanded(
             child: ListView(
               children: [
@@ -51,7 +50,7 @@ class MortgagePersonalDetailsView extends GetView<MortgageController> {
                     labelText:
                         controller.nationalityType.value.isEmpty
                             ? ""
-                            : "Nationality",
+                            : "Nationality".tr,
                     contentPadding: EdgeInsets.only(bottom: fullHeight * 0.01),
                     enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: AppColors.grey, width: 1),
@@ -71,7 +70,7 @@ class MortgagePersonalDetailsView extends GetView<MortgageController> {
                           ? null
                           : controller.nationalityType.value,
 
-                  hint: MainText(text: "Choose", color: AppColors.lightGrey),
+                  hint: MainText(text: "Choose".tr, color: AppColors.lightGrey),
                   items:
                       controller.nationalities
                           .map(
@@ -94,7 +93,7 @@ class MortgagePersonalDetailsView extends GetView<MortgageController> {
                   controller: controller.personalPhoneNumberController.value,
                   textInputAction: TextInputAction.next,
                   keyboardType: TextInputType.phone,
-                  //   inputFormatters: phoneInputFormatters,
+
                   isDense: true,
                   prefix: SizedBox(
                     child: InkWell(

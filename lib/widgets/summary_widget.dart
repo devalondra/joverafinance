@@ -42,14 +42,15 @@ class SummaryWidget extends StatelessWidget {
           children: [
             Center(child: Image.asset("assets/images/clip.png")),
             SizedBox(height: verticalPagePadding),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: MainText(
-                text: title,
-                fontWeight: FontWeight.w500,
-                fontSize: 16.sp,
-                color: AppColors.primary,
-              ),
+            Row(
+              children: [
+                MainText(
+                  text: title.tr,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16.sp,
+                  color: AppColors.primary,
+                ),
+              ],
             ),
             SizedBox(height: verticalPagePadding),
             child,

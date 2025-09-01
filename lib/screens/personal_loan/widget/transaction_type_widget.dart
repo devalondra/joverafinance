@@ -28,7 +28,7 @@ class TransactionTypeWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 MainText(
-                  text: title,
+                  text: title.tr,
                   color:
                       title == controller.applicantType.value
                           ? AppColors.primary

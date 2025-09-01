@@ -19,8 +19,7 @@ class BusinessLoanInformationView extends GetView<BusinessLoanController> {
       body: ListView(
         children: [
           SizedBox(height: verticalPagePadding),
-          MainText(text: "Welcome.", fontSize: 22, fontWeight: FontWeight.w600),
-          MainText(
+         MainText(
             text: "Apply in just minutes.",
             fontSize: 22,
             fontWeight: FontWeight.w600,

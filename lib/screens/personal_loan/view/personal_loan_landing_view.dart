@@ -51,6 +51,7 @@ class PersonalLoanLandingView extends GetView<PersonalLoanController> {
                   Expanded(
                     child: CustomButton(
                       onPressed: () {
+                        
                         print("hjhgjhj");
                         if (controller.authManager.isLogged.value) {
                           Get.lazyPut<PersonalLoanController>(
@@ -132,6 +133,6 @@ class PersonalLoanLandingView extends GetView<PersonalLoanController> {
     "Low interest rates",
     "Extra Benefits",
     "Secure approval within days",
-    "Maximize flexibility with loans up to AED 5 million ",
+    "Maximize flexibility with loans up to AED 5 million",
   ];
 }

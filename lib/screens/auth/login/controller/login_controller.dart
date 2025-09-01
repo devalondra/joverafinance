@@ -62,7 +62,6 @@ class LoginController extends GetxController {
           () => BottomnavigationBarView(),
           binding: BottomNavigationBarBinding(),
         );
-        debugPrint(response.toString());
       },
       onError: (error) {
         appLoadingController.stop();

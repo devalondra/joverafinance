@@ -10,7 +10,10 @@ import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jovera_finance/screens/bottom_navigation/bottom/controller/bottom_navigation_bar_controller.dart';
 import 'package:jovera_finance/screens/bottom_navigation/chat/model/chat_model.dart';
+import 'package:jovera_finance/screens/bottom_navigation/chat/model/my_lead.dart';
 import 'package:jovera_finance/screens/bottom_navigation/chat/provider/chat_provider.dart';
+import 'package:jovera_finance/screens/bottom_navigation/track/model/visa_application_model.dart';
+import 'package:jovera_finance/screens/bottom_navigation/track/provider/dashboard_provider.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/services/notification_service.dart';
 import 'package:jovera_finance/widgets/app_loading_controller.dart';
@@ -25,6 +28,10 @@ class ChatController extends GetxController {
   Rx<TextEditingController> textController = TextEditingController().obs;
   RxBool socketInitialized = false.obs;
   Uint8List? fileBytes;
+
+  RxList<MyLead> leads = <MyLead>[].obs;
+  Rx<MyLead?> selectedLead = Rx<MyLead?>(null);
+
   ScrollController scrollController = ScrollController();
   RxString selectedFilePath = ''.obs;
   RxString uploadedFileUrl = ''.obs;
@@ -33,6 +40,7 @@ class ChatController extends GetxController {
   @override
   void onInit() async {
     await getAllMessages();
+    await getLeads();
     if (notificationService.isSocketInitialized) {
       socketInitialized.value = notificationService.isSocketInitialized;
 
@@ -43,13 +51,79 @@ class ChatController extends GetxController {
     } else {
       debugPrint('❌ Socket not initialized yet');
     }
+
     super.onInit();
+  }
+
+  @override
+  void onReady() async {
+    await getLeads();
+    if (notificationService.isSocketInitialized) {
+      socketInitialized.value = notificationService.isSocketInitialized;
+      debugPrint("££££££££ socket connected");
+      socket = notificationService.socketInstance;
+      setupListeners();
+      debugPrint('✅ ChatController using existing socket');
+    } else {
+      debugPrint('❌ Socket not initialized yet');
+    }
+
+    super.onReady();
+  }
+
+  ChatModel? get sender =>
+      messages.where((e) => e.recipientModel == "Client").lastOrNull;
+
+  Future<void> getMyApplications() async {
+    appLoadingController.loading();
+    DashboardProvider().getMyVisaApplications(
+      onSuccess: (response) {
+        appLoadingController.stop();
+        print(response);
+        if (response.data != null && response.data['leads'].length != 0) {
+          final leadsApplications = RxList<VisaApplicationModel>.from(
+            json
+                .decode(json.encode(response.data['leads']))
+                .map((x) => VisaApplicationModel.fromJson(x)),
+          );
+          leads.value =
+              leadsApplications
+                  .map(
+                    (element) => MyLead(
+                      leadId: element.id ?? "",
+                      leadType: element.typeOfLoan ?? "",
+                    ),
+                  )
+                  .toList();
+          print(leadsApplications);
+          leads.refresh();
+          if (leads.isNotEmpty) {
+            selectedLead.value = leads.first;
+          }
+          print(leads);
+        }
+      },
+      onError: (error) {
+        appLoadingController.stop();
+        print(error.message);
+        appTools.showErrorSnackBar(
+          appTools.errorMessage(error) ??
+              'Opps, an error occurred, Please try again later',
+          timer: 1,
+        );
+      },
+    );
+  }
+
+  bool get hasSenderImage => (sender?.senderImage ?? "").startsWith("https");
+
+  getLeads() async {
+    await getMyApplications();
   }
 
   void setupListeners() {
     notificationService.socket.off('chat:message');
     notificationService.socket.on('chat:message', (data) {
-      print(data);
       if (Get.find<BottomNavigationBarController>().selectedIndex.value == 3) {
         ChatModel messageModel = ChatModel(
           leadId: data["leadId"] ?? "",
@@ -116,7 +190,7 @@ class ChatController extends GetxController {
       onSuccess: (response) async {
         appLoadingController.stop();
         print(response);
-        if (response.data != null) {
+        if (response.data != null && response.data['messages'].length != 0) {
           messages.value = RxList<ChatModel>.from(
             json
                 .decode(json.encode(response.data['messages']))
@@ -125,9 +199,6 @@ class ChatController extends GetxController {
           messages.sort((a, b) => a.timestamp!.compareTo(b.timestamp!));
           messages.refresh();
           scrollToBottom();
-          for (ChatModel e in messages) {
-            print(e.fileUrl);
-          }
         }
       },
       onError: (error) {
@@ -202,22 +273,6 @@ class ChatController extends GetxController {
     return fileData;
   }
 
-  // Future<Map<String, dynamic>> getProfileFormData() async {
-  //   Map<String, dynamic> profileFormData = {};
-
-  //   if (textController.value.text.isNotEmpty) {
-  //     profileFormData["text"] = textController.value.text;
-  //   }
-
-  //   if (selectedFilePath.isNotEmpty && fileBytes != null) {
-  //     profileFormData["path"] = selectedFilePath.value;
-
-  //     profileFormData["fileUrl"] = fileBytes;
-  //   }
-
-  //   return profileFormData;
-  // }
-
   Future<void> sendFile() async {
     Map<String, dynamic> resultMap = await getMessageFile();
     if (resultMap.isEmpty) return;
@@ -244,13 +299,10 @@ class ChatController extends GetxController {
   }
 
   void sendMessageViaSocket() async {
-    // Map<String, dynamic> resultMap = await getProfileFormData();
-    // if (resultMap.isEmpty) return;
-
     if (uploadedFileUrl.value != "") {
       final messagePayload = {
         "clientId": userId,
-        "leadId": messages.last.leadId ?? "",
+        "leadId": selectedLead.value?.leadId ?? messages.last.leadId ?? "",
         "text": textController.value.text,
 
         "fileUrl": uploadedFileUrl.value,
@@ -263,32 +315,15 @@ class ChatController extends GetxController {
     } else {
       final messagePayload = {
         "clientId": userId,
-        "leadId": messages.last.leadId ?? "",
+        "leadId": selectedLead.value?.leadId ?? messages.last.leadId ?? "",
         "text": textController.value.text,
       };
-
+      print(messagePayload);
       socket.emit("chat:message", messagePayload);
       textController.value.clear();
       selectedFilePath.value = "";
       uploadedFileUrl.value = "";
     }
-
-    // locally add to messages so UI updates instantly
-    // final newMessage = ChatModel(
-    //   recipient: userId,
-    //   leadId: messages.last.leadId ?? "",
-    //   text: resultMap["text"] ?? "",
-    //   recipientModel: "User",
-    //   fileUrl: resultMap["path"] ?? "",
-    //   timestamp: DateTime.now().toIso8601String(),
-
-    //   status: "sending",
-    // );
-
-    // messages.add(newMessage);
-    // messages.sort((a, b) => a.timestamp!.compareTo(b.timestamp!));
-    // messages.refresh();
-    // scrollToBottom();
   }
 
   void scrollToBottom() {
@@ -301,20 +336,6 @@ class ChatController extends GetxController {
         );
       }
     });
-  }
-
-  @override
-  void onReady() {
-    if (notificationService.isSocketInitialized) {
-      socketInitialized.value = notificationService.isSocketInitialized;
-      debugPrint("££££££££ socket connected");
-      socket = notificationService.socketInstance;
-      setupListeners();
-      debugPrint('✅ ChatController using existing socket');
-    } else {
-      debugPrint('❌ Socket not initialized yet');
-    }
-    super.onReady();
   }
 
   void printSocket() {

@@ -70,6 +70,7 @@ class BottomnavigationBarView extends GetView<BottomNavigationBarController> {
             items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
+                  
                   "assets/icons/home_icon.svg",
                   colorFilter: ColorFilter.mode(
                     controller.selectedIndex.value == 0

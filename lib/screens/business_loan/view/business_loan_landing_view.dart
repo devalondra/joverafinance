@@ -53,10 +53,10 @@ class BusinessLoanLandingView extends GetView<BusinessLoanController> {
                     child: CustomButton(
                       onPressed: () {
                         print("hjhgjhj");
+                        Get.lazyPut<BusinessLoanController>(
+                          () => BusinessLoanController(),
+                        );
                         if (controller.authManager.isLogged.value) {
-                          Get.lazyPut<BusinessLoanController>(
-                            () => BusinessLoanController(),
-                          );
                           Get.to(() => BusinessLoanApplyAsView());
                         } else {
                           Get.back();

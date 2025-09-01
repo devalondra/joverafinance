@@ -8,9 +8,14 @@ import 'package:jovera_finance/utilities/constants/app_enums.dart';
 
 class AppTools {
   Future<String>? getFCMTokenForDevice() async {
-    String? fcmToken = await FirebaseMessaging.instance.getToken();
-    debugPrint(fcmToken ?? "");
-    return fcmToken ?? "";
+    try {
+      String? fcmToken = await FirebaseMessaging.instance.getToken();
+      debugPrint(fcmToken ?? "");
+      return fcmToken ?? "";
+    } catch (e) {
+      print(e);
+      return "";
+    }
   }
 
   void showSnackBar(
@@ -69,7 +74,7 @@ class AppTools {
       } else if (error.response?.data is Map<String, dynamic>) {
         return error.response?.data['message'];
       } else {
-        return "Something went wrong. Please check your connection";
+        return "Something went wrong. Please try again later";
       }
     } else {
       return "Something went wrong. Please check your connection";

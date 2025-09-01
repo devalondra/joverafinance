@@ -6,8 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:jovera_finance/screens/bottom_navigation/bottom/view/bottom_navigation_bar_view.dart';
-import 'package:jovera_finance/screens/bottom_navigation/home/binding/bottom_navigation_bar_binding.dart';
+import 'package:jovera_finance/screens/bottom_navigation/bottom/controller/bottom_navigation_bar_controller.dart';
 import 'package:jovera_finance/screens/bottom_navigation/services/model/document_model.dart';
 import 'package:jovera_finance/screens/personal_loan/provider/personal_loan_provider.dart';
 import 'package:jovera_finance/utilities/authentication/auth_manager.dart';
@@ -18,7 +17,6 @@ class PersonalLoanController extends GetxController {
   RxString applicantType = "Employee".obs;
   RxString mobileCountryCode = "+971".obs;
   RxDouble loanAmount = 80000.0.obs;
-
   RxDouble interestRate = 4.5.obs;
   RxInt paymentPeriod = 15.obs;
   RxInt paymentMaxPeriod = 60.obs;
@@ -57,7 +55,6 @@ class PersonalLoanController extends GetxController {
   List conditions = ["New", "Old", "Off Plan"];
   List properties = ["Villa", "Apartment", "Townhouse", "Land"];
 
-
   @override
   onReady() {
     calculateEMI();
@@ -70,16 +67,14 @@ class PersonalLoanController extends GetxController {
     PersonalLoanProvider().applyPersonalLoan(
       data: mp.FormData.fromMap(resultMap),
 
-      onSuccess: (response) {
+      onSuccess: (response) async {
         print(response);
         appLoadingController.stop();
         appTools.showSuccessSnackBar(
           "Your application is successfully submitted. We will get back to you after a short review.",
         );
-        Get.offAll(
-          () => BottomnavigationBarView(),
-          binding: BottomNavigationBarBinding(),
-        );
+        goToLoginScreen();
+        await updateData();
       },
       onError: (error) {
         appLoadingController.stop();

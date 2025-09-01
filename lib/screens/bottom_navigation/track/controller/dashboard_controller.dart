@@ -41,6 +41,9 @@ class DashboardController extends GetxController {
                 .decode(json.encode(response.data['leads']))
                 .map((x) => VisaApplicationModel.fromJson(x)),
           );
+          print(myVisaApplications);
+          myVisaApplications.refresh();
+          //myVisaApplications.clear();
         }
       },
       onError: (error) {

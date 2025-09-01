@@ -34,7 +34,7 @@ class Profilefields extends StatelessWidget {
         ).paddingOnly(bottom: fullHeight * 0.025),
         CustomTextField(
           controller: controller.phoneNumberController.value,
-          hintText: "Phone number".tr,
+          hintText: "Phone Number".tr,
           disable: true,
 
           border: true,
@@ -44,7 +44,7 @@ class Profilefields extends StatelessWidget {
         ).paddingOnly(bottom: fullHeight * 0.025),
         CustomTextField(
           controller: controller.profileWhatsappController.value,
-          hintText: "Whatsapp number".tr,
+          hintText: "Whatsapp Number".tr,
           disable: true,
 
           border: true,

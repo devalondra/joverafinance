@@ -111,7 +111,7 @@ class FillProfileTextFields extends StatelessWidget {
           int? maxLength = phoneLengthMap[controller.whatsappCountryCode.value];
           return CustomTextField(
             controller: controller.profileWhatsappController.value,
-            hintText: "WhatsApp number".tr,
+            hintText: "Whatsapp Number".tr,
             keyboardType: TextInputType.phone,
             inputFormatters: [
               ...phoneInputFormatters,

@@ -34,10 +34,20 @@ class ChatModel {
     timestamp = json["timestamp"] ?? "";
     id = json["_id"] ?? "";
     status = json["status"] ?? "";
-    senderId = json["senderId"] ?? "";
+    senderId = json["sender"] ?? "";
     senderImage = json["senderImage"] ?? "";
     senderName = json["senderName"] ?? "";
-    files = json["files"] ?? [];
-    fileUrl = json["fileUrl"] ?? "";
+    files = (json["files"] as List?) ?? [];
+
+    fileUrl = getFileUrl(json);
+  }
+  getFileUrl(json) {
+    if (json["fileUrl"] != null) {
+      return json["fileUrl"];
+    } else if (json["files"] is List && (json["files"] as List).isNotEmpty) {
+      return json["files"][0]["url"] ?? "";
+    } else {
+      return "";
+    }
   }
 }

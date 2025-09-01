@@ -40,13 +40,13 @@ class BusinessLoanSummaryView extends GetView<BusinessLoanController> {
                             children: [
                               MainText(
                                 text:
-                                    "Loan Amount: ${controller.loanAmount.value}",
+                                    "${"Loan Amount".tr}: ${controller.loanAmount.value}",
                                 fontSize: smallFont,
                               ),
                               MainText(
                                 fontSize: smallFont,
                                 text:
-                                    "Payment Period: ${controller.paymentPeriod.value} Months",
+                                    "${"Payment Period".tr}: ${controller.paymentPeriod.value} ${"Months".tr}",
                               ),
                               SizedBox(height: fullHeight * 0.02),
                               MainText(
@@ -57,22 +57,22 @@ class BusinessLoanSummaryView extends GetView<BusinessLoanController> {
                               SizedBox(height: fullHeight * 0.01),
                               MainText(
                                 text:
-                                    "Name: ${controller.personalNameController.value.text}",
+                                    "${"Name".tr}: ${controller.personalNameController.value.text}",
                                 fontSize: smallFont,
                               ),
                               MainText(
                                 text:
-                                    "Nationality: ${controller.nationalityType.value}",
+                                    "${"Nationality".tr}: ${controller.nationalityType.value.tr}",
                                 fontSize: smallFont,
                               ),
                               MainText(
                                 text:
-                                    "Phone: ${controller.mobileCountryCode.value.startsWith("+") ? "" : "+"}${controller.mobileCountryCode.value}${controller.personalPhoneNumberController.value.text}",
+                                    "${"Phone".tr}: ${controller.mobileCountryCode.value.startsWith("+") ? "" : "+"}${controller.mobileCountryCode.value}${controller.personalPhoneNumberController.value.text}",
                                 fontSize: smallFont,
                               ),
                               MainText(
                                 text:
-                                    "Email: ${controller.personalEmailController.value.text}",
+                                    "${"Email".tr}: ${controller.personalEmailController.value.text}",
                                 fontSize: smallFont,
                               ),
                             ],

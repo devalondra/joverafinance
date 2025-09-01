@@ -118,7 +118,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           label:
               widget.label != false
                   ? Text(
-                    widget.hintText!,
+                    widget.hintText!.tr,
                     style: TextStyle(color: AppColors.grey, fontSize: 14),
                   )
                   : null,
@@ -139,7 +139,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           suffixIcon: widget.suffixIcon,
           border: InputBorder.none,
           isDense: widget.isDense,
-          hintText: widget.label == false ? widget.hintText : null,
+          hintText: widget.label == false ? widget.hintText?.tr : null,
           labelText: widget.label == true ? widget.hintText?.tr : null,
           labelStyle:
               widget.hintStyle ??

@@ -51,7 +51,7 @@ class BusinessLoanDetailsView extends GetView<BusinessLoanController> {
                     labelText:
                         controller.nationalityType.value.isEmpty
                             ? ""
-                            : "Nationality",
+                            : "Nationality".tr,
                     contentPadding: EdgeInsets.only(bottom: fullHeight * 0.01),
                     enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: AppColors.grey, width: 1),

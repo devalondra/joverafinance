@@ -31,21 +31,37 @@ class MortgageSummaryView extends GetView<MortgageController> {
                   SizedBox(height: fullHeight * 0.05),
                   Obx(
                     () => SummaryWidget(
-                      title: "Mortgage Loan",
+                      title: "Mortgage Loan".tr,
                       child: Row(
                         children: [
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              MainText(
-                                text:
-                                    "Loan Amount: ${controller.propertyPrice.value}",
-                                fontSize: smallFont,
+                              Row(
+                                children: [
+                                  MainText(
+                                    text: "Loan Amount",
+                                    fontSize: smallFont,
+                                  ),
+                                  MainText(
+                                    text: ": ${controller.propertyPrice.value}",
+                                    fontSize: smallFont,
+                                  ),
+                                ],
                               ),
-                              MainText(
-                                fontSize: smallFont,
-                                text:
-                                    "Payment Period: ${controller.propertyPeriod.value} Years",
+                              Row(
+                                children: [
+                                  MainText(
+                                    fontSize: smallFont,
+                                    text: "Payment Period",
+                                  ),
+                                  MainText(
+                                    fontSize: smallFont,
+                                    text:
+                                        " : ${controller.propertyPeriod.value} ",
+                                  ),
+                                  MainText(fontSize: smallFont, text: "Years"),
+                                ],
                               ),
                               SizedBox(height: fullHeight * 0.02),
                               MainText(
@@ -54,25 +70,48 @@ class MortgageSummaryView extends GetView<MortgageController> {
                                 fontWeight: FontWeight.w500,
                               ),
                               SizedBox(height: fullHeight * 0.01),
-                              MainText(
-                                text:
-                                    "Name: ${controller.personalNameController.value.text}",
-                                fontSize: smallFont,
+                              Row(
+                                children: [
+                                  MainText(text: "Name", fontSize: smallFont),
+                                  MainText(
+                                    text:
+                                        " : ${controller.personalNameController.value.text}",
+                                    fontSize: smallFont,
+                                  ),
+                                ],
                               ),
-                              MainText(
-                                text:
-                                    "Nationality: ${controller.nationalityType.value}",
-                                fontSize: smallFont,
+                              Row(
+                                children: [
+                                  MainText(
+                                    text: "Nationality",
+                                    fontSize: smallFont,
+                                  ),
+                                  MainText(
+                                    text:
+                                        " : ${controller.nationalityType.value.tr}",
+                                    fontSize: smallFont,
+                                  ),
+                                ],
                               ),
-                              MainText(
-                                text:
-                                    "Phone: ${controller.mobileCountryCode.value.startsWith("+") ? "" : "+"}${controller.mobileCountryCode.value}${controller.personalPhoneNumberController.value.text}",
-                                fontSize: smallFont,
+                              Row(
+                                children: [
+                                  MainText(text: "Phone", fontSize: smallFont),
+                                  MainText(
+                                    text:
+                                        " : ${controller.mobileCountryCode.value.startsWith("+") ? "" : "+"}${controller.mobileCountryCode.value}${controller.personalPhoneNumberController.value.text}",
+                                    fontSize: smallFont,
+                                  ),
+                                ],
                               ),
-                              MainText(
-                                text:
-                                    "Email: ${controller.personalEmailController.value.text}",
-                                fontSize: smallFont,
+                              Row(
+                                children: [
+                                  MainText(text: "Email", fontSize: smallFont),
+                                  MainText(
+                                    text:
+                                        " : ${controller.personalEmailController.value.text}",
+                                    fontSize: smallFont,
+                                  ),
+                                ],
                               ),
                               SizedBox(height: fullHeight * 0.02),
                               MainText(
@@ -81,20 +120,44 @@ class MortgageSummaryView extends GetView<MortgageController> {
                                 fontWeight: FontWeight.w500,
                               ),
                               SizedBox(height: fullHeight * 0.01),
-                              MainText(
-                                text:
-                                    "Property Type: ${controller.propertyType.value}",
-                                fontSize: smallFont,
+                              Row(
+                                children: [
+                                  MainText(
+                                    text: "Property Type",
+                                    fontSize: smallFont,
+                                  ),
+                                  MainText(
+                                    text:
+                                        " : ${controller.propertyType.value.tr}",
+                                    fontSize: smallFont,
+                                  ),
+                                ],
                               ),
-                              MainText(
-                                text:
-                                    "Property Location: ${controller.propertyLocation.value}",
-                                fontSize: smallFont,
+                              Row(
+                                children: [
+                                  MainText(
+                                    text: "Property Location",
+                                    fontSize: smallFont,
+                                  ),
+                                  MainText(
+                                    text:
+                                        " : ${controller.propertyLocation.value.tr}",
+                                    fontSize: smallFont,
+                                  ),
+                                ],
                               ),
-                              MainText(
-                                text:
-                                    "Property Condition: ${controller.propertyCondition.value}",
-                                fontSize: smallFont,
+                              Row(
+                                children: [
+                                  MainText(
+                                    text: "Property Condition",
+                                    fontSize: smallFont,
+                                  ),
+                                  MainText(
+                                    text:
+                                        " : ${controller.propertyCondition.value.tr}",
+                                    fontSize: smallFont,
+                                  ),
+                                ],
                               ),
                             ],
                           ),

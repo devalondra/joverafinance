@@ -44,7 +44,7 @@ class FillProfileView extends GetView<SignUpController> {
                           ),
                         ),
 
-                        MainText(text: "Signup".tr),
+                        MainText(text: "Sign Up".tr),
                         SizedBox(width: fullWidth * 0.05),
                       ],
                     ),
@@ -130,7 +130,6 @@ class FillProfileView extends GetView<SignUpController> {
                     } else {
                       appTools.showErrorSnackBar("Passwords do not match.");
                     }
-               
                   } else {}
                 },
                 text: "Create Account".tr,
