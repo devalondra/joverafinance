@@ -1,4 +1,5 @@
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jovera_finance/screens/bottom_navigation/bottom/binding/bottom_navigation_bar_binding.dart';
@@ -19,6 +20,7 @@ class NotificationController extends GetxController {
   RxInt totalPages = 1.obs;
   RxBool isLoading = false.obs;
   RxBool nextPage = false.obs;
+  final AuthManager authManager = Get.find();
   @override
   onInit() async {
     super.onInit();
@@ -42,14 +44,7 @@ class NotificationController extends GetxController {
     if (!notificationList[index].isRead!) {
       readNotification(notificationList[index].id);
     }
-    if (notificationList[index].title!.startsWith("Document Requested")) {
-      // Get.to(
-      //   () => UploadNewDocumentView(
-      //     applicantId: notificationList[index].data!["applicantId"] ?? "",
-      //     field: notificationList[index].data!["field"] ?? "",
-      //   ),
-      // );
-    } else if (notificationList[index].title!.startsWith("New Message") ||
+   if (notificationList[index].title!.startsWith("New Message") ||
         notificationList[index].title!.startsWith("New message") ||
         notificationList[index].title!.startsWith("new message")) {
       Get.offAll(
@@ -80,6 +75,10 @@ class NotificationController extends GetxController {
   }
 
   Future<void> getNotifications() async {
+    if (!authManager.isLogged.value) {
+      return;
+    }
+
     if (isLoading.value) return;
     isLoading.value = true;
     final int pageToFetch =
@@ -93,7 +92,7 @@ class NotificationController extends GetxController {
       onSuccess: (response) {
         isLoading.value = false;
         appLoadingController.stop();
-        print(response);
+        if (kDebugMode) print(response);
         if (response.data != null) {
           final List<NotificationModel> fetchedNotifications =
               response.data['notifications']
@@ -113,7 +112,7 @@ class NotificationController extends GetxController {
       },
       onError: (error) {
         appLoadingController.stop();
-        print(error.message);
+        if (kDebugMode) print(error.message);
         appTools.showErrorSnackBar(
           appTools.errorMessage(error) ??
               'Opps, an error occurred during request, Please try again later',

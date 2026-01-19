@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:jovera_finance/utilities/api/api_abstract.dart';
 import 'package:jovera_finance/utilities/constants/app_enums.dart';
 
@@ -21,7 +22,7 @@ class DashboardProvider {
     Function(dynamic error)? onError,
     required String leadId,
   }) async {
-    print("/api/leads/get-my-lead/:$leadId");
+    if (kDebugMode) print("/api/leads/get-my-lead/:$leadId");
     await ApiAbstract(apiName: "/api/leads/get-my-lead/$leadId").get(
       optionsEnum: OptionsEnum.auth,
       beforeSend: () => {if (beforeSend != null) beforeSend()},

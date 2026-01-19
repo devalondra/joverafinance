@@ -124,7 +124,7 @@ class PropertyDetailsView extends GetView<MortgageController> {
                     onChanged: (v) {
                       controller.propertyCondition.value = v;
                     },
-                  ).paddingOnly(bottom: fullHeight * 0.025),
+                  ).paddingOnly(bottom: fullHeight * 0.05),
                 ],
               ),
             ),
@@ -134,7 +134,7 @@ class PropertyDetailsView extends GetView<MortgageController> {
               Get.to(() => MortgageSummaryView());
             },
             text: "Next",
-          ).paddingOnly(bottom: fullHeight * 0.025),
+          ).paddingOnly(bottom: fullHeight * 0.05),
         ],
       ).paddingSymmetric(
         horizontal: horizontalPagePadding,

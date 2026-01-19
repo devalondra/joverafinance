@@ -144,6 +144,7 @@ class DrawerWidget extends StatelessWidget {
             title: "Settings",
             controller: controller,
             onTap: () {
+              Get.back();
               Get.to(() => SettingsView(controller: controller));
             },
             leadingIconPath: "assets/icons/setting_icon.svg",
@@ -153,6 +154,7 @@ class DrawerWidget extends StatelessWidget {
             title: "Contact us",
             controller: controller,
             onTap: () {
+              Get.back();
               Get.to(() => ContactUsView());
             },
             leadingIconPath: "assets/icons/contact_icon.svg",
@@ -215,6 +217,7 @@ class DrawerWidget extends StatelessWidget {
                   SizedBox(width: fullWidth * 0.02),
                   InkWell(
                     onTap: () {
+                      Get.back();
                       controller.authManager.logOut();
                     },
                     child: MainText(

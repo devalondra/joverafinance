@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 import 'package:dio/dio.dart' as mp;
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:get/get.dart';
@@ -70,7 +71,7 @@ class BusinessLoanController extends GetxController {
       data: mp.FormData.fromMap(resultMap),
 
       onSuccess: (response) async {
-        print(response);
+        if (kDebugMode) print(response);
         appLoadingController.stop();
         appTools.showSuccessSnackBar(
           "Your application is successfully submitted. We will get back to you after a short review.",
@@ -80,7 +81,7 @@ class BusinessLoanController extends GetxController {
       },
       onError: (error) {
         appLoadingController.stop();
-        print(error.response);
+        if (kDebugMode) print(error.response);
         appTools.showErrorSnackBar(
           appTools.errorMessage(error) ??
               'Opps, an error occurred, Please try again later',
@@ -129,7 +130,7 @@ class BusinessLoanController extends GetxController {
       }
     }
     personalLoanData["files"] = fileList;
-    print(personalLoanData);
+    if (kDebugMode) print(personalLoanData);
     return personalLoanData;
   }
 
@@ -223,7 +224,7 @@ class BusinessLoanController extends GetxController {
       () async {
         photoCopy = await pickfromGallery();
         tradeLicenseDocument.value.filePath = getDocument(photoCopy);
-        print(tradeLicenseDocument.value.filePath);
+        if (kDebugMode) print(tradeLicenseDocument.value.filePath);
         initTradeLicenseDocument();
       },
       () async {
@@ -246,7 +247,7 @@ class BusinessLoanController extends GetxController {
       () async {
         photoCopy = await pickfromGallery();
         memorandumDocument.value.filePath = getDocument(photoCopy);
-        print(tradeLicenseDocument.value.filePath);
+        if (kDebugMode) print(tradeLicenseDocument.value.filePath);
         initMemorandumDocument();
       },
       () async {

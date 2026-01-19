@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:jovera_finance/screens/business_loan/controller/business_loan_controller.dart';
 import 'package:jovera_finance/screens/business_loan/view/business_loan_summary_view.dart';
 import 'package:jovera_finance/screens/business_loan/widget/upload_document_widget.dart';
-
+import 'package:jovera_finance/utilities/authentication/auth_manager.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
@@ -32,9 +32,9 @@ class BusinessLoanCompanyDocumentsView extends GetView<BusinessLoanController> {
                     text: "Trade License",
                     onTap: () => controller.selectTradeLicenseDocument(context),
                     filePath:
-                        controller.bankStatementDocument.value.filePath ?? "",
+                        controller.tradeLicenseDocument.value.filePath ?? "",
                     isPdf:
-                        controller.bankStatementDocument.value.fileName
+                        controller.tradeLicenseDocument.value.fileName
                             ?.endsWith('pdf') ??
                         false,
                   ),
@@ -67,6 +67,33 @@ class BusinessLoanCompanyDocumentsView extends GetView<BusinessLoanController> {
 
           CustomButton(
             onPressed: () {
+              final missingDocuments = <String>[
+                if (controller
+                        .tradeLicenseDocument
+                        .value
+                        .filePath
+                        ?.isNotEmpty !=
+                    true)
+                  "Trade License",
+                if (controller
+                        .bankStatementDocument
+                        .value
+                        .filePath
+                        ?.isNotEmpty !=
+                    true)
+                  "Last 12 months Bank statement",
+                if (controller.memorandumDocument.value.filePath?.isNotEmpty !=
+                    true)
+                  "Memorandum",
+              ];
+
+              if (missingDocuments.isNotEmpty) {
+                appTools.showErrorSnackBar(
+                  "Please upload the following documents: ${missingDocuments.join(', ')}",
+                );
+                return;
+              }
+
               Get.to(() => BusinessLoanSummaryView());
             },
             text: "Next",

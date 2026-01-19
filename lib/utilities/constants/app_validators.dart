@@ -52,7 +52,7 @@ class AppValidators {
       return 'Enter Your Password'.tr;
     } else if (value.isEmpty) {
       return 'Enter Your Password'.tr;
-    } else if (value.length < 5) {
+    } else if (value.length < 3) {
       return 'Password Should Be More Than 4 Digit'.tr;
     }
     return null;

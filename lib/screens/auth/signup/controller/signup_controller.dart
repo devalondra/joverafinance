@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart' as mp;
-import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jovera_finance/screens/auth/login/model/users.dart';
 import 'package:jovera_finance/screens/auth/signup/provider/signup_provider.dart';
@@ -45,7 +45,7 @@ class SignUpController extends GetxController {
     Map<String, dynamic> profileFormData = {};
 
     profileFormData["name"] = nameController.value.text;
-
+ 
     profileFormData["phone"] =
         "+${countryCode.value}${phoneController.value.text}";
 
@@ -54,21 +54,21 @@ class SignUpController extends GetxController {
     profileFormData["email"] = emailController.value.text;
     profileFormData["fcmToken"] = await appTools.getFCMTokenForDevice();
 
-    profileFormData["w_phone"] =
-        "+${whatsappCode.value}${whatsappController.value.text}";
+    // profileFormData["w_phone"] =
+    //     "+${whatsappCode.value}${whatsappController.value.text}";
 
-    if (profilePicturePath.isNotEmpty) {
-      String ext = profilePicturePath.value.split('.').last.toLowerCase();
-      profileFormData["picture"] = await mp.MultipartFile.fromFile(
-        profilePicturePath.value,
-        contentType: MediaType(
-          ext == 'pdf' ? 'application' : 'image',
-          ext == 'jpg' ? 'jpeg' : ext,
-        ),
-        filename: "profile_picture_${profilePicturePath.value.split('/').last}",
-      );
-    }
-    print(profileFormData);
+    // if (profilePicturePath.isNotEmpty) {
+    //   String ext = profilePicturePath.value.split('.').last.toLowerCase();
+    //   profileFormData["picture"] = await mp.MultipartFile.fromFile(
+    //     profilePicturePath.value,
+    //     contentType: MediaType(
+    //       ext == 'pdf' ? 'application' : 'image',
+    //       ext == 'jpg' ? 'jpeg' : ext,
+    //     ),
+    //     filename: "profile_picture_${profilePicturePath.value.split('/').last}",
+    //   );
+    // }
+    if (kDebugMode) print(profileFormData);
     return profileFormData;
   }
 
@@ -84,7 +84,7 @@ class SignUpController extends GetxController {
       },
       onError: (error) {
         appLoadingController.stop();
-        print(error.response);
+        if (kDebugMode) print(error.response);
         appTools.showErrorSnackBar(
           appTools.errorMessage(error) ??
               'Opps, an error occurred during registration, Please try again later',
@@ -102,7 +102,7 @@ class SignUpController extends GetxController {
 
       onSuccess: (response) {
         appLoadingController.stop();
-        print(response);
+        if (kDebugMode) print(response);
         if (response.data is String) {
           final Map<String, dynamic> responseData = json.decode(response.data);
           authManager.appUser.value = AppUser.fromJson(responseData);

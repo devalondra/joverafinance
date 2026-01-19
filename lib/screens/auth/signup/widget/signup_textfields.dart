@@ -29,13 +29,14 @@ class SignupTextFields extends StatelessWidget {
           borderColor: AppColors.white,
           hintStyle: TextStyle(color: AppColors.lightGrey),
         ).paddingOnly(bottom: fullHeight * 0.025),
+
         CustomTextField(
           controller: controller.emailController.value,
           hintText: "Email".tr,
           focusNode: FocusNode(),
           keyboardType: TextInputType.emailAddress,
-          textInputAction: TextInputAction.next, 
-          
+          textInputAction: TextInputAction.next,
+
           onSubmitted:
               (_) => FocusScope.of(context).requestFocus(controller.phoneFocus),
           validator: (value) {
@@ -46,7 +47,6 @@ class SignupTextFields extends StatelessWidget {
           borderColor: AppColors.white,
           hintStyle: TextStyle(color: AppColors.lightGrey),
         ).paddingOnly(bottom: fullHeight * 0.025),
-
         Obx(
           () => CustomTextField(
             controller: controller.phoneController.value,
@@ -104,61 +104,135 @@ class SignupTextFields extends StatelessWidget {
         ),
         Obx(
           () => CustomTextField(
-            controller: controller.whatsappController.value,
-            hintText: "Whatsapp Number".tr,
-            keyboardType: TextInputType.phone,
-        
-            textInputAction: TextInputAction.done, // Moves focus to next.
-            onSubmitted: (_) => FocusScope.of(context).unfocus(),
+            controller: controller.passwordController.value,
+            hintText: "Password".tr,
+            textInputAction: TextInputAction.next,
+            onSubmitted: (_) => FocusScope.of(context).nextFocus(),
+            maxLines: 1,
             validator: (value) {
-              return AppValidators().textValidation(value);
+              return AppValidators().passwordValidation(value);
             },
-            // prefixIconConstraints: true,
-            prefixIcon: SizedBox(
-              //  width: fullWidth * 0.04,
-              child: InkWell(
-                onTap: () {
-                  showCountryPicker(
-                    useSafeArea: true,
-                    showPhoneCode: true,
-                    countryListTheme: CountryListThemeData(
-                      backgroundColor: AppColors.black2,
-                      textStyle: TextStyle(color: AppColors.lightText),
-                    ),
-                    context: context,
-                    onSelect: (country) {
-                      controller.whatsappCode.value = country.phoneCode;
-                    },
-                  );
-                },
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    MainText(
-                      text:
-                          controller.whatsappCode.value.startsWith("+")
-                              ? controller.whatsappCode.value
-                              : "+${controller.whatsappCode.value}",
-
-                      fontSize: 12.spMin,
-                    ),
-                    Icon(Icons.arrow_drop_down, color: AppColors.lightText),
-                  ],
-                ),
-              ),
-            ).paddingSymmetric(
-              vertical: fullHeight * 0.02,
-              horizontal: fullWidth * 0.02,
-            ),
-
             border: true,
             textColor: AppColors.white,
             borderColor: AppColors.white,
             hintStyle: TextStyle(color: AppColors.lightGrey),
-          ).paddingOnly(bottom: fullHeight * 0.025),
-        ),
 
-  ],
+            keyboardType:
+                controller.passwordIsVisible.value
+                    ? TextInputType.text
+                    : TextInputType.visiblePassword,
+            suffixIcon:
+                controller.passwordIsVisible.value
+                    ? GestureDetector(
+                      onTap:
+                          () =>
+                              controller.passwordIsVisible.value =
+                                  !controller.passwordIsVisible.value,
+                      child: Icon(Icons.visibility, color: AppColors.grey),
+                    )
+                    : GestureDetector(
+                      onTap:
+                          () =>
+                              controller.passwordIsVisible.value =
+                                  !controller.passwordIsVisible.value,
+                      child: Icon(Icons.visibility_off, color: AppColors.grey),
+                    ),
+          ),
+        ).paddingOnly(bottom: fullHeight * 0.025),
+        Obx(
+          () => CustomTextField(
+            controller: controller.retypePasswordController.value,
+            hintText: "Re-type Password".tr,
+            maxLines: 1,
+            textInputAction: TextInputAction.done, // Moves focus to next.
+            onSubmitted: (_) => FocusScope.of(context).unfocus(),
+            validator: (value) {
+              return AppValidators().passwordValidation(value);
+            },
+            border: true,
+            textColor: AppColors.white,
+            borderColor: AppColors.white,
+            hintStyle: TextStyle(color: AppColors.lightGrey),
+
+            keyboardType:
+                controller.retypePasswordIsVisible.value
+                    ? TextInputType.text
+                    : TextInputType.visiblePassword,
+            suffixIcon:
+                controller.retypePasswordIsVisible.value
+                    ? GestureDetector(
+                      onTap:
+                          () =>
+                              controller.retypePasswordIsVisible.value =
+                                  !controller.retypePasswordIsVisible.value,
+                      child: Icon(Icons.visibility, color: AppColors.grey),
+                    )
+                    : GestureDetector(
+                      onTap:
+                          () =>
+                              controller.retypePasswordIsVisible.value =
+                                  !controller.retypePasswordIsVisible.value,
+                      child: Icon(Icons.visibility_off, color: AppColors.grey),
+                    ),
+          ),
+        ).paddingOnly(bottom: fullHeight * 0.025),
+
+        // Obx(
+        //   () => CustomTextField(
+        //     controller: controller.whatsappController.value,
+        //     hintText: "Whatsapp Number".tr,
+        //     keyboardType: TextInputType.phone,
+
+        //     textInputAction: TextInputAction.done, // Moves focus to next.
+        //     onSubmitted: (_) => FocusScope.of(context).unfocus(),
+        //     validator: (value) {
+        //       return AppValidators().textValidation(value);
+        //     },
+        //     // prefixIconConstraints: true,
+        //     prefixIcon: SizedBox(
+        //       //  width: fullWidth * 0.04,
+        //       child: InkWell(
+        //         onTap: () {
+        //           showCountryPicker(
+        //             useSafeArea: true,
+        //             showPhoneCode: true,
+        //             countryListTheme: CountryListThemeData(
+        //               backgroundColor: AppColors.black2,
+        //               textStyle: TextStyle(color: AppColors.lightText),
+        //             ),
+        //             context: context,
+        //             onSelect: (country) {
+        //               controller.whatsappCode.value = country.phoneCode;
+        //             },
+        //           );
+        //         },
+        //         child: Row(
+        //           mainAxisSize: MainAxisSize.min,
+        //           children: [
+        //             MainText(
+        //               text:
+        //                   controller.whatsappCode.value.startsWith("+")
+        //                       ? controller.whatsappCode.value
+        //                       : "+${controller.whatsappCode.value}",
+
+        //               fontSize: 12.spMin,
+        //             ),
+        //             Icon(Icons.arrow_drop_down, color: AppColors.lightText),
+        //           ],
+        //         ),
+        //       ),
+        //     ).paddingSymmetric(
+        //       vertical: fullHeight * 0.02,
+        //       horizontal: fullWidth * 0.02,
+        //     ),
+
+        //     border: true,
+        //     textColor: AppColors.white,
+        //     borderColor: AppColors.white,
+        //     hintStyle: TextStyle(color: AppColors.lightGrey),
+        //   ).paddingOnly(bottom: fullHeight * 0.025),
+        // ),
+      ],
     );
   }
 }

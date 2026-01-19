@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jovera_finance/screens/business_loan/controller/business_loan_controller.dart';
@@ -48,7 +49,7 @@ class BusinessLoanInformationView extends GetView<BusinessLoanController> {
           SizedBox(height: verticalPagePadding * 2),
           CustomButton(
             onPressed: () {
-              print("hjhgjhj");
+              if (kDebugMode) print("hjhgjhj");
               Get.to(() => BusinessLoanDetailsView());
             },
             text: "Apply",

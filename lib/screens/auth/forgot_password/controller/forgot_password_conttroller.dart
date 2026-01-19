@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jovera_finance/screens/auth/forgot_password/provider/forgot_password_provider.dart';
@@ -33,7 +34,7 @@ class ForgotPasswordController extends GetxController {
 
       onSuccess: (response) {
         appLoadingController.stop();
-        print(response); // if (response.data is String) {
+        if (kDebugMode) print(response); // if (response.data is String) {
         //   final Map<String, dynamic> responseData = json.decode(response.data);
         //   authManager.appUser.value = AppUser.fromJson(responseData['user']);
         // } else if (response.data is Map<String, dynamic>) {
@@ -47,7 +48,7 @@ class ForgotPasswordController extends GetxController {
         Get.to(() => VerifyOtpView());
       },
       onError: (error) {
-        print(error.message);
+        if (kDebugMode) print(error.message);
         appLoadingController.stop();
         appTools.showErrorSnackBar(
           appTools.errorMessage(error) ??
@@ -119,7 +120,7 @@ class ForgotPasswordController extends GetxController {
 
       onSuccess: (response) {
         appLoadingController.stop();
-        print(response);
+        if (kDebugMode) print(response);
         if (response.data is String) {
           final Map<String, dynamic> responseData = json.decode(response.data);
           authManager.appUser.value = AppUser.fromJson(responseData);

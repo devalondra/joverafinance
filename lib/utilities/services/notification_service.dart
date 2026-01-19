@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -9,6 +10,7 @@ import 'package:jovera_finance/screens/main_drawer/notification/controller/notif
 import 'package:jovera_finance/screens/main_drawer/notification/view/notification_view.dart';
 import 'package:jovera_finance/utilities/authentication/auth_manager.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
+import 'package:jovera_finance/utilities/constants/app_strings.dart';
 import 'package:socket_io_client/socket_io_client.dart' as i_o;
 
 class NotificationService extends GetxService {
@@ -108,13 +110,11 @@ class NotificationService extends GetxService {
 
   void initSocketConnection() {
     AuthManager authManager = Get.find();
-
     if (authManager.isLogged.value) {
       if (socketInitialized.value) return;
 
       socket = i_o.io(
-        'https://0sbx6kf1-7000.inc1.devtunnels.ms/',
-
+        '$baseURL/',
         i_o.OptionBuilder()
             .setTransports(['websocket'])
             .disableAutoConnect()
@@ -127,7 +127,7 @@ class NotificationService extends GetxService {
       socket.onConnect((_) {
         debugPrint('🟢 Socket connected');
 
-        socket.emit('identify', {'userId': authManager.appUser.value.id});
+        socket.emit('identify', {'clientId': authManager.appUser.value.id});
         debugPrint('🟢 user identified');
         socketInitialized.value = true;
         socket.off('new_notification');
@@ -155,7 +155,7 @@ class NotificationService extends GetxService {
 
         socket.off('chat:message');
         socket.on('chat:message', (data) {
-          print(data);
+          if (kDebugMode) print(data);
           Get.snackbar(
             "Message",
             data['text'] ?? "New message received",

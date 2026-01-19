@@ -5,7 +5,7 @@ import 'package:jovera_finance/utilities/constants/app_validators.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
 
 class CustomDropdown extends StatelessWidget {
-const  CustomDropdown({
+  const CustomDropdown({
     super.key,
     required this.items,
     required this.value,
@@ -17,16 +17,19 @@ const  CustomDropdown({
 
   final String labelText;
   final Function(dynamic) onChanged;
-final  List<DropdownMenuItem<dynamic>> items;
-  final value;
-final  Widget? hint;
-final  bool backgroundDecoration;
+  final List<DropdownMenuItem<dynamic>> items;
+  final dynamic value;
+  final Widget? hint;
+  final bool backgroundDecoration;
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding:backgroundDecoration? EdgeInsets.only(left: fullWidth * 0.05, top: fullHeight * 0.015):null,
+      padding:
+          backgroundDecoration
+              ? EdgeInsets.only(left: fullWidth * 0.05, top: fullHeight * 0.015)
+              : null,
       decoration: BoxDecoration(
-        color:backgroundDecoration?  AppColors.black2:null,
+        color: backgroundDecoration ? AppColors.black2 : null,
         borderRadius: BorderRadius.circular(fullWidth * 0.01),
       ),
       child: Center(
@@ -50,7 +53,10 @@ final  bool backgroundDecoration;
             contentPadding: EdgeInsets.only(bottom: fullHeight * 0.02),
             enabledBorder: UnderlineInputBorder(
               borderSide: BorderSide(
-                color:backgroundDecoration? AppColors.backgroundColor : AppColors.lightGrey,
+                color:
+                    backgroundDecoration
+                        ? AppColors.backgroundColor
+                        : AppColors.lightGrey,
                 width: 0.4,
               ),
             ),

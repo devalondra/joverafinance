@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jovera_finance/screens/auth/signup/view/fill_profile_view.dart';
 import 'package:jovera_finance/screens/bottom_navigation/bottom/controller/bottom_navigation_bar_controller.dart';
+import 'package:jovera_finance/utilities/authentication/auth_manager.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
 import 'package:jovera_finance/screens/auth/signup/controller/signup_controller.dart';
@@ -45,7 +45,13 @@ class SignupView extends GetView<SignUpController> {
           CustomButton(
             onPressed: () {
               if (formKey.currentState!.validate()) {
-                Get.to(() => FillProfileView());
+                if (controller.passwordController.value.text ==
+                    controller.retypePasswordController.value.text) {
+                  controller.signup();
+                } else {
+                  appTools.showErrorSnackBar("Passwords do not match.");
+                }
+                // Get.to(() => FillProfileView());
               } else {}
             },
             text: "Next".tr,

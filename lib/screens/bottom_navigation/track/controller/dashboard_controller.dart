@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:jovera_finance/screens/bottom_navigation/track/model/visa_application_model.dart';
 import 'package:jovera_finance/screens/bottom_navigation/track/provider/dashboard_provider.dart';
@@ -15,6 +16,7 @@ class DashboardController extends GetxController {
 
   AppLoadingController appLoadingController = AppLoadingController();
   RxBool isLoading = false.obs;
+  final AuthManager authManager = Get.find();
   @override
   onInit() async {
     await getMyApplications();
@@ -28,20 +30,24 @@ class DashboardController extends GetxController {
   }
 
   Future<void> getMyApplications() async {
+    if (!authManager.isLogged.value) {
+      return;
+    }
+
     isLoading.value = true;
     appLoadingController.loading();
     DashboardProvider().getMyVisaApplications(
       onSuccess: (response) {
         isLoading.value = false;
         appLoadingController.stop();
-        print(response);
+        if (kDebugMode) print(response);
         if (response.data != null) {
           myVisaApplications.value = RxList<VisaApplicationModel>.from(
             json
                 .decode(json.encode(response.data['leads']))
                 .map((x) => VisaApplicationModel.fromJson(x)),
           );
-          print(myVisaApplications);
+          if (kDebugMode) print(myVisaApplications);
           myVisaApplications.refresh();
           //myVisaApplications.clear();
         }
@@ -49,7 +55,7 @@ class DashboardController extends GetxController {
       onError: (error) {
         isLoading.value = false;
         appLoadingController.stop();
-        print(error.message);
+        if (kDebugMode) print(error.message);
         appTools.showErrorSnackBar(
           appTools.errorMessage(error) ??
               'Opps, an error occurred, Please try again later',
@@ -67,7 +73,7 @@ class DashboardController extends GetxController {
       onSuccess: (response) {
         isLoading.value = false;
         appLoadingController.stop();
-        print(response);
+        if (kDebugMode) print(response);
         if (response.data != null) {
           selectedVisaApplicationModel.value = VisaApplicationModel.fromJson(
             response.data['lead'],

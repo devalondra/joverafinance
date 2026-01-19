@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jovera_finance/screens/personal_loan/view/personal_loan_employee_details_view.dart';
@@ -47,7 +48,9 @@ class PersonalLoanInformationView extends GetView<PersonalLoanController> {
           SizedBox(height: verticalPagePadding * 2),
           CustomButton(
             onPressed: () {
-              print("hjhgjhj");
+              if (kDebugMode) {
+                print("hjhgjhj");
+              }
               Get.to(() => PersonalLoanDetailsView());
             },
             text: "Apply",

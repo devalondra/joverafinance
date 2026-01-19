@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jovera_finance/screens/mortgage/controller/mortgage_controller.dart';
@@ -47,7 +48,7 @@ class MortgageInformationView extends GetView<MortgageController> {
           SizedBox(height: verticalPagePadding * 2),
           CustomButton(
             onPressed: () {
-              print("hjhgjhj");
+              if (kDebugMode) print("hjhgjhj");
               Get.lazyPut<MortgageController>(() => MortgageController());
               Get.to(() => ApplyAsView());
             },

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:jovera_finance/screens/auth/login/model/users.dart';
 import 'package:jovera_finance/utilities/authentication/auth_manager.dart';
@@ -25,16 +26,20 @@ class ApiService {
       await httpClient
           .get('$baseUrl/api/auth/me', options: getApiOptionsWithAuth(token))
           .then((response) {
-            print(response);
-            if (response.statusCode == 200) {
+            if (kDebugMode) {
               print(response);
+            }
+            if (response.statusCode == 200) {
+              if (kDebugMode) {
+                print(response);
+              }
               authManager.appUser.value = AppUser.fromJson(response.data)
                 ..token = token;
               authManager.login();
             }
           });
     } on DioException catch (e) {
-      print(e);
+      if (kDebugMode) print(e);
       appTools.showErrorSnackBar(
         'Some thing went wrong. Please check your internet connection.',
         timer: 1,

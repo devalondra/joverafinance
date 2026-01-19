@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -35,8 +36,6 @@ import 'package:jovera_finance/widgets/main_text.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 updateData() async {
-  //  Get.lazyPut<ChatController>(() => ChatController());
-  // Get.lazyPut<DashboardController>(() => DashboardController());
   ChatController chatCont = Get.find();
   await chatCont.getMyApplications();
 
@@ -149,6 +148,7 @@ class BottomNavigationBarController extends GetxController {
   RxBool confirmPasswordIsVisible = false.obs;
   RxString whatsappCountryCode = ''.obs;
   RxString countryCode = ''.obs;
+  RxString callbackCountryCode = ''.obs;
   AppLoadingController appLoadingController = AppLoadingController();
   var selectedDate = DateTime.now().obs;
   RxBool language = true.obs;
@@ -189,7 +189,7 @@ class BottomNavigationBarController extends GetxController {
 
       onSuccess: (response) {
         appLoadingController.stop();
-        print(response);
+        if (kDebugMode) print(response);
         appTools.showSuccessSnackBar("Password Reset Successful.");
         passwordController.value.clear();
         confirmPasswordController.value.clear();
@@ -198,7 +198,7 @@ class BottomNavigationBarController extends GetxController {
       },
       onError: (error) {
         appLoadingController.stop();
-        print(error.message);
+        if (kDebugMode) print(error.message);
         appTools.showErrorSnackBar(
           appTools.errorMessage(error) ??
               'Opps, an error occurred during request, Please try again later',
@@ -212,14 +212,15 @@ class BottomNavigationBarController extends GetxController {
     appLoadingController.loading();
     MainDrawerProvider().requestCallBack(
       name: callBackFullNameController.value.text,
-      phone: callBackPhoneController.value.text,
+      phone:
+          "${callBackPhoneController.value.text.startsWith("+") ? "" : "+"}${callbackCountryCode.value}${callBackPhoneController.value.text}",
       email: callBackEmailController.value.text,
       description: callBackMessageController.value.text,
       product: selectedLoanType.value,
 
       onSuccess: (response) {
         appLoadingController.stop();
-        print(response);
+        if (kDebugMode) print(response);
         Get.back();
         appTools.showSuccessSnackBar(
           'Your request has been submitted. We will get back to you soon.',
@@ -231,7 +232,7 @@ class BottomNavigationBarController extends GetxController {
       },
       onError: (error) {
         appLoadingController.stop();
-        print(error.message);
+        if (kDebugMode) print(error.message);
         appTools.showErrorSnackBar(
           appTools.errorMessage(error) ??
               'Opps, an error occurred during request, Please try again later',
@@ -344,7 +345,7 @@ class BottomNavigationBarController extends GetxController {
       profileFormData["w_phone"] =
           "${profileWhatsappController.value.text.startsWith("+") ? "" : "+"}${whatsappCountryCode.value}${profileWhatsappController.value.text}";
     }
-    print(profileFormData);
+    if (kDebugMode) print(profileFormData);
     if (profilePicturePath.isNotEmpty) {
       if (!profilePicturePath.startsWith("https")) {
         String ext = profilePicturePath.value.split('.').last.toLowerCase();

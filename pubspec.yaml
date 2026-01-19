@@ -18,7 +18,7 @@ dependencies:
   dio: ^5.8.0+1
   flutter_screenutil: ^5.9.3
   flutter_spinkit: ^5.2.1
-  flutter_svg: ^2.1.0
+  flutter_svg: ^2.2.3
   get_storage: ^2.1.1
   firebase_messaging: ^15.2.7
   logger: ^2.5.0

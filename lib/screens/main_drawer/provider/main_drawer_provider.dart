@@ -1,6 +1,7 @@
+import 'package:dio/dio.dart' as mp;
+import 'package:flutter/foundation.dart';
 import 'package:jovera_finance/utilities/api/api_abstract.dart';
 import 'package:jovera_finance/utilities/constants/app_enums.dart';
-import 'package:dio/dio.dart' as mp;
 
 class MainDrawerProvider {
   Future<void> editProfile({
@@ -46,13 +47,15 @@ class MainDrawerProvider {
     String? product,
     String? description,
   }) async {
-    print({
-      'name': name,
-      'phone': phone,
-      'email': email,
-      'product': product,
-      'description': description,
-    });
+    if (kDebugMode) {
+      print({
+        'name': name,
+        'phone': phone,
+        'email': email,
+        'product': product,
+        'description': description,
+      });
+    }
     await ApiAbstract(
       apiName: '/api/leads/create-lead-from-callback',
       data: {

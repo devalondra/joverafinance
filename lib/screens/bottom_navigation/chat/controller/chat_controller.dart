@@ -1,9 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:dio/dio.dart' as mp;
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http_parser/http_parser.dart';
@@ -25,6 +24,7 @@ class ChatController extends GetxController {
   late Socket socket;
   RxList<ChatModel> messages = <ChatModel>[].obs;
   NotificationService notificationService = Get.find();
+  final AuthManager authManager = Get.find();
   Rx<TextEditingController> textController = TextEditingController().obs;
   RxBool socketInitialized = false.obs;
   Uint8List? fileBytes;
@@ -35,7 +35,7 @@ class ChatController extends GetxController {
   ScrollController scrollController = ScrollController();
   RxString selectedFilePath = ''.obs;
   RxString uploadedFileUrl = ''.obs;
-  final userId = Get.find<AuthManager>().appUser.value.id;
+  String? get userId => authManager.appUser.value.id;
   AppLoadingController appLoadingController = AppLoadingController();
   @override
   void onInit() async {
@@ -75,11 +75,14 @@ class ChatController extends GetxController {
       messages.where((e) => e.recipientModel == "Client").lastOrNull;
 
   Future<void> getMyApplications() async {
+    if (!authManager.isLogged.value) {
+      return;
+    }
     appLoadingController.loading();
     DashboardProvider().getMyVisaApplications(
       onSuccess: (response) {
         appLoadingController.stop();
-        print(response);
+        if (kDebugMode) print(response);
         if (response.data != null && response.data['leads'].length != 0) {
           final leadsApplications = RxList<VisaApplicationModel>.from(
             json
@@ -95,17 +98,17 @@ class ChatController extends GetxController {
                     ),
                   )
                   .toList();
-          print(leadsApplications);
+          if (kDebugMode) print(leadsApplications);
           leads.refresh();
           if (leads.isNotEmpty) {
             selectedLead.value = leads.first;
           }
-          print(leads);
+          if (kDebugMode) print(leads);
         }
       },
       onError: (error) {
         appLoadingController.stop();
-        print(error.message);
+        if (kDebugMode) print(error.message);
         appTools.showErrorSnackBar(
           appTools.errorMessage(error) ??
               'Opps, an error occurred, Please try again later',
@@ -116,6 +119,23 @@ class ChatController extends GetxController {
   }
 
   bool get hasSenderImage => (sender?.senderImage ?? "").startsWith("https");
+
+  String _resolveLeadId() {
+    final String selectedLeadId = selectedLead.value?.leadId ?? "";
+    if (selectedLeadId.isNotEmpty) {
+      return selectedLeadId;
+    }
+    if (messages.isNotEmpty) {
+      final String lastMessageLeadId = messages.last.leadId ?? "";
+      if (lastMessageLeadId.isNotEmpty) {
+        return lastMessageLeadId;
+      }
+    }
+    if (leads.isNotEmpty) {
+      return leads.first.leadId ?? "";
+    }
+    return "";
+  }
 
   getLeads() async {
     await getMyApplications();
@@ -148,7 +168,6 @@ class ChatController extends GetxController {
         Get.snackbar(
           "Message",
           data["text"],
-
           snackPosition: SnackPosition.TOP,
           duration: Duration(seconds: 3),
           backgroundColor: AppColors.black2,
@@ -156,7 +175,6 @@ class ChatController extends GetxController {
           mainButton: TextButton(
             onPressed: () {
               Get.find<BottomNavigationBarController>().selectedIndex.value = 3;
-
               ChatModel messageModel = ChatModel(
                 leadId: data["leadId"] ?? "",
                 recipient: data["recipient"] ?? "",
@@ -185,11 +203,15 @@ class ChatController extends GetxController {
   }
 
   Future<void> getAllMessages() async {
+    if (!authManager.isLogged.value) {
+      return;
+    }
+
     appLoadingController.loading();
     ChatProvider().getAllMessages(
       onSuccess: (response) async {
         appLoadingController.stop();
-        print(response);
+        if (kDebugMode) print(response);
         if (response.data != null && response.data['messages'].length != 0) {
           messages.value = RxList<ChatModel>.from(
             json
@@ -283,9 +305,9 @@ class ChatController extends GetxController {
       onSuccess: (response) async {
         appLoadingController.stop();
         selectedFilePath.value = "";
-        print(response);
+        if (kDebugMode) print(response);
         uploadedFileUrl.value = response.data['fileUrl'] ?? "";
-        print(uploadedFileUrl.value);
+        if (kDebugMode) print(uploadedFileUrl.value);
         sendMessageViaSocket();
       },
       onError: (error) {
@@ -299,26 +321,35 @@ class ChatController extends GetxController {
   }
 
   void sendMessageViaSocket() async {
+    final String leadId = _resolveLeadId();
+    if (leadId.isEmpty) {
+      appTools.showErrorSnackBar(
+        "Unable to send message. Please select a lead.",
+      );
+      return;
+    }
     if (uploadedFileUrl.value != "") {
       final messagePayload = {
         "clientId": userId,
-        "leadId": selectedLead.value?.leadId ?? messages.last.leadId ?? "",
+        "leadId": leadId,
         "text": textController.value.text,
 
         "fileUrl": uploadedFileUrl.value,
       };
       socket.emit("chat:message", messagePayload);
-      print(messagePayload);
+      if (kDebugMode) print(messagePayload);
       textController.value.clear();
       selectedFilePath.value = "";
       uploadedFileUrl.value = "";
     } else {
       final messagePayload = {
         "clientId": userId,
-        "leadId": selectedLead.value?.leadId ?? messages.last.leadId ?? "",
+        //todo remove mandatory leadid
+        
+        "leadId": leadId,
         "text": textController.value.text,
       };
-      print(messagePayload);
+      if (kDebugMode) print(messagePayload);
       socket.emit("chat:message", messagePayload);
       textController.value.clear();
       selectedFilePath.value = "";

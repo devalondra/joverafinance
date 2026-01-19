@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:jovera_finance/screens/mortgage/controller/mortgage_controller.dart';
 import 'package:jovera_finance/screens/mortgage/common/property_details_view.dart';
 import 'package:jovera_finance/screens/mortgage/widget/upload_document_widget.dart';
+import 'package:jovera_finance/utilities/authentication/auth_manager.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
@@ -90,6 +91,43 @@ class MortgagePersonalDocumentsView extends GetView<MortgageController> {
 
           CustomButton(
             onPressed: () {
+              final missingDocuments = <String>[
+                if (controller.passportDocument.value.filePath?.isNotEmpty !=
+                    true)
+                  "Passport",
+                if (controller.emiratesIdDocument.value.filePath?.isNotEmpty !=
+                    true)
+                  "Emirates ID",
+                if (controller
+                        .salaryCertificateDocument
+                        .value
+                        .filePath
+                        ?.isNotEmpty !=
+                    true)
+                  "Valid Salary Certificate",
+                if (controller
+                        .bankStatementDocument
+                        .value
+                        .filePath
+                        ?.isNotEmpty !=
+                    true)
+                  "Last 6 months Bank statement",
+                if (controller
+                        .etihadBureauDocument
+                        .value
+                        .filePath
+                        ?.isNotEmpty !=
+                    true)
+                  "Credit Bureau Report",
+              ];
+
+              if (missingDocuments.isNotEmpty) {
+                appTools.showErrorSnackBar(
+                  "Please upload the following documents: ${missingDocuments.join(', ')}",
+                );
+                return;
+              }
+
               Get.to(() => PropertyDetailsView());
             },
             text: "Next",

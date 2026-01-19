@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 import 'package:dio/dio.dart' as mp;
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:get/get.dart';
@@ -14,15 +15,56 @@ import 'package:jovera_finance/widgets/app_loading_controller.dart';
 import 'package:jovera_finance/widgets/document_picker_widget.dart';
 
 class MortgageController extends GetxController {
+  static const String calculatorNational = "UAE National";
+  static const String calculatorResident = "UAE Resident";
+  static const String calculatorNonResident = "Non-Resident";
+
+  static const double mortgagePriceMin = 3000000;
+  static const double mortgagePriceMax = 100000000;
+  static const int mortgageYearsMin = 1;
+  static const int mortgageYearsMax = 25;
+  static const double mortgageInterestMin = 1;
+  static const double mortgageInterestMax = 10;
+
+  static const double mortgageDefaultPrice = 3000000;
+  static const double mortgageDefaultAdvance = 750000;
+  static const double mortgageDefaultLoan = 2250000;
+  static const int mortgageDefaultYears = 20;
+  static const double mortgageDefaultInterest = 4;
+
+  static const double advanceMinPercent = 0.25;
+  static const double advanceMinPercentNonResident = 0.4;
+  static const double advanceMaxPercent = 0.8;
+  static const double loanMinPercent = 0.2;
+  static const double loanMaxPercent = 0.75;
+  static const double loanMaxPercentNonResident = 0.6;
+
   RxString applicantType = "Salary".obs;
   RxString mobileCountryCode = "+971".obs;
-  RxDouble propertyPrice = 8000000.0.obs;
-  RxDouble advancePayment = 26.0.obs;
-  RxDouble interestRate = 4.5.obs;
-  RxInt propertyPeriod = 15.obs;
-  RxDouble advancePercentage = 0.2.obs;
-  RxString advance = "20%".obs;
-  RxString calculatorType = "UAE National".obs;
+  RxDouble propertyPrice = mortgageDefaultPrice.obs;
+  RxDouble advancePayment = mortgageDefaultAdvance.obs;
+  RxDouble loanAmount = mortgageDefaultLoan.obs;
+  RxDouble interestRate = mortgageDefaultInterest.obs;
+  RxInt propertyPeriod = mortgageDefaultYears.obs;
+  RxString calculatorType = calculatorNational.obs;
+  final TextEditingController priceInputController = TextEditingController();
+  final TextEditingController advanceInputController = TextEditingController();
+  final TextEditingController loanInputController = TextEditingController();
+  final TextEditingController yearsInputController = TextEditingController();
+  final TextEditingController interestInputController = TextEditingController();
+  final FocusNode priceInputFocusNode = FocusNode();
+  final FocusNode advanceInputFocusNode = FocusNode();
+  final FocusNode loanInputFocusNode = FocusNode();
+  final FocusNode yearsInputFocusNode = FocusNode();
+  final FocusNode interestInputFocusNode = FocusNode();
+  // Legacy calculator state (kept for reference).
+  // RxDouble propertyPrice = 8000000.0.obs;
+  // RxDouble advancePayment = 26.0.obs;
+  // RxDouble interestRate = 4.5.obs;
+  // RxInt propertyPeriod = 15.obs;
+  // RxDouble advancePercentage = 0.2.obs;
+  // RxString advance = "20%".obs;
+  // RxString calculatorType = "UAE National".obs;
   AuthManager authManager = Get.find();
   AppLoadingController appLoadingController = AppLoadingController();
   Rx<TextEditingController> personalNameController =
@@ -58,18 +100,118 @@ class MortgageController extends GetxController {
   List conditions = ["New", "Old", "Off Plan"];
   List properties = ["Villa", "Apartment", "Townhouse", "Land"];
 
+  bool get isNonResident => calculatorType.value == calculatorNonResident;
+
+  double get advanceMin =>
+      propertyPrice.value *
+      (isNonResident ? advanceMinPercentNonResident : advanceMinPercent);
+
+  double get advanceMax => propertyPrice.value * advanceMaxPercent;
+
+  double get loanMin => propertyPrice.value * loanMinPercent;
+
+  double get loanMax =>
+      propertyPrice.value *
+      (isNonResident ? loanMaxPercentNonResident : loanMaxPercent);
+
+  void resetMortgageDefaults() {
+    propertyPrice.value = mortgageDefaultPrice;
+    propertyPeriod.value = mortgageDefaultYears;
+    interestRate.value = mortgageDefaultInterest;
+    advancePayment.value = mortgageDefaultAdvance;
+    loanAmount.value = mortgageDefaultLoan;
+    _syncMortgageAmounts();
+  }
+
+  void setCalculatorType(String type) {
+    calculatorType.value = type;
+    _syncMortgageAmounts();
+    // Legacy logic (percentage based).
+    // if (type == "UAE National") {
+    //   advancePercentage.value = 0.2;
+    //   advance.value = "20%";
+    // } else {
+    //   advancePercentage.value = 0.25;
+    //   advance.value = "25%";
+    // }
+    // advancePayment.value =
+    //     advancePercentage.value * propertyPrice.value;
+  }
+
+  void updatePropertyPrice(double value) {
+    propertyPrice.value = value;
+    _syncMortgageAmounts();
+    // Legacy logic (percentage based).
+    // advancePayment.value =
+    //     advancePercentage.value * propertyPrice.value;
+  }
+
+  void updateAdvancePayment(double value) {
+    final double newAdvance = _clampDouble(value, advanceMin, advanceMax);
+    advancePayment.value = newAdvance;
+    loanAmount.value = propertyPrice.value - newAdvance;
+  }
+
+  void updateLoanAmount(double value) {
+    final double newLoan = _clampDouble(value, loanMin, loanMax);
+    loanAmount.value = newLoan;
+    advancePayment.value = propertyPrice.value - newLoan;
+  }
+
+  void _syncMortgageAmounts() {
+    final double minAdvance = advanceMin;
+    final double maxAdvance = advanceMax;
+    final double minLoan = loanMin;
+    final double maxLoan = loanMax;
+
+    double newAdvance = _clampDouble(
+      advancePayment.value,
+      minAdvance,
+      maxAdvance,
+    );
+    double newLoan = propertyPrice.value - newAdvance;
+    newLoan = _clampDouble(newLoan, minLoan, maxLoan);
+    newAdvance = propertyPrice.value - newLoan;
+
+    advancePayment.value = newAdvance;
+    loanAmount.value = newLoan;
+  }
+
+  double _clampDouble(double value, double min, double max) {
+    if (value < min) return min;
+    if (value > max) return max;
+    return value;
+  }
+
   @override
   onInit() {
-    advancePayment.value = advancePercentage * propertyPrice.value;
-
+    resetMortgageDefaults();
+    // Legacy init.
+    // advancePayment.value = advancePercentage * propertyPrice.value;
     super.onInit();
   }
 
   @override
   onReady() {
-    advancePayment.value = advancePercentage * propertyPrice.value;
     calculateEMI();
+    // Legacy ready.
+    // advancePayment.value = advancePercentage * propertyPrice.value;
     super.onReady();
+  }
+
+  @override
+  void onClose() {
+    priceInputController.dispose();
+    advanceInputController.dispose();
+    loanInputController.dispose();
+    yearsInputController.dispose();
+    interestInputController.dispose();
+    priceInputFocusNode.dispose();
+    advanceInputFocusNode.dispose();
+    loanInputFocusNode.dispose();
+    yearsInputFocusNode.dispose();
+    interestInputFocusNode.dispose();
+    super.onClose();
   }
 
   Future<void> applyMortgageLoan() async {
@@ -79,7 +221,7 @@ class MortgageController extends GetxController {
       data: mp.FormData.fromMap(resultMap),
 
       onSuccess: (response) async {
-        print(response);
+        if (kDebugMode) print(response);
         appLoadingController.stop();
         appTools.showSuccessSnackBar(
           "Your application is successfully submitted. We will get back to you after a short review.",
@@ -89,7 +231,7 @@ class MortgageController extends GetxController {
       },
       onError: (error) {
         appLoadingController.stop();
-        print(error.response);
+        if (kDebugMode) print(error.response);
         appTools.showErrorSnackBar(
           appTools.errorMessage(error) ??
               'Opps, an error occurred, Please try again later',
@@ -138,21 +280,25 @@ class MortgageController extends GetxController {
       }
     }
     mortgageLoanData["files"] = fileList;
-    print(mortgageLoanData);
+    if (kDebugMode) print(mortgageLoanData);
     return mortgageLoanData;
   }
 
   double calculateEMI() {
-    double loanAmount = propertyPrice.value - advancePayment.value;
-    double monthlyRate = interestRate / 12 / 100;
+    // Legacy principal calculation.
+    // double loanAmount = propertyPrice.value - advancePayment.value;
+    double principal = loanAmount.value;
+    double monthlyRate = interestRate.value / 12 / 100;
     int totalMonths = propertyPeriod.value * 12;
-    print(advancePayment);
+    if (kDebugMode) {
+      print(advancePayment.value);
+    }
     if (monthlyRate == 0) {
-      return loanAmount / totalMonths;
+      return principal / totalMonths;
     }
 
     double emi =
-        loanAmount *
+        principal *
         monthlyRate *
         (pow(1 + monthlyRate, totalMonths)) /
         (pow(1 + monthlyRate, totalMonths) - 1);
@@ -189,7 +335,7 @@ class MortgageController extends GetxController {
       () async {
         photoCopy = await pickfromGallery();
         tradeLicenseDocument.value.filePath = getDocument(photoCopy);
-        print(tradeLicenseDocument.value.filePath);
+        if (kDebugMode) print(tradeLicenseDocument.value.filePath);
         initTradeLicenseDocument();
       },
       () async {

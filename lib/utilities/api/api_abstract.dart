@@ -15,7 +15,6 @@ class ApiAbstract {
   final String? singleValue;
   final mp.FormData? formData;
   final Map<String, dynamic>? queryParameters;
-
   final AuthManager authManager = Get.find();
 
   ApiAbstract({
@@ -76,7 +75,7 @@ class ApiAbstract {
     CancelToken? cancelToken,
     OptionsEnum? optionsEnum,
   }) async {
-    debugPrint(getEndPointURL);
+    print(getEndPointURL);
     try {
       beforeSend?.call();
       await _dio()

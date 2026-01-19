@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:jovera_finance/screens/mortgage/controller/mortgage_controller.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
@@ -18,17 +19,19 @@ class CalculatorTab extends StatelessWidget {
     return Obx(
       () => InkWell(
         onTap: () {
-          controller.calculatorType.value = title;
-          if (title == "UAE National") {
-            controller.advancePercentage.value = 0.2;
-            controller.advance.value = "20%";
-          } else {
-            controller.advancePercentage.value = 0.25;
-            controller.advance.value = "25%";
-          }
-          controller.advancePayment.value =
-              controller.advancePercentage.value *
-              controller.propertyPrice.value;
+          controller.setCalculatorType(title);
+          // Legacy logic (percentage based).
+          // controller.calculatorType.value = title;
+          // if (title == "UAE National") {
+          //   controller.advancePercentage.value = 0.2;
+          //   controller.advance.value = "20%";
+          // } else {
+          //   controller.advancePercentage.value = 0.25;
+          //   controller.advance.value = "25%";
+          // }
+          // controller.advancePayment.value =
+          //     controller.advancePercentage.value *
+          //     controller.propertyPrice.value;
         },
         child: Container(
           padding: EdgeInsets.symmetric(
@@ -42,7 +45,7 @@ class CalculatorTab extends StatelessWidget {
                     : AppColors.black2,
             borderRadius: BorderRadius.circular(fullWidth * 0.01),
           ),
-          child: MainText(text: title),
+          child: MainText(text: title, fontSize: 14.spMin),
         ),
       ),
     );

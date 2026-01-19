@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -55,7 +56,7 @@ class AuthManager extends GetxController with CacheManager {
     if (token != null) {
       isLogged.value = true;
       final ApiService apiService = Get.put(ApiService());
-      print(token);
+      if (kDebugMode) print(token);
       await apiService.getUserDataByToken(token);
 
       if (!Get.isRegistered<NotificationController>()) {

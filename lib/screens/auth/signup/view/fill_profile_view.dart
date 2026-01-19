@@ -95,10 +95,9 @@ class FillProfileView extends GetView<SignUpController> {
                               bottom: fullHeight * 0.016,
                               right: fullWidth * 0.01,
                               child: InkWell(
-                                onTap:
-                                    () => controller.selectProfilePicture(
-                                      context,
-                                    ),
+                                onTap: () {
+                                  controller.selectProfilePicture(context);
+                                },
                                 child: SvgPicture.asset(
                                   "assets/icons/edit_icon.svg",
                                   fit: BoxFit.fill,

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jovera_finance/screens/bottom_navigation/bottom/controller/bottom_navigation_bar_controller.dart';
@@ -8,6 +9,7 @@ import 'package:jovera_finance/screens/mortgage/controller/mortgage_controller.d
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
+import 'package:jovera_finance/widgets/custom_page_title.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
 class MortgageLandingView extends GetView<MortgageController> {
@@ -17,73 +19,92 @@ class MortgageLandingView extends GetView<MortgageController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      body: Stack(
+      body: ListView(
+        padding: EdgeInsets.symmetric(vertical: 0),
         children: [
-          SizedBox(
-            width: fullWidth,
-            child: Image.asset(
-              "assets/images/mortgage_background_image.png",
-              height: fullHeight * 0.5,
-              fit: BoxFit.fitWidth,
-            ),
-          ),
-          Image.asset(
-            "assets/images/overlay.png",
-            height: fullHeight * 0.5,
-            width: fullWidth,
-          ),
-          ListView(
+          Stack(
+            fit: StackFit.loose,
             children: [
-              SizedBox(height: fullHeight * 0.23),
-
-              MainText(
-                text:
-                    "Achieve your dream of owning your home with flexible & easy Mortgage financing.",
-                fontSize: 18,
-                textAlign: TextAlign.center,
-
-                fontWeight: FontWeight.w600,
+              SizedBox(
+                width: fullWidth,
+                child: Image.asset(
+                  "assets/images/mortgage_background_image.png",
+                  height: fullHeight * 0.5,
+                  fit: BoxFit.fitWidth,
+                ),
               ),
-              SizedBox(height: fullHeight * 0.02),
-              Row(
+              Image.asset(
+                "assets/images/overlay.png",
+                height: fullHeight * 0.5,
+                width: fullWidth,
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(
-                    child: CustomButton(
-                      onPressed: () {
-                        print("hjhgjhj");
-                        if (controller.authManager.isLogged.value) {
-                          Get.lazyPut<MortgageController>(
-                            () => MortgageController(),
-                          );
-                          Get.to(() => MortgageInformationView());
-                        } else {
-                          Get.back();
+                  CustomPageTitle(
+                    back: true,
+                    notification: false,
+                    title: "",
+                  ).paddingSymmetric(
+                    horizontal: horizontalPagePadding,
+                    vertical: verticalPagePadding * 2,
+                  ),
+                  SizedBox(height: fullHeight * 0.2),
 
-                          BottomNavigationBarController cont = Get.find();
-                          cont.selectedIndex.value = 4;
-                        }
-                      },
-                      text: "Apply",
-                    ),
+                  MainText(
+                    text:
+                        "Achieve your dream of owning your home with flexible & easy Mortgage financing.",
+                    fontSize: 18,
+                    textAlign: TextAlign.center,
+
+                    fontWeight: FontWeight.w600,
                   ),
-                  SizedBox(width: fullWidth * 0.05),
-                  Expanded(
-                    child: CustomButton(
-                      color: AppColors.transparent,
-                      borderColor: AppColors.white,
-                      onPressed: () {
-                        print("hjhgjhj");
-                        Get.lazyPut<MortgageController>(
-                          () => MortgageController(),
-                        );
-                        Get.to(() => MortgageCalculatorView());
-                      },
-                      text: "Calculator",
-                    ),
-                  ),
+                  SizedBox(height: fullHeight * 0.02),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: CustomButton(
+                          onPressed: () {
+                            if (kDebugMode) print("hjhgjhj");
+                            if (controller.authManager.isLogged.value) {
+                              Get.lazyPut<MortgageController>(
+                                () => MortgageController(),
+                              );
+                              Get.to(() => MortgageInformationView());
+                            } else {
+                              Get.back();
+
+                              BottomNavigationBarController cont = Get.find();
+                              cont.selectedIndex.value = 4;
+                            }
+                          },
+                          text: "Apply",
+                        ),
+                      ),
+                      SizedBox(width: fullWidth * 0.05),
+                      Expanded(
+                        child: CustomButton(
+                          color: AppColors.transparent,
+                          borderColor: AppColors.white,
+                          onPressed: () {
+                            if (kDebugMode) print("hjhgjhj");
+                            Get.lazyPut<MortgageController>(
+                              () => MortgageController(),
+                            );
+                            Get.to(() => MortgageCalculatorView());
+                          },
+                          text: "Calculator",
+                        ),
+                      ),
+                    ],
+                  ).paddingSymmetric(horizontal: horizontalPagePadding),
                 ],
               ),
-              SizedBox(height: fullHeight * 0.07),
+            ],
+          ),
+
+          Column(
+            children: [
               Row(
                 children: [
                   MainText(
@@ -94,9 +115,11 @@ class MortgageLandingView extends GetView<MortgageController> {
                   ),
                 ],
               ),
-              SizedBox(height: fullHeight * 0.02),
+
               ListView.builder(
+                padding: EdgeInsets.symmetric(vertical: fullHeight * 0.01),
                 shrinkWrap: true,
+                scrollDirection: Axis.vertical,
                 itemCount: instructionsList.length,
                 itemBuilder: (context, index) {
                   return BackgroundDecoration(
@@ -114,7 +137,7 @@ class MortgageLandingView extends GetView<MortgageController> {
                         ),
                       ],
                     ),
-                  ).paddingOnly(bottom: fullHeight * 0.01);
+                  ).paddingOnly(bottom: fullHeight * 0.008);
                 },
               ),
             ],
@@ -135,6 +158,5 @@ class MortgageLandingView extends GetView<MortgageController> {
     "Plot and land purchase",
     "Under construction residential properties",
     "Final Payment Financing",
-  
   ];
 }

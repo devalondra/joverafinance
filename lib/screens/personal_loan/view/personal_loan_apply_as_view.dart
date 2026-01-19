@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jovera_finance/screens/personal_loan/calculator/personal_loan_calculator_view.dart';
 import 'package:jovera_finance/screens/personal_loan/controller/personal_loan_controller.dart';
+import 'package:jovera_finance/screens/personal_loan/view/personal_loan_information_view.dart';
 import 'package:jovera_finance/screens/personal_loan/widget/transaction_type_widget.dart';
 
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
@@ -48,7 +48,7 @@ class PersonalLoanApplyAsView extends GetView<PersonalLoanController> {
 
           CustomButton(
             onPressed: () {
-              Get.to(() => PersonalLoanCalculatorView());
+              Get.to(() => PersonalLoanInformationView());
             },
             text: "Next",
           ),

@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:jovera_finance/screens/business_loan/controller/business_loan_controller.dart';
 import 'package:jovera_finance/screens/business_loan/view/business_loan_company_documents_view.dart';
 import 'package:jovera_finance/screens/business_loan/widget/upload_document_widget.dart';
-
+import 'package:jovera_finance/utilities/authentication/auth_manager.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
@@ -67,6 +67,29 @@ class BusinessLoanDocumentsView extends GetView<BusinessLoanController> {
 
           CustomButton(
             onPressed: () {
+              final missingDocuments = <String>[
+                if (controller.passportDocument.value.filePath?.isNotEmpty !=
+                    true)
+                  "Passport",
+                if (controller.emiratesIdDocument.value.filePath?.isNotEmpty !=
+                    true)
+                  "Emirates ID",
+                if (controller
+                        .etihadBureauDocument
+                        .value
+                        .filePath
+                        ?.isNotEmpty !=
+                    true)
+                  "Credit Bureau Report",
+              ];
+
+              if (missingDocuments.isNotEmpty) {
+                appTools.showErrorSnackBar(
+                  "Please upload the following documents: ${missingDocuments.join(', ')}",
+                );
+                return;
+              }
+
               Get.to(() => BusinessLoanCompanyDocumentsView());
             },
             text: "Next",

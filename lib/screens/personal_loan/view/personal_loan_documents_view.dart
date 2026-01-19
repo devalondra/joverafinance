@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jovera_finance/screens/personal_loan/view/personal_loan_summary_view.dart';
 import 'package:jovera_finance/screens/personal_loan/controller/personal_loan_controller.dart';
+import 'package:jovera_finance/screens/personal_loan/view/personal_loan_summary_view.dart';
 import 'package:jovera_finance/screens/personal_loan/widget/upload_document_widget.dart';
-
+import 'package:jovera_finance/utilities/authentication/auth_manager.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
@@ -91,6 +91,43 @@ class PersonalLoanDocumentsView extends GetView<PersonalLoanController> {
 
           CustomButton(
             onPressed: () {
+              final missingDocuments = <String>[
+                if (controller.passportDocument.value.filePath?.isNotEmpty !=
+                    true)
+                  "Passport",
+                if (controller.emiratesIdDocument.value.filePath?.isNotEmpty !=
+                    true)
+                  "Emirates ID",
+                if (controller
+                        .salaryCertificateDocument
+                        .value
+                        .filePath
+                        ?.isNotEmpty !=
+                    true)
+                  "Valid Salary Certificate",
+                if (controller
+                        .bankStatementDocument
+                        .value
+                        .filePath
+                        ?.isNotEmpty !=
+                    true)
+                  "Last 6 months Bank statement",
+                if (controller
+                        .etihadBureauDocument
+                        .value
+                        .filePath
+                        ?.isNotEmpty !=
+                    true)
+                  "Credit Bureau Report",
+              ];
+
+              if (missingDocuments.isNotEmpty) {
+                appTools.showErrorSnackBar(
+                  "Please upload the following documents: ${missingDocuments.join(', ')}",
+                );
+                return;
+              }
+
               Get.to(() => PersonalLoanSummaryView());
             },
             text: "Next",

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jovera_finance/screens/bottom_navigation/bottom/controller/bottom_navigation_bar_controller.dart';
@@ -9,6 +10,7 @@ import 'package:jovera_finance/screens/business_loan/widget/background_decoratio
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
+import 'package:jovera_finance/widgets/custom_page_title.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
 class BusinessLoanLandingView extends GetView<BusinessLoanController> {
@@ -34,9 +36,14 @@ class BusinessLoanLandingView extends GetView<BusinessLoanController> {
             height: fullHeight * 0.5,
             width: fullWidth,
           ),
-          ListView(
+          Column(
             children: [
-              SizedBox(height: fullHeight * 0.23),
+              CustomPageTitle(
+                back: true,
+                notification: false,
+                title: "",
+              ).paddingSymmetric(vertical: verticalPagePadding * 2),
+              SizedBox(height: fullHeight * 0.18),
 
               MainText(
                 text:
@@ -52,7 +59,7 @@ class BusinessLoanLandingView extends GetView<BusinessLoanController> {
                   Expanded(
                     child: CustomButton(
                       onPressed: () {
-                        print("hjhgjhj");
+                        if (kDebugMode) print("hjhgjhj");
                         Get.lazyPut<BusinessLoanController>(
                           () => BusinessLoanController(),
                         );
@@ -74,7 +81,7 @@ class BusinessLoanLandingView extends GetView<BusinessLoanController> {
                       color: AppColors.transparent,
                       borderColor: AppColors.white,
                       onPressed: () {
-                        print("hjhgjhj");
+                        if (kDebugMode) print("hjhgjhj");
                         Get.lazyPut<BusinessLoanController>(
                           () => BusinessLoanController(),
                         );
@@ -85,7 +92,7 @@ class BusinessLoanLandingView extends GetView<BusinessLoanController> {
                   ),
                 ],
               ),
-              SizedBox(height: fullHeight * 0.07),
+              SizedBox(height: fullHeight * 0.05),
               Row(
                 children: [
                   MainText(
@@ -99,6 +106,8 @@ class BusinessLoanLandingView extends GetView<BusinessLoanController> {
               SizedBox(height: fullHeight * 0.02),
               ListView.builder(
                 shrinkWrap: true,
+                padding: EdgeInsets.all(0),
+                scrollDirection: Axis.vertical,
                 itemCount: instructionsList.length,
                 itemBuilder: (context, index) {
                   return BackgroundDecoration(
