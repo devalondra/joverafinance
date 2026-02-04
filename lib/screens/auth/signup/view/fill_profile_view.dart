@@ -2,21 +2,26 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
-import 'package:jovera_finance/utilities/authentication/auth_manager.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
 import 'package:jovera_finance/screens/auth/signup/controller/signup_controller.dart';
 import 'package:jovera_finance/screens/auth/signup/widget/fill_profile_textfields.dart';
+import 'package:jovera_finance/utilities/constants/app_tools.dart';
+import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
+import 'package:jovera_finance/utilities/localization/string_extensions.dart';
+import 'package:jovera_finance/utilities/navigation/app_navigator.dart';
 import 'package:jovera_finance/widgets/background.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
-class FillProfileView extends GetView<SignUpController> {
+class FillProfileView extends ConsumerWidget {
   const FillProfileView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.read(signUpControllerProvider.notifier);
+    ref.watch(signUpControllerProvider);
     final formKey = GlobalKey<FormState>();
     return Background(
       appLoadingController: controller.appLoadingController,
@@ -36,7 +41,7 @@ class FillProfileView extends GetView<SignUpController> {
                       children: [
                         InkWell(
                           onTap: () {
-                            Get.back();
+                            AppNavigator.pop();
                           },
                           child: Icon(
                             Icons.arrow_back_ios,
@@ -72,23 +77,17 @@ class FillProfileView extends GetView<SignUpController> {
                       child: Center(
                         child: Stack(
                           children: [
-                            Obx(
-                              () => CircleAvatar(
-                                backgroundColor: AppColors.backgroundColor,
+                            CircleAvatar(
+                              backgroundColor: AppColors.backgroundColor,
 
-                                radius: fullWidth * 0.25,
+                              radius: fullWidth * 0.25,
 
-                                backgroundImage:
-                                    controller.profilePicturePath.value != ''
-                                        ? FileImage(
-                                          File(
-                                            controller.profilePicturePath.value,
-                                          ),
-                                        )
-                                        : AssetImage(
-                                          "assets/images/person.jpg",
-                                        ),
-                              ),
+                              backgroundImage:
+                                  controller.profilePicturePath != ''
+                                      ? FileImage(
+                                        File(controller.profilePicturePath),
+                                      )
+                                      : AssetImage("assets/images/person.jpg"),
                             ),
 
                             Positioned(
@@ -123,8 +122,8 @@ class FillProfileView extends GetView<SignUpController> {
               CustomButton(
                 onPressed: () {
                   if (formKey.currentState!.validate()) {
-                    if (controller.passwordController.value.text ==
-                        controller.retypePasswordController.value.text) {
+                    if (controller.passwordController.text ==
+                        controller.retypePasswordController.text) {
                       controller.signup();
                     } else {
                       appTools.showErrorSnackBar("Passwords do not match.");

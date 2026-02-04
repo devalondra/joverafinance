@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jovera_finance/screens/auth/forgot_password/controller/forgot_password_conttroller.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
+import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
+import 'package:jovera_finance/utilities/localization/string_extensions.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
-class PasswordResetSuccessfulView extends GetView<ForgotPasswordController> {
+class PasswordResetSuccessfulView extends ConsumerWidget {
   const PasswordResetSuccessfulView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.read(forgotPasswordControllerProvider.notifier);
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: Column(

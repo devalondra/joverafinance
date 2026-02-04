@@ -1,19 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
 import 'package:jovera_finance/screens/auth/splash/controller/splash_controller.dart';
+import 'package:jovera_finance/utilities/localization/string_extensions.dart';
 import 'package:jovera_finance/widgets/background.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
-class SplashView extends GetView<SplashController> {
+class SplashView extends ConsumerStatefulWidget {
   const SplashView({super.key});
 
   @override
+  ConsumerState<SplashView> createState() => _SplashViewState();
+}
+
+class _SplashViewState extends ConsumerState<SplashView> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(splashControllerProvider.notifier).initialize();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final controller = ref.read(splashControllerProvider.notifier);
     return Background(
       child: Scaffold(
-        key: controller.scaffoldKey,
         backgroundColor: AppColors.backgroundColor,
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,

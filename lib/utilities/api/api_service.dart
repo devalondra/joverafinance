@@ -1,12 +1,16 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jovera_finance/screens/auth/login/model/users.dart';
 import 'package:jovera_finance/utilities/authentication/auth_manager.dart';
+import 'package:jovera_finance/utilities/constants/app_tools.dart';
 import 'package:jovera_finance/utilities/constants/app_strings.dart';
 import 'package:jovera_finance/widgets/app_loading_controller.dart';
 
 class ApiService {
+  ApiService(this.ref);
+
+  final Ref ref;
   static final Dio httpClient = Dio();
   static String baseUrl = baseURL;
   AppLoadingController appLoadingController = AppLoadingController();
@@ -20,7 +24,7 @@ class ApiService {
   }
 
   Future<void> getUserDataByToken(String token) async {
-    AuthManager authManager = Get.find();
+    final AuthManager authManager = ref.read(authManagerProvider.notifier);
 
     try {
       await httpClient
@@ -33,8 +37,7 @@ class ApiService {
               if (kDebugMode) {
                 print(response);
               }
-              authManager.appUser.value = AppUser.fromJson(response.data)
-                ..token = token;
+              authManager.setUser(AppUser.fromJson(response.data)..token = token);
               authManager.login();
             }
           });
@@ -68,6 +71,10 @@ class ApiService {
     );
   }
 }
+
+final apiServiceProvider = Provider<ApiService>((ref) {
+  return ApiService(ref);
+});
 
 Options getApiOptions() {
   return Options(

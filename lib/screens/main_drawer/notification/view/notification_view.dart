@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jovera_finance/screens/main_drawer/notification/controller/notification_controller.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
+import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
+import 'package:jovera_finance/utilities/localization/string_extensions.dart';
 import 'package:jovera_finance/widgets/custom_page_title.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
-class NotificationView extends GetView<NotificationController> {
+class NotificationView extends ConsumerWidget {
   const NotificationView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.read(notificationControllerProvider.notifier);
+    ref.watch(notificationControllerProvider);
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor,
@@ -35,8 +39,8 @@ class NotificationView extends GetView<NotificationController> {
             SizedBox(height: fullHeight * 0.02),
 
             Expanded(
-              child: Obx(() {
-                if (controller.isLoading.value) {
+              child: () {
+                if (controller.isLoading) {
                   return const Center(child: CircularProgressIndicator());
                 }
 
@@ -79,7 +83,7 @@ class NotificationView extends GetView<NotificationController> {
                             },
                           ),
                 );
-              }),
+              }(),
             ),
           ],
         ).paddingSymmetric(
@@ -90,6 +94,5 @@ class NotificationView extends GetView<NotificationController> {
     );
   }
 }
-
 
 

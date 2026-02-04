@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jovera_finance/screens/personal_loan/controller/personal_loan_controller.dart';
 import 'package:jovera_finance/screens/personal_loan/view/personal_loan_information_view.dart';
 import 'package:jovera_finance/screens/personal_loan/widget/transaction_type_widget.dart';
 
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
+import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
+import 'package:jovera_finance/utilities/navigation/app_navigator.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
 import 'package:jovera_finance/widgets/custom_page_title.dart';
 
-class PersonalLoanApplyAsView extends GetView<PersonalLoanController> {
+class PersonalLoanApplyAsView extends ConsumerWidget {
   const PersonalLoanApplyAsView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.read(personalLoanControllerProvider.notifier);
+    ref.watch(personalLoanControllerProvider);
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: Column(
@@ -26,7 +30,7 @@ class PersonalLoanApplyAsView extends GetView<PersonalLoanController> {
               children: [
                 TransactionTypeWidget(
                   onTap: () {
-                    controller.applicantType.value = "Employee";
+                    controller.applicantType = "Employee";
                   },
                   title: "Employee",
                   controller: controller,
@@ -34,10 +38,10 @@ class PersonalLoanApplyAsView extends GetView<PersonalLoanController> {
                 SizedBox(height: fullHeight * 0.02),
                 TransactionTypeWidget(
                   onTap: () {
-                    controller.applicantType.value = "Investor";
-                    controller.paymentMaxPeriod.value = 60;
-                    controller.paymentPeriod.value = 20;
-                    controller.interestRate.value = 8.5;
+                    controller.applicantType = "Investor";
+                    controller.paymentMaxPeriod = 60;
+                    controller.paymentPeriod = 20;
+                    controller.interestRate = 8.5;
                   },
                   title: "Investor",
                   controller: controller,
@@ -48,7 +52,7 @@ class PersonalLoanApplyAsView extends GetView<PersonalLoanController> {
 
           CustomButton(
             onPressed: () {
-              Get.to(() => PersonalLoanInformationView());
+              AppNavigator.push(PersonalLoanInformationView());
             },
             text: "Next",
           ),

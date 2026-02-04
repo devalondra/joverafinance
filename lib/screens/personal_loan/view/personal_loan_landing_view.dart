@@ -1,22 +1,27 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jovera_finance/screens/bottom_navigation/bottom/controller/bottom_navigation_bar_controller.dart';
 import 'package:jovera_finance/screens/business_loan/widget/background_decoration.dart';
 
 import 'package:jovera_finance/screens/personal_loan/calculator/personal_loan_calculator_view.dart';
 import 'package:jovera_finance/screens/personal_loan/controller/personal_loan_controller.dart';
 import 'package:jovera_finance/screens/personal_loan/view/personal_loan_apply_as_view.dart';
+import 'package:jovera_finance/utilities/authentication/auth_manager.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
+import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
+import 'package:jovera_finance/utilities/navigation/app_navigator.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
 import 'package:jovera_finance/widgets/custom_page_title.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
-class PersonalLoanLandingView extends GetView<PersonalLoanController> {
+class PersonalLoanLandingView extends ConsumerWidget {
   const PersonalLoanLandingView({super.key});
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(personalLoanControllerProvider);
+    final isLogged = ref.watch(authManagerProvider).isLogged;
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: Stack(
@@ -58,16 +63,10 @@ class PersonalLoanLandingView extends GetView<PersonalLoanController> {
                     child: CustomButton(
                       onPressed: () {
                         if (kDebugMode) print("hjhgjhj");
-                        Get.lazyPut<PersonalLoanController>(
-                          () => PersonalLoanController(),
-                        );
-                        if (controller.authManager.isLogged.value) {
-                          Get.to(() => PersonalLoanApplyAsView());
+                        if (isLogged) {
+                          AppNavigator.push(const PersonalLoanApplyAsView());
                         } else {
-                          Get.back();
-
-                          BottomNavigationBarController cont = Get.find();
-                          cont.selectedIndex.value = 4;
+                          goToLoginScreen(ref.read);
                         }
                       },
                       text: "Apply",
@@ -80,10 +79,7 @@ class PersonalLoanLandingView extends GetView<PersonalLoanController> {
                       borderColor: AppColors.white,
                       onPressed: () {
                         if (kDebugMode) print("hjhgjhj");
-                        Get.lazyPut<PersonalLoanController>(
-                          () => PersonalLoanController(),
-                        );
-                        Get.to(() => PersonalLoanCalculatorView());
+                        AppNavigator.push(const PersonalLoanCalculatorView());
                       },
                       text: "Calculator",
                     ),

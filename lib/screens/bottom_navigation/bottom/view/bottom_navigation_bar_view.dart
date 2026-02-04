@@ -1,66 +1,77 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jovera_finance/screens/main_drawer/widget/drawer_widget.dart';
+import 'package:jovera_finance/utilities/authentication/auth_manager.dart';
 import 'package:jovera_finance/screens/bottom_navigation/chat/controller/chat_controller.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/screens/bottom_navigation/bottom/controller/bottom_navigation_bar_controller.dart';
+import 'package:jovera_finance/utilities/localization/string_extensions.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
-class BottomnavigationBarView extends GetView<BottomNavigationBarController> {
+class BottomnavigationBarView extends ConsumerWidget {
   const BottomnavigationBarView({super.key});
 
-  Future<bool> _showExitDialog() async {
-    return await Get.dialog<bool>(
-          AlertDialog(
-            backgroundColor: AppColors.black2,
-            title: MainText(text: "Exit App", color: AppColors.primary),
-            content: MainText(text: "Are you sure you want to exit the app?"),
-            actions: [
-              TextButton(
-                onPressed: () => Get.back(result: false),
-                child: MainText(text: "Cancel"),
-              ),
-              TextButton(
-                onPressed: () => Get.back(result: true),
-                child: MainText(text: "Exit", color: AppColors.primary),
-              ),
-            ],
-          ),
-        ) ??
-        false;
-  }
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.read(bottomNavigationBarControllerProvider.notifier);
+    ref.watch(bottomNavigationBarControllerProvider);
+    ref.watch(authManagerProvider);
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
-        if (controller.selectedIndex.value != 0) {
-          controller.selectedIndex.value = 0;
+        if (controller.selectedIndex != 0) {
+          controller.onItemTapped(0);
         } else {
           if (didPop) return;
 
-          bool confirmExit = await _showExitDialog();
+          bool confirmExit =
+              await showDialog<bool>(
+                context: context,
+                builder:
+                    (_) => AlertDialog(
+                      backgroundColor: AppColors.black2,
+                      title: MainText(
+                        text: "Exit App",
+                        color: AppColors.primary,
+                      ),
+                      content: MainText(
+                        text: "Are you sure you want to exit the app?",
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: MainText(text: "Cancel"),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(true),
+                          child: MainText(
+                            text: "Exit",
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+              ) ??
+              false;
           if (confirmExit) {
             SystemNavigator.pop();
           }
         }
       },
-      child: Obx(
-        () => Scaffold(
+      child: Scaffold(
           resizeToAvoidBottomInset: true,
           backgroundColor: AppColors.backgroundColor,
 
           body: Center(
             child: controller.widgetOptions.elementAt(
-              controller.selectedIndex.value,
+              controller.selectedIndex,
             ),
           ),
 
           bottomNavigationBar: BottomNavigationBar(
-            currentIndex: controller.selectedIndex.value,
+            currentIndex: controller.selectedIndex,
             backgroundColor: AppColors.black2,
             showUnselectedLabels: true,
             showSelectedLabels: true,
@@ -73,7 +84,7 @@ class BottomnavigationBarView extends GetView<BottomNavigationBarController> {
                   
                   "assets/icons/home_icon.svg",
                   colorFilter: ColorFilter.mode(
-                    controller.selectedIndex.value == 0
+                    controller.selectedIndex == 0
                         ? AppColors.primary
                         : AppColors.textGrey,
                     BlendMode.srcIn,
@@ -87,7 +98,7 @@ class BottomnavigationBarView extends GetView<BottomNavigationBarController> {
                 icon: SvgPicture.asset(
                   "assets/icons/loan_icon.svg",
                   colorFilter: ColorFilter.mode(
-                    controller.selectedIndex.value == 1
+                    controller.selectedIndex == 1
                         ? AppColors.primary
                         : AppColors.textGrey,
                     BlendMode.srcIn,
@@ -99,7 +110,7 @@ class BottomnavigationBarView extends GetView<BottomNavigationBarController> {
                 icon: SvgPicture.asset(
                   "assets/icons/calculator_icon.svg",
                   colorFilter: ColorFilter.mode(
-                    controller.selectedIndex.value == 2
+                    controller.selectedIndex == 2
                         ? AppColors.primary
                         : AppColors.textGrey,
                     BlendMode.srcIn,
@@ -112,7 +123,7 @@ class BottomnavigationBarView extends GetView<BottomNavigationBarController> {
                 icon: SvgPicture.asset(
                   "assets/icons/chat_icon.svg",
                   colorFilter: ColorFilter.mode(
-                    controller.selectedIndex.value == 3
+                    controller.selectedIndex == 3
                         ? AppColors.primary
                         : AppColors.textGrey,
                     BlendMode.srcIn,
@@ -125,7 +136,7 @@ class BottomnavigationBarView extends GetView<BottomNavigationBarController> {
                 icon: SvgPicture.asset(
                   "assets/icons/tracking_icon.svg",
                   colorFilter: ColorFilter.mode(
-                    controller.selectedIndex.value == 4
+                    controller.selectedIndex == 4
                         ? AppColors.primary
                         : AppColors.textGrey,
                     BlendMode.srcIn,
@@ -141,9 +152,7 @@ class BottomnavigationBarView extends GetView<BottomNavigationBarController> {
 
               if (index == 3) {
                 Future.delayed(const Duration(milliseconds: 300), () {
-                  if (Get.isRegistered<ChatController>()) {
-                    Get.find<ChatController>().scrollToBottom();
-                  }
+                  ref.read(chatControllerProvider.notifier).scrollToBottom();
                 });
               }
             },
@@ -161,7 +170,6 @@ class BottomnavigationBarView extends GetView<BottomNavigationBarController> {
             ),
           ),
         ),
-      ),
     );
   }
 }

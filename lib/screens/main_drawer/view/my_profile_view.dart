@@ -2,21 +2,26 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jovera_finance/screens/bottom_navigation/bottom/controller/bottom_navigation_bar_controller.dart';
 import 'package:jovera_finance/screens/main_drawer/view/edit_profile_view.dart';
 import 'package:jovera_finance/screens/main_drawer/widget/profile_fields.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
+import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
+import 'package:jovera_finance/utilities/localization/string_extensions.dart';
+import 'package:jovera_finance/utilities/navigation/app_navigator.dart';
 import 'package:jovera_finance/widgets/background.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
 import 'package:jovera_finance/widgets/custom_page_title.dart';
 
-class MyProfileView extends GetView<BottomNavigationBarController> {
+class MyProfileView extends ConsumerWidget {
   const MyProfileView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.read(bottomNavigationBarControllerProvider.notifier);
+    ref.watch(bottomNavigationBarControllerProvider);
     return Background(
       appLoadingController: controller.appLoadingController,
       child: Scaffold(
@@ -35,31 +40,29 @@ class MyProfileView extends GetView<BottomNavigationBarController> {
                     title: "Profile".tr,
                   ),
                   SizedBox(height: fullHeight * 0.03),
-                  Obx(
-                    () => Center(
-                      child: CircleAvatar(
-                        backgroundColor: AppColors.backgroundColor,
-                        radius: fullWidth * 0.2,
-                        backgroundImage:
-                            controller.profilePicturePath.value != ''
-                                ? controller.profilePicturePath.value
-                                        .startsWith('https')
-                                    ? NetworkImage(
-                                      controller.profilePicturePath.value,
-                                    )
-                                    : FileImage(
-                                      File(controller.profilePicturePath.value),
-                                    )
-                                : null,
+                  Center(
+                    child: CircleAvatar(
+                      backgroundColor: AppColors.backgroundColor,
+                      radius: fullWidth * 0.2,
+                      backgroundImage:
+                          controller.profilePicturePath != ''
+                              ? controller.profilePicturePath
+                                      .startsWith('https')
+                                  ? NetworkImage(
+                                    controller.profilePicturePath,
+                                  )
+                                  : FileImage(
+                                    File(controller.profilePicturePath),
+                                  )
+                              : null,
 
-                        child:
-                            controller.profilePicturePath.value == ''
-                                ? SvgPicture.asset(
-                                  "assets/icons/profile_icon.svg",
-                                  fit: BoxFit.fill,
-                                )
-                                : null,
-                      ),
+                      child:
+                          controller.profilePicturePath == ''
+                              ? SvgPicture.asset(
+                                "assets/icons/profile_icon.svg",
+                                fit: BoxFit.fill,
+                              )
+                              : null,
                     ),
                   ),
 
@@ -70,7 +73,7 @@ class MyProfileView extends GetView<BottomNavigationBarController> {
             ),
             CustomButton(
               onPressed: () {
-                Get.to(() => EditProfileView());
+                AppNavigator.push(EditProfileView());
               },
               text: "Edit".tr,
             ).paddingOnly(bottom: fullHeight * 0.08),

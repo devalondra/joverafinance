@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
+import 'package:jovera_finance/utilities/localization/string_extensions.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
 class DocumentPicker {

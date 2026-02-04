@@ -1,25 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_validators.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
 import 'package:jovera_finance/screens/auth/forgot_password/controller/forgot_password_conttroller.dart';
+import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
+import 'package:jovera_finance/utilities/localization/string_extensions.dart';
 import 'package:jovera_finance/widgets/background.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
 import 'package:jovera_finance/widgets/custom_text_field.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
-class ForgotPasswordView extends GetView<ForgotPasswordController> {
+class ForgotPasswordView extends ConsumerWidget {
   const ForgotPasswordView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.read(forgotPasswordControllerProvider.notifier);
+    ref.watch(forgotPasswordControllerProvider);
     final formKey = GlobalKey<FormState>();
     return Background(
       appLoadingController: controller.appLoadingController,
       // safeAreaBottom: true,
       child: Scaffold(
-        key: controller.scaffoldKey,
         backgroundColor: AppColors.backgroundColor,
         body: SingleChildScrollView(
           child: Column(
@@ -53,7 +56,7 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
               Form(
                 key: formKey,
                 child: CustomTextField(
-                  controller: controller.emailController.value,
+                  controller: controller.emailController,
                   hintText: "Email".tr,
                   validator: (value) {
                     return AppValidators().email(value);

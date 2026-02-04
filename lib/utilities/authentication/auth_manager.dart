@@ -1,67 +1,74 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:jovera_finance/screens/auth/login/model/users.dart';
-import 'package:jovera_finance/screens/bottom_navigation/bottom/binding/bottom_navigation_bar_binding.dart';
 import 'package:jovera_finance/screens/bottom_navigation/bottom/view/bottom_navigation_bar_view.dart';
-import 'package:jovera_finance/screens/main_drawer/notification/controller/notification_controller.dart';
-import 'package:jovera_finance/utilities/api/api_service.dart';
+import 'package:jovera_finance/screens/bottom_navigation/bottom/controller/bottom_navigation_bar_controller.dart';
 import 'package:jovera_finance/utilities/authentication/cache_manager.dart';
 import 'package:jovera_finance/utilities/constants/app_tools.dart';
+import 'package:jovera_finance/utilities/navigation/app_navigator.dart';
+import 'package:jovera_finance/utilities/api/api_service.dart';
 import 'package:jovera_finance/utilities/services/notification_service.dart';
 
-final AppTools appTools = AppTools();
-final TextTheme textTheme = TextTheme();
+class AuthState {
+  const AuthState({this.appUser, this.isLogged = false});
 
-class AuthManager extends GetxController with CacheManager {
+  final AppUser? appUser;
+  final bool isLogged;
+
+  AuthState copyWith({AppUser? appUser, bool? isLogged}) {
+    return AuthState(
+      appUser: appUser ?? this.appUser,
+      isLogged: isLogged ?? this.isLogged,
+    );
+  }
+}
+
+class AuthManager extends StateNotifier<AuthState> with CacheManager {
+  AuthManager(this.ref) : super(const AuthState(appUser: null));
+
+  final Ref ref;
   final GetStorage storage = GetStorage();
 
-  final isLogged = false.obs;
+  AppUser get currentUser => state.appUser ?? AppUser();
 
-  Rx<AppUser> appUser = AppUser().obs;
+  void setUser(AppUser user) {
+    state = state.copyWith(appUser: user);
+  }
 
   Future<void> logOut() async {
-    if (isLogged.value) {
-      //  api.logout();
-      isLogged.value = false;
+    if (state.isLogged) {
+      state = state.copyWith(isLogged: false);
     }
     await storage.erase();
     await storage.write('first_time', true);
 
-    Get.offAll(
-      () => BottomnavigationBarView(),
-      binding: BottomNavigationBarBinding(),
-    );
+    final bottomNav = ref.read(bottomNavigationBarControllerProvider.notifier);
+    bottomNav.isLogin = true;
+    bottomNav.onItemTapped(0);
+
+    AppNavigator.pushAndRemoveUntil(BottomnavigationBarView());
     Future.delayed(const Duration(seconds: 1), () {
-      appUser.value = AppUser();
+      state = state.copyWith(appUser: AppUser());
     });
     appTools.showSuccessSnackBar('loggedOutSuccess', timer: 1);
   }
 
   void login() async {
-    isLogged.value = true;
-    await saveToken(appUser.value.token);
-    final NotificationService notificationService = Get.find();
-    //todo
-    notificationService.initSocketConnection();
-    if (!Get.isRegistered<NotificationController>()) {
-      Get.put(NotificationController());
-      Get.put(ApiService());
-    }
+    state = state.copyWith(isLogged: true);
+    await saveToken(state.appUser?.token);
+    ref.read(notificationServiceProvider).initSocketConnection();
   }
 
   Future<void> checkLoginStatus() async {
     final token = getToken();
     if (token != null) {
-      isLogged.value = true;
-      final ApiService apiService = Get.put(ApiService());
-      if (kDebugMode) print(token);
-      await apiService.getUserDataByToken(token);
-
-      if (!Get.isRegistered<NotificationController>()) {
-        Get.put(NotificationController());
-      }
+      state = state.copyWith(isLogged: true);
+      await ref.read(apiServiceProvider).getUserDataByToken(token);
     }
   }
 }
+
+final authManagerProvider =
+    StateNotifierProvider<AuthManager, AuthState>((ref) {
+  return AuthManager(ref);
+});

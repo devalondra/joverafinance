@@ -2,11 +2,11 @@
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:dio/dio.dart' as mp;
-import 'package:jovera_finance/utilities/authentication/auth_manager.dart';
+import 'package:jovera_finance/utilities/authentication/cache_manager.dart';
 import 'package:jovera_finance/utilities/constants/app_enums.dart';
 import 'package:jovera_finance/utilities/constants/app_strings.dart';
+import 'package:jovera_finance/utilities/constants/app_tools.dart';
 
 class ApiAbstract {
   final String url = baseURL;
@@ -15,7 +15,7 @@ class ApiAbstract {
   final String? singleValue;
   final mp.FormData? formData;
   final Map<String, dynamic>? queryParameters;
-  final AuthManager authManager = Get.find();
+  final _TokenStore _tokenStore = _TokenStore();
 
   ApiAbstract({
     required this.apiName,
@@ -52,13 +52,7 @@ class ApiAbstract {
     } on DioError catch (error) {
       if (error.response != null) {
         if (error.response?.statusCode == 400) {
-          if (authManager.isLogged.value) {
-            if (onError != null) onError(error);
-            // await authManager.logOut();
-            // appTools.showErrorSnackBar('pleaseSignIn'.tr);
-          } else {
-            if (onError != null) onError(error);
-          }
+          if (onError != null) onError(error);
         } else {
           if (onError != null) onError(error);
         }
@@ -75,7 +69,7 @@ class ApiAbstract {
     CancelToken? cancelToken,
     OptionsEnum? optionsEnum,
   }) async {
-    print(getEndPointURL);
+   // print(getEndPointURL);
     try {
       beforeSend?.call();
       await _dio()
@@ -260,12 +254,7 @@ class ApiAbstract {
     } on DioError catch (error) {
       if (error.response != null) {
         if (error.response?.statusCode == 401) {
-          if (authManager.isLogged.value) {
-            // await authManager.logOut();
-            // appTools.showErrorSnackBar('pleaseSignIn'.tr);
-          } else {
-            if (onError != null) onError(error);
-          }
+          if (onError != null) onError(error);
         } else {
           if (onError != null) onError(error);
         }
@@ -279,7 +268,7 @@ class ApiAbstract {
     return Options(
       headers: {
         'fcmToken': fcm,
-        'Authorization': 'Bearer ${authManager.getToken()}',
+        'Authorization': 'Bearer ${_tokenStore.getToken()}',
         'accept': '*/*',
         'Content-Type': 'application/json',
       },
@@ -290,7 +279,7 @@ class ApiAbstract {
     return Options(
       headers: {
         'fcmToken': fcm,
-        'Authorization': 'Bearer ${authManager.getToken()}',
+        'Authorization': 'Bearer ${_tokenStore.getToken()}',
         'Accept-Language': 'ar',
       },
     );
@@ -334,3 +323,5 @@ class ApiAbstract {
     );
   }
 }
+
+class _TokenStore with CacheManager {}

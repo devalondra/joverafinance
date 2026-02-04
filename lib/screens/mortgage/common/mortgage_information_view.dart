@@ -1,25 +1,28 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jovera_finance/screens/mortgage/controller/mortgage_controller.dart';
 import 'package:jovera_finance/screens/mortgage/common/apply_as_view.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
+import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
+import 'package:jovera_finance/utilities/navigation/app_navigator.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
 import 'package:jovera_finance/widgets/instructions_widget.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
-class MortgageInformationView extends GetView<MortgageController> {
+class MortgageInformationView extends ConsumerWidget {
   const MortgageInformationView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(mortgageControllerProvider);
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: ListView(
         children: [
           SizedBox(height: verticalPagePadding),
-     MainText(
+          MainText(
             text: "Apply in just minutes.",
             fontSize: 22,
             fontWeight: FontWeight.w600,
@@ -49,8 +52,7 @@ class MortgageInformationView extends GetView<MortgageController> {
           CustomButton(
             onPressed: () {
               if (kDebugMode) print("hjhgjhj");
-              Get.lazyPut<MortgageController>(() => MortgageController());
-              Get.to(() => ApplyAsView());
+              AppNavigator.push(const ApplyAsView());
             },
             text: "Apply",
           ),

@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
 import 'package:jovera_finance/screens/auth/language/controller/language_controller.dart';
+import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
+import 'package:jovera_finance/utilities/localization/string_extensions.dart';
 import 'package:jovera_finance/widgets/background.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
-class LanguageView extends GetView<LanguageController> {
+class LanguageView extends ConsumerWidget {
   const LanguageView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.read(languageControllerProvider.notifier);
+    ref.watch(languageControllerProvider);
     return Background(
       child: Scaffold(
-        key: controller.scaffoldKey,
         backgroundColor: AppColors.backgroundColor,
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,

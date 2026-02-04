@@ -1,23 +1,28 @@
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jovera_finance/screens/business_loan/controller/business_loan_controller.dart';
 import 'package:jovera_finance/screens/business_loan/view/business_loan_documents_view.dart';
 
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_validators.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
+import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
+import 'package:jovera_finance/utilities/localization/string_extensions.dart';
+import 'package:jovera_finance/utilities/navigation/app_navigator.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
 import 'package:jovera_finance/widgets/custom_page_title.dart';
 import 'package:jovera_finance/widgets/custom_text_field.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
-class BusinessLoanDetailsView extends GetView<BusinessLoanController> {
+class BusinessLoanDetailsView extends ConsumerWidget {
   BusinessLoanDetailsView({super.key});
   final _formKey = GlobalKey<FormState>();
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.read(businessLoanControllerProvider.notifier);
+    ref.watch(businessLoanControllerProvider);
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: Column(
@@ -34,7 +39,7 @@ class BusinessLoanDetailsView extends GetView<BusinessLoanController> {
                   ),
                   SizedBox(height: fullHeight * 0.05),
                   CustomTextField(
-                    controller: controller.personalNameController.value,
+                    controller: controller.personalNameController,
                     hintText: "Full Name",
                     validator: (value) {
                       return AppValidators().textValidation(value);
@@ -54,7 +59,7 @@ class BusinessLoanDetailsView extends GetView<BusinessLoanController> {
                       ),
                       isDense: true,
                       labelText:
-                          controller.nationalityType.value.isEmpty
+                          controller.nationalityType.isEmpty
                               ? ""
                               : "Nationality".tr,
                       contentPadding: EdgeInsets.only(
@@ -74,9 +79,9 @@ class BusinessLoanDetailsView extends GetView<BusinessLoanController> {
                       ),
                     ),
                     initialValue:
-                        controller.nationalityType.value.isEmpty
+                        controller.nationalityType.isEmpty
                             ? null
-                            : controller.nationalityType.value,
+                            : controller.nationalityType,
 
                     hint: MainText(text: "Choose", color: AppColors.lightGrey),
                     items:
@@ -93,12 +98,12 @@ class BusinessLoanDetailsView extends GetView<BusinessLoanController> {
                             .toList(),
 
                     onChanged: (v) {
-                      controller.nationalityType.value = v.toString();
+                      controller.nationalityType = v.toString();
                     },
                   ).paddingOnly(bottom: fullHeight * 0.01),
                   CustomTextField(
                     alignLabelWithHint: true,
-                    controller: controller.personalPhoneNumberController.value,
+                    controller: controller.personalPhoneNumberController,
                     textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.phone,
                     isDense: true,
@@ -114,24 +119,19 @@ class BusinessLoanDetailsView extends GetView<BusinessLoanController> {
                             ),
                             context: context,
                             onSelect: (country) {
-                              controller.mobileCountryCode.value =
-                                  country.phoneCode;
+                              controller.mobileCountryCode = country.phoneCode;
                             },
                           );
                         },
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Obx(
-                              () => MainText(
-                                text:
-                                    controller.mobileCountryCode.value
-                                            .startsWith("+")
-                                        ? controller.mobileCountryCode.value
-                                        : "+${controller.mobileCountryCode.value}",
-
-                                fontSize: 12.spMin,
-                              ),
+                            MainText(
+                              text:
+                                  controller.mobileCountryCode.startsWith("+")
+                                      ? controller.mobileCountryCode
+                                      : "+${controller.mobileCountryCode}",
+                              fontSize: 12.spMin,
                             ),
                             Icon(
                               Icons.arrow_drop_down,
@@ -147,7 +147,7 @@ class BusinessLoanDetailsView extends GetView<BusinessLoanController> {
                     },
                   ).paddingOnly(bottom: fullHeight * 0.02),
                   CustomTextField(
-                    controller: controller.personalEmailController.value,
+                    controller: controller.personalEmailController,
                     textInputAction: TextInputAction.done,
                     keyboardType: TextInputType.emailAddress,
                     hintText: "Email",
@@ -163,7 +163,7 @@ class BusinessLoanDetailsView extends GetView<BusinessLoanController> {
           CustomButton(
             onPressed: () {
               if (_formKey.currentState?.validate() ?? false) {
-                Get.to(() => BusinessLoanDocumentsView());
+                AppNavigator.push(const BusinessLoanDocumentsView());
               }
             },
             text: "Next",

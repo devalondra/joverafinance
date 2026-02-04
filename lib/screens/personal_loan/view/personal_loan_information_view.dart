@@ -1,19 +1,22 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jovera_finance/screens/personal_loan/view/personal_loan_employee_details_view.dart';
 import 'package:jovera_finance/screens/personal_loan/controller/personal_loan_controller.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
+import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
+import 'package:jovera_finance/utilities/navigation/app_navigator.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
 import 'package:jovera_finance/widgets/instructions_widget.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
-class PersonalLoanInformationView extends GetView<PersonalLoanController> {
+class PersonalLoanInformationView extends ConsumerWidget {
   const PersonalLoanInformationView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(personalLoanControllerProvider);
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: ListView(
@@ -51,7 +54,7 @@ class PersonalLoanInformationView extends GetView<PersonalLoanController> {
               if (kDebugMode) {
                 print("hjhgjhj");
               }
-              Get.to(() => PersonalLoanDetailsView());
+              AppNavigator.push(PersonalLoanDetailsView());
             },
             text: "Apply",
           ),

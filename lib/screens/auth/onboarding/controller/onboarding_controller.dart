@@ -1,27 +1,61 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:jovera_finance/screens/auth/onboarding/model/on_boarding_model.dart';
-import 'package:jovera_finance/screens/bottom_navigation/bottom/binding/bottom_navigation_bar_binding.dart';
 import 'package:jovera_finance/screens/bottom_navigation/bottom/view/bottom_navigation_bar_view.dart';
 import 'package:jovera_finance/utilities/services/notification_service.dart';
+import 'package:jovera_finance/utilities/navigation/app_navigator.dart';
 
-class OnBoardingController extends GetxController {
-  late PageController pageController;
-  RxInt currentPage = 0.obs;
-  final GetStorage storage = GetStorage();
+class OnBoardingState {
+  const OnBoardingState({
+    required this.pageController,
+    required this.storage,
+    this.currentPage = 0,
+  });
+
+  final PageController pageController;
+  final int currentPage;
+  final GetStorage storage;
+
+  OnBoardingState copyWith({PageController? pageController, int? currentPage}) {
+    return OnBoardingState(
+      pageController: pageController ?? this.pageController,
+      storage: storage,
+      currentPage: currentPage ?? this.currentPage,
+    );
+  }
+}
+
+class OnBoardingController extends StateNotifier<OnBoardingState> {
+  OnBoardingController(this.ref)
+    : super(
+        OnBoardingState(
+          pageController: PageController(),
+          storage: GetStorage(),
+        ),
+      );
+
+  final Ref ref;
+  PageController get pageController => state.pageController;
+  int get currentPage => state.currentPage;
+  GetStorage get storage => state.storage;
+
+  set currentPage(int value) {
+    state = state.copyWith(currentPage: value);
+  }
+
   saveFirstTime() async {
     await storage.write("first_time", true);
   }
 
   Future<void> next() async {
-    if (currentPage.value > onBoardingList.length - 2) {
+    if (currentPage > onBoardingList.length - 2) {
       skip();
     } else {
-      currentPage.value++;
+      currentPage = currentPage + 1;
       await pageController.animateToPage(
-        currentPage.value,
+        currentPage,
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
@@ -29,33 +63,28 @@ class OnBoardingController extends GetxController {
   }
 
   Future<void> skip() async {
-    await Get.putAsync(() => NotificationService().init());
+    await ref.read(notificationServiceProvider).init();
     FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
 
     await saveFirstTime();
-    Get.offAll(
-      () => BottomnavigationBarView(),
-      binding: BottomNavigationBarBinding(),
-    );
+    AppNavigator.pushAndRemoveUntil(BottomnavigationBarView());
   }
 
   void onPageChanged(int index) {
-    currentPage.value = index;
-    update();
+    currentPage = index;
   }
 
   @override
-  void onInit() {
-    pageController = PageController();
-    super.onInit();
-  }
-
-  @override
-  void onClose() {
+  void dispose() {
     pageController.dispose();
-    super.onClose();
+    super.dispose();
   }
 }
+
+final onBoardingControllerProvider =
+    StateNotifierProvider<OnBoardingController, OnBoardingState>((ref) {
+  return OnBoardingController(ref);
+});
 
 List<OnBoardingModel> onBoardingList = [
   OnBoardingModel(

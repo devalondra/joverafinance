@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
+import 'package:jovera_finance/utilities/localization/string_extensions.dart';
+import 'package:jovera_finance/utilities/navigation/app_context.dart';
 
 class CustomTextField extends StatefulWidget {
   final TextEditingController controller;
@@ -103,7 +104,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           }
           setState(() => () {});
         },
-        style: Get.textTheme.titleSmall?.copyWith(
+        style: AppContext.textTheme.titleSmall?.copyWith(
           fontWeight: FontWeight.w400,
           color: widget.textColor ?? AppColors.white,
         ),
@@ -124,7 +125,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   : null,
           hintStyle:
               widget.hintStyle ??
-              Get.textTheme.bodyLarge?.copyWith(color: AppColors.lightText),
+              AppContext.textTheme.bodyLarge?.copyWith(
+                color: AppColors.lightText,
+              ),
           //  hintText: widget.label == true ? null : widget.hintText?.tr,
           prefix: widget.prefix,
           prefixIcon: widget.prefixIcon,
@@ -143,7 +146,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
           labelText: widget.label == true ? widget.hintText?.tr : null,
           labelStyle:
               widget.hintStyle ??
-              Get.textTheme.bodyLarge?.copyWith(color: AppColors.darkGrey),
+              AppContext.textTheme.bodyLarge?.copyWith(
+                color: AppColors.darkGrey,
+              ),
           alignLabelWithHint: widget.alignLabelWithHint ?? false,
 
           errorText: null,

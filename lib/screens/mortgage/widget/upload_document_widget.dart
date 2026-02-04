@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
 import 'package:jovera_finance/screens/mortgage/widget/view_document_view.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
+import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
+import 'package:jovera_finance/utilities/navigation/app_navigator.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
 class UploadDocumentWidget extends StatelessWidget {
   const UploadDocumentWidget({
     super.key,
     required this.onTap,
-
     required this.text,
-   
     required this.filePath,
     required this.isPdf,
   });
@@ -51,8 +50,8 @@ class UploadDocumentWidget extends StatelessWidget {
               filePath.isNotEmpty
                   ? InkWell(
                     onTap: () {
-                      Get.to(
-                        () => ViewDocumentView(
+                      AppNavigator.push(
+                        ViewDocumentView(
                           filePath: filePath,
                           isPdf: isPdf,
                           title: text,

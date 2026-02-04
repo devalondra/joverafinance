@@ -1,24 +1,29 @@
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jovera_finance/screens/personal_loan/view/personal_loan_documents_view.dart';
 import 'package:jovera_finance/screens/personal_loan/controller/personal_loan_controller.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_validators.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
+import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
+import 'package:jovera_finance/utilities/localization/string_extensions.dart';
+import 'package:jovera_finance/utilities/navigation/app_navigator.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
 import 'package:jovera_finance/widgets/custom_page_title.dart';
 import 'package:jovera_finance/widgets/custom_text_field.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
-class PersonalLoanDetailsView extends GetView<PersonalLoanController> {
+class PersonalLoanDetailsView extends ConsumerWidget {
   PersonalLoanDetailsView({super.key});
 
   final _formKey = GlobalKey<FormState>();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.read(personalLoanControllerProvider.notifier);
+    ref.watch(personalLoanControllerProvider);
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: Column(
@@ -35,7 +40,7 @@ class PersonalLoanDetailsView extends GetView<PersonalLoanController> {
                   ),
                   SizedBox(height: fullHeight * 0.05),
                   CustomTextField(
-                    controller: controller.personalNameController.value,
+                    controller: controller.personalNameController,
                     hintText: "Full Name",
                     validator: (value) {
                       return AppValidators().textValidation(value);
@@ -55,7 +60,7 @@ class PersonalLoanDetailsView extends GetView<PersonalLoanController> {
                       ),
                       isDense: true,
                       labelText:
-                          controller.nationalityType.value.isEmpty
+                          controller.nationalityType.isEmpty
                               ? ""
                               : "Nationality".tr,
                       contentPadding: EdgeInsets.only(
@@ -75,9 +80,9 @@ class PersonalLoanDetailsView extends GetView<PersonalLoanController> {
                       ),
                     ),
                     initialValue:
-                        controller.nationalityType.value.isEmpty
+                        controller.nationalityType.isEmpty
                             ? null
-                            : controller.nationalityType.value,
+                            : controller.nationalityType,
 
                     hint: MainText(text: "Choose", color: AppColors.lightGrey),
                     items:
@@ -94,12 +99,12 @@ class PersonalLoanDetailsView extends GetView<PersonalLoanController> {
                             .toList(),
 
                     onChanged: (v) {
-                      controller.nationalityType.value = v.toString();
+                      controller.nationalityType = v.toString();
                     },
                   ).paddingOnly(bottom: fullHeight * 0.025),
                   CustomTextField(
                     alignLabelWithHint: true,
-                    controller: controller.personalPhoneNumberController.value,
+                    controller: controller.personalPhoneNumberController,
                     textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.phone,
                     //   inputFormatters: phoneInputFormatters,
@@ -116,7 +121,7 @@ class PersonalLoanDetailsView extends GetView<PersonalLoanController> {
                             ),
                             context: context,
                             onSelect: (country) {
-                              controller.mobileCountryCode.value =
+                              controller.mobileCountryCode =
                                   country.phoneCode;
                             },
                           );
@@ -124,16 +129,14 @@ class PersonalLoanDetailsView extends GetView<PersonalLoanController> {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Obx(
-                              () => MainText(
-                                text:
-                                    controller.mobileCountryCode.value
-                                            .startsWith("+")
-                                        ? controller.mobileCountryCode.value
-                                        : "+${controller.mobileCountryCode.value}",
+                            MainText(
+                              text:
+                                  controller.mobileCountryCode
+                                          .startsWith("+")
+                                      ? controller.mobileCountryCode
+                                      : "+${controller.mobileCountryCode}",
 
-                                fontSize: 12.spMin,
-                              ),
+                              fontSize: 12.spMin,
                             ),
                             Icon(
                               Icons.arrow_drop_down,
@@ -149,7 +152,7 @@ class PersonalLoanDetailsView extends GetView<PersonalLoanController> {
                     },
                   ).paddingOnly(bottom: fullHeight * 0.02),
                   CustomTextField(
-                    controller: controller.personalEmailController.value,
+                    controller: controller.personalEmailController,
                     textInputAction: TextInputAction.done,
                     keyboardType: TextInputType.emailAddress,
                     hintText: "Email",
@@ -165,7 +168,7 @@ class PersonalLoanDetailsView extends GetView<PersonalLoanController> {
           CustomButton(
             onPressed: () {
               if (_formKey.currentState?.validate() ?? false) {
-                Get.to(() => PersonalLoanDocumentsView());
+                AppNavigator.push(PersonalLoanDocumentsView());
               }
             },
             text: "Next",

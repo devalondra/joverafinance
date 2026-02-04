@@ -1,12 +1,12 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
+import 'package:jovera_finance/utilities/navigation/app_context.dart';
 
-double fullWidth = Get.width;
-double fullHeight = Get.height;
-double verticalPagePadding = fullHeight * 0.02;
-double horizontalPagePadding = fullWidth * 0.05;
-double customHorizontalSpace = Get.width * 0.04;
+double get fullWidth => AppContext.width;
+double get fullHeight => AppContext.height;
+double get verticalPagePadding => fullHeight * 0.02;
+double get horizontalPagePadding => fullWidth * 0.05;
+double get customHorizontalSpace => fullWidth * 0.04;
 double smallFont = 14.spMin;
 double smallHeadingFont = 18.spMin;
 double headingFont = 20.sp;

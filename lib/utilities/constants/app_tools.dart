@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_enums.dart';
+import 'package:jovera_finance/utilities/localization/string_extensions.dart';
+import 'package:jovera_finance/utilities/navigation/app_context.dart';
+import 'package:jovera_finance/utilities/navigation/app_messenger.dart';
 
 class AppTools {
   Future<String>? getFCMTokenForDevice() async {
@@ -30,7 +32,9 @@ class AppTools {
     final SnackBar snackBar = SnackBar(
       content: Text(
         message,
-        style: Get.textTheme.labelLarge!.copyWith(color: AppColors.white),
+        style: AppContext.textTheme.labelLarge?.copyWith(
+          color: AppColors.white,
+        ),
       ),
       backgroundColor:
           snackEnum == SnackEnum.success
@@ -48,7 +52,7 @@ class AppTools {
     );
 
     Future.delayed(Duration(seconds: seconds), () {
-      ScaffoldMessenger.of(Get.context!).showSnackBar(snackBar);
+      AppMessenger.showSnackBar(snackBar);
     });
   }
 
@@ -84,3 +88,5 @@ class AppTools {
     }
   }
 }
+
+final AppTools appTools = AppTools();

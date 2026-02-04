@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
+import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
+import 'package:jovera_finance/utilities/navigation/app_navigator.dart';
 
 class CustomBackButton extends StatelessWidget {
   const CustomBackButton({super.key});
@@ -10,7 +11,7 @@ class CustomBackButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Get.back();
+        AppNavigator.pop();
       },
       child: Container(
         padding: EdgeInsets.all(fullWidth * 0.015),

@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
 import 'package:jovera_finance/screens/bottom_navigation/bottom/controller/bottom_navigation_bar_controller.dart';
 import 'package:jovera_finance/screens/bottom_navigation/home/controller/home_controller.dart';
 import 'package:jovera_finance/screens/bottom_navigation/home/widget/dots_controller.dart';
 import 'package:jovera_finance/screens/bottom_navigation/home/widget/offers_carousel.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
+import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
+import 'package:jovera_finance/utilities/localization/string_extensions.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jovera_finance/utilities/authentication/auth_manager.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
-class HomeView extends GetView<HomeController> {
+class HomeView extends ConsumerWidget {
   const HomeView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.read(homeControllerProvider.notifier);
+    ref.watch(homeControllerProvider);
+    final authState = ref.watch(authManagerProvider);
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor,
@@ -23,94 +28,70 @@ class HomeView extends GetView<HomeController> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Obx(
-                  () => Row(
-                    children: [
-                      Container(
-                        height: fullWidth * 0.17,
-                        width: fullWidth * 0.17,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: AppColors.darkGrey),
-                          image:
-                              controller.authManager.appUser.value.picture !=
-                                          null &&
-                                      controller
-                                              .authManager
-                                              .appUser
-                                              .value
-                                              .picture !=
-                                          ""
-                                  ? DecorationImage(
-                                    image: NetworkImage(
-                                      controller
-                                          .authManager
-                                          .appUser
-                                          .value
-                                          .picture!,
-                                    ),
-                                    fit: BoxFit.cover,
-                                  )
-                                  : DecorationImage(
-                                    image: AssetImage(
-                                      "assets/images/jovera_logo.png",
-                                    ),
-                                    fit: BoxFit.cover,
+                Row(
+                  children: [
+                    Container(
+                      height: fullWidth * 0.17,
+                      width: fullWidth * 0.17,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: AppColors.darkGrey),
+                        image:
+                            authState.appUser?.picture != null &&
+                                    authState.appUser?.picture != ""
+                                ? DecorationImage(
+                                  image: NetworkImage(
+                                    authState.appUser!.picture!,
                                   ),
-                        ),
+                                  fit: BoxFit.cover,
+                                )
+                                : DecorationImage(
+                                  image: AssetImage(
+                                    "assets/images/jovera_logo.png",
+                                  ),
+                                  fit: BoxFit.cover,
+                                ),
                       ),
-                      SizedBox(width: fullWidth * 0.03),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          controller.authManager.isLogged.value
-                              ? Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      MainText(text: 'Welcome Back'.tr),
-                                      SizedBox(width: fullWidth * 0.02),
-                                      Icon(
-                                        Icons.waving_hand,
-                                        color: AppColors.primary,
-                                      ),
-                                    ],
-                                  ),
-                                  MainText(
-                                    text:
-                                        controller
-                                                    .authManager
-                                                    .appUser
-                                                    .value
-                                                    .name ==
-                                                null
-                                            ? ""
-                                            : controller
-                                                .authManager
-                                                .appUser
-                                                .value
-                                                .name!,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ],
-                              )
-                              : Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  MainText(text: 'Easy Loans'.tr),
-                                  SizedBox(width: fullWidth * 0.02),
-                                  Icon(
-                                    Icons.waving_hand,
-                                    color: AppColors.primary,
-                                  ),
-                                ],
-                              ),
-                        ],
-                      ),
-                    ],
-                  ).paddingSymmetric(vertical: fullHeight * 0.01),
-                ),
+                    ),
+                    SizedBox(width: fullWidth * 0.03),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        authState.isLogged
+                            ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    MainText(text: 'Welcome Back'.tr),
+                                    SizedBox(width: fullWidth * 0.02),
+                                    Icon(
+                                      Icons.waving_hand,
+                                      color: AppColors.primary,
+                                    ),
+                                  ],
+                                ),
+                                MainText(
+                                  text: authState.appUser?.name ?? "",
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ],
+                            )
+                            : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                MainText(text: 'Easy Loans'.tr),
+                                SizedBox(width: fullWidth * 0.02),
+                                Icon(
+                                  Icons.waving_hand,
+                                  color: AppColors.primary,
+                                ),
+                              ],
+                            ),
+                      ],
+                    ),
+                  ],
+                ).paddingSymmetric(vertical: fullHeight * 0.01),
                 InkWell(
                   onTap: () {
                     Scaffold.of(context).openEndDrawer();
@@ -139,8 +120,10 @@ class HomeView extends GetView<HomeController> {
               children: [
                 InkWell(
                   onTap: () {
-                    BottomNavigationBarController cont = Get.find();
-                    cont.selectedIndex.value = 1;
+                    final cont = ref.read(
+                      bottomNavigationBarControllerProvider.notifier,
+                    );
+                    cont.onItemTapped(1);
                   },
                   child: Container(
                     padding: EdgeInsets.symmetric(
@@ -185,34 +168,32 @@ class HomeView extends GetView<HomeController> {
               ),
               itemCount: controller.servicesList.length,
               itemBuilder: (context, index) {
-                return Obx(
-                  () => InkWell(
-                    onTap: () => controller.servicesList[index].onTap(),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: AppColors.black2,
-                        borderRadius: BorderRadius.circular(fullWidth * 0.04),
-                        gradient: LinearGradient(
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.topCenter,
-                          colors:
-                              controller.selectedService.value == index
-                                  ? [
-                                    const Color.fromARGB(255, 115, 77, 8),
-                                    AppColors.primary,
-                                  ]
-                                  : [AppColors.black2, AppColors.black2],
+                return InkWell(
+                  onTap: () => controller.servicesList[index].onTap(),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.black2,
+                      borderRadius: BorderRadius.circular(fullWidth * 0.04),
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                        colors:
+                            controller.selectedService == index
+                                ? [
+                                  const Color.fromARGB(255, 115, 77, 8),
+                                  AppColors.primary,
+                                ]
+                                : [AppColors.black2, AppColors.black2],
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(
+                          controller.servicesList[index].iconPath,
                         ),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset(
-                            controller.servicesList[index].iconPath,
-                          ),
-                          MainText(text: controller.servicesList[index].title),
-                        ],
-                      ),
+                        MainText(text: controller.servicesList[index].title),
+                      ],
                     ),
                   ),
                 );

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:jovera_finance/screens/bottom_navigation/chat/model/chat_model.dart';
 import 'package:jovera_finance/screens/bottom_navigation/chat/widget/file_widget.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
+import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
 class SentMessage extends StatelessWidget {

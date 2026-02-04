@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pinput/pinput.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
 import 'package:jovera_finance/screens/auth/forgot_password/controller/forgot_password_conttroller.dart';
+import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
+import 'package:jovera_finance/utilities/localization/string_extensions.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
-class VerifyOtpView extends GetView<ForgotPasswordController> {
+class VerifyOtpView extends ConsumerWidget {
   const VerifyOtpView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.read(forgotPasswordControllerProvider.notifier);
+    ref.watch(forgotPasswordControllerProvider);
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: SingleChildScrollView(
@@ -45,7 +49,7 @@ class VerifyOtpView extends GetView<ForgotPasswordController> {
             SizedBox(height: fullHeight * 0.08),
 
             Pinput(
-              controller: controller.otpController.value,
+              controller: controller.otpController,
               defaultPinTheme: PinTheme(
                 width: 56,
                 height: 56,
@@ -76,7 +80,7 @@ class VerifyOtpView extends GetView<ForgotPasswordController> {
                 SizedBox(width: fullWidth * 0.01),
                 InkWell(
                   onTap: () {
-                    controller.otpController.value.clear();
+                    controller.otpController.clear();
                     controller.forgotPassword();
                   },
                   child: MainText(

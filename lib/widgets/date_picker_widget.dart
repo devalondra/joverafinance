@@ -1,14 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
+import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
+import 'package:jovera_finance/utilities/navigation/app_context.dart';
+import 'package:jovera_finance/utilities/navigation/app_navigator.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
 class DatePickerWidget {
   void showCupertinoDialog(selectedDate, onDateTimeChanged) {
     showCupertinoModalPopup<void>(
-      context: Get.context!,
+      context: AppContext.context!,
       builder:
           (BuildContext context) => Container(
             height: 216,
@@ -31,7 +33,7 @@ class DatePickerWidget {
                     color: AppColors.transparent,
                     child: InkWell(
                       onTap: () {
-                        Get.back();
+                        AppNavigator.pop();
                       },
                       child: MainText(text: "Done"),
                     ),

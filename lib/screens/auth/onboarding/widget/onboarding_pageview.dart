@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
 import 'package:jovera_finance/screens/auth/onboarding/controller/onboarding_controller.dart';
+import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
+import 'package:jovera_finance/utilities/localization/string_extensions.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class OnBoardingPageView extends GetView<OnBoardingController> {
+class OnBoardingPageView extends ConsumerWidget {
   const OnBoardingPageView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.read(onBoardingControllerProvider.notifier);
     return PageView.builder(
       controller: controller.pageController,
       onPageChanged: (value) {
@@ -39,8 +42,8 @@ class OnBoardingPageView extends GetView<OnBoardingController> {
                   textAlign: TextAlign.center,
                   fontWeight: FontWeight.w400,
                 ).paddingOnly(
-                  top: Get.width * 0.05,
-                  bottom: Get.width * 0.02,
+                  top: fullWidth * 0.05,
+                  bottom: fullWidth * 0.02,
                   left: horizontalPagePadding * 1.5,
                   right: horizontalPagePadding * 1.5,
                 ),
@@ -53,7 +56,7 @@ class OnBoardingPageView extends GetView<OnBoardingController> {
                   height: 1.5,
                   color: AppColors.grey,
                   textAlign: TextAlign.center,
-                ).paddingAll(Get.width * 0.04),
+                ).paddingAll(fullWidth * 0.04),
               ],
             ),
           ),

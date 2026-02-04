@@ -1,4 +1,4 @@
-import 'package:get/get.dart';
+import 'package:jovera_finance/utilities/localization/string_extensions.dart';
 
 class AppValidators {
   String? email(String? value) {

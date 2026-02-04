@@ -5,16 +5,177 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jovera_finance/screens/bottom_navigation/bottom/controller/bottom_navigation_bar_controller.dart';
 import 'package:jovera_finance/screens/bottom_navigation/services/model/document_model.dart';
 import 'package:jovera_finance/screens/mortgage/provider/mortgage_provider.dart';
 import 'package:jovera_finance/utilities/authentication/auth_manager.dart';
+import 'package:jovera_finance/utilities/constants/app_tools.dart';
+import 'package:jovera_finance/utilities/navigation/app_navigator.dart';
 import 'package:jovera_finance/widgets/app_loading_controller.dart';
 import 'package:jovera_finance/widgets/document_picker_widget.dart';
 
-class MortgageController extends GetxController {
+class MortgageState {
+  const MortgageState({
+    required this.appLoadingController,
+    required this.priceInputController,
+    required this.advanceInputController,
+    required this.loanInputController,
+    required this.yearsInputController,
+    required this.interestInputController,
+    required this.priceInputFocusNode,
+    required this.advanceInputFocusNode,
+    required this.loanInputFocusNode,
+    required this.yearsInputFocusNode,
+    required this.interestInputFocusNode,
+    required this.personalNameController,
+    required this.personalPhoneNumberController,
+    required this.personalEmailController,
+    required this.passportDocument,
+    required this.emiratesIdDocument,
+    required this.salaryCertificateDocument,
+    required this.bankStatementDocument,
+    required this.etihadBureauDocument,
+    required this.tradeLicenseDocument,
+    required this.fourVATPaymentsDocument,
+    this.applicantType = "Salary",
+    this.mobileCountryCode = "+971",
+    this.propertyPrice = MortgageController.mortgageDefaultPrice,
+    this.advancePayment = MortgageController.mortgageDefaultAdvance,
+    this.loanAmount = MortgageController.mortgageDefaultLoan,
+    this.interestRate = MortgageController.mortgageDefaultInterest,
+    this.propertyPeriod = MortgageController.mortgageDefaultYears,
+    this.calculatorType = MortgageController.calculatorNational,
+    this.nationalityType = 'UAE National',
+    this.propertyType = 'Villa',
+    this.propertyLocation = 'Abu Dhabi',
+    this.propertyCondition = 'New',
+    this.emirates = const [
+      "Abu Dhabi",
+      "Dubai",
+      "Sharjah",
+      "Ajman",
+      "Umm Al Quwain",
+      "Ras Al Khaimah",
+      "Fujairah",
+    ],
+    this.nationalities = const ["UAE National", "Expat"],
+    this.conditions = const ["New", "Old", "Off Plan"],
+    this.properties = const ["Villa", "Apartment", "Townhouse", "Land"],
+  });
+
+  final String applicantType;
+  final String mobileCountryCode;
+  final double propertyPrice;
+  final double advancePayment;
+  final double loanAmount;
+  final double interestRate;
+  final int propertyPeriod;
+  final String calculatorType;
+  final TextEditingController priceInputController;
+  final TextEditingController advanceInputController;
+  final TextEditingController loanInputController;
+  final TextEditingController yearsInputController;
+  final TextEditingController interestInputController;
+  final FocusNode priceInputFocusNode;
+  final FocusNode advanceInputFocusNode;
+  final FocusNode loanInputFocusNode;
+  final FocusNode yearsInputFocusNode;
+  final FocusNode interestInputFocusNode;
+  final AppLoadingController appLoadingController;
+  final TextEditingController personalNameController;
+  final TextEditingController personalPhoneNumberController;
+  final TextEditingController personalEmailController;
+  final DocumentModel passportDocument;
+  final DocumentModel emiratesIdDocument;
+  final DocumentModel salaryCertificateDocument;
+  final DocumentModel bankStatementDocument;
+  final DocumentModel etihadBureauDocument;
+  final DocumentModel tradeLicenseDocument;
+  final DocumentModel fourVATPaymentsDocument;
+  final String nationalityType;
+  final String propertyType;
+  final String propertyLocation;
+  final String propertyCondition;
+  final List emirates;
+  final List nationalities;
+  final List conditions;
+  final List properties;
+
+  MortgageState copyWith({
+    String? applicantType,
+    String? mobileCountryCode,
+    double? propertyPrice,
+    double? advancePayment,
+    double? loanAmount,
+    double? interestRate,
+    int? propertyPeriod,
+    String? calculatorType,
+    DocumentModel? passportDocument,
+    DocumentModel? emiratesIdDocument,
+    DocumentModel? salaryCertificateDocument,
+    DocumentModel? bankStatementDocument,
+    DocumentModel? etihadBureauDocument,
+    DocumentModel? tradeLicenseDocument,
+    DocumentModel? fourVATPaymentsDocument,
+    String? nationalityType,
+    String? propertyType,
+    String? propertyLocation,
+    String? propertyCondition,
+    List? emirates,
+    List? nationalities,
+    List? conditions,
+    List? properties,
+  }) {
+    return MortgageState(
+      appLoadingController: appLoadingController,
+      priceInputController: priceInputController,
+      advanceInputController: advanceInputController,
+      loanInputController: loanInputController,
+      yearsInputController: yearsInputController,
+      interestInputController: interestInputController,
+      priceInputFocusNode: priceInputFocusNode,
+      advanceInputFocusNode: advanceInputFocusNode,
+      loanInputFocusNode: loanInputFocusNode,
+      yearsInputFocusNode: yearsInputFocusNode,
+      interestInputFocusNode: interestInputFocusNode,
+      personalNameController: personalNameController,
+      personalPhoneNumberController: personalPhoneNumberController,
+      personalEmailController: personalEmailController,
+      passportDocument: passportDocument ?? this.passportDocument,
+      emiratesIdDocument: emiratesIdDocument ?? this.emiratesIdDocument,
+      salaryCertificateDocument:
+          salaryCertificateDocument ?? this.salaryCertificateDocument,
+      bankStatementDocument:
+          bankStatementDocument ?? this.bankStatementDocument,
+      etihadBureauDocument:
+          etihadBureauDocument ?? this.etihadBureauDocument,
+      tradeLicenseDocument:
+          tradeLicenseDocument ?? this.tradeLicenseDocument,
+      fourVATPaymentsDocument:
+          fourVATPaymentsDocument ?? this.fourVATPaymentsDocument,
+      applicantType: applicantType ?? this.applicantType,
+      mobileCountryCode: mobileCountryCode ?? this.mobileCountryCode,
+      propertyPrice: propertyPrice ?? this.propertyPrice,
+      advancePayment: advancePayment ?? this.advancePayment,
+      loanAmount: loanAmount ?? this.loanAmount,
+      interestRate: interestRate ?? this.interestRate,
+      propertyPeriod: propertyPeriod ?? this.propertyPeriod,
+      calculatorType: calculatorType ?? this.calculatorType,
+      nationalityType: nationalityType ?? this.nationalityType,
+      propertyType: propertyType ?? this.propertyType,
+      propertyLocation: propertyLocation ?? this.propertyLocation,
+      propertyCondition: propertyCondition ?? this.propertyCondition,
+      emirates: emirates ?? this.emirates,
+      nationalities: nationalities ?? this.nationalities,
+      conditions: conditions ?? this.conditions,
+      properties: properties ?? this.properties,
+    );
+  }
+}
+
+class MortgageController extends StateNotifier<MortgageState> {
   static const String calculatorNational = "UAE National";
   static const String calculatorResident = "UAE Resident";
   static const String calculatorNonResident = "Non-Resident";
@@ -39,24 +200,70 @@ class MortgageController extends GetxController {
   static const double loanMaxPercent = 0.75;
   static const double loanMaxPercentNonResident = 0.6;
 
-  RxString applicantType = "Salary".obs;
-  RxString mobileCountryCode = "+971".obs;
-  RxDouble propertyPrice = mortgageDefaultPrice.obs;
-  RxDouble advancePayment = mortgageDefaultAdvance.obs;
-  RxDouble loanAmount = mortgageDefaultLoan.obs;
-  RxDouble interestRate = mortgageDefaultInterest.obs;
-  RxInt propertyPeriod = mortgageDefaultYears.obs;
-  RxString calculatorType = calculatorNational.obs;
-  final TextEditingController priceInputController = TextEditingController();
-  final TextEditingController advanceInputController = TextEditingController();
-  final TextEditingController loanInputController = TextEditingController();
-  final TextEditingController yearsInputController = TextEditingController();
-  final TextEditingController interestInputController = TextEditingController();
-  final FocusNode priceInputFocusNode = FocusNode();
-  final FocusNode advanceInputFocusNode = FocusNode();
-  final FocusNode loanInputFocusNode = FocusNode();
-  final FocusNode yearsInputFocusNode = FocusNode();
-  final FocusNode interestInputFocusNode = FocusNode();
+  MortgageController(this.ref)
+    : super(
+        MortgageState(
+          appLoadingController: AppLoadingController(),
+          priceInputController: TextEditingController(),
+          advanceInputController: TextEditingController(),
+          loanInputController: TextEditingController(),
+          yearsInputController: TextEditingController(),
+          interestInputController: TextEditingController(),
+          priceInputFocusNode: FocusNode(),
+          advanceInputFocusNode: FocusNode(),
+          loanInputFocusNode: FocusNode(),
+          yearsInputFocusNode: FocusNode(),
+          interestInputFocusNode: FocusNode(),
+          personalNameController: TextEditingController(),
+          personalPhoneNumberController: TextEditingController(),
+          personalEmailController: TextEditingController(),
+          passportDocument: DocumentModel(),
+          emiratesIdDocument: DocumentModel(),
+          salaryCertificateDocument: DocumentModel(),
+          bankStatementDocument: DocumentModel(),
+          etihadBureauDocument: DocumentModel(),
+          tradeLicenseDocument: DocumentModel(),
+          fourVATPaymentsDocument: DocumentModel(),
+        ),
+      ) {
+    resetMortgageDefaults();
+    calculateEMI();
+  }
+
+  final Ref ref;
+  String get applicantType => state.applicantType;
+  set applicantType(String value) => state = state.copyWith(applicantType: value);
+  String get mobileCountryCode => state.mobileCountryCode;
+  set mobileCountryCode(String value) =>
+      state = state.copyWith(mobileCountryCode: value);
+  double get propertyPrice => state.propertyPrice;
+  set propertyPrice(double value) =>
+      state = state.copyWith(propertyPrice: value);
+  double get advancePayment => state.advancePayment;
+  set advancePayment(double value) =>
+      state = state.copyWith(advancePayment: value);
+  double get loanAmount => state.loanAmount;
+  set loanAmount(double value) => state = state.copyWith(loanAmount: value);
+  double get interestRate => state.interestRate;
+  set interestRate(double value) => state = state.copyWith(interestRate: value);
+  int get propertyPeriod => state.propertyPeriod;
+  set propertyPeriod(int value) =>
+      state = state.copyWith(propertyPeriod: value);
+  String get calculatorType => state.calculatorType;
+  set calculatorType(String value) =>
+      state = state.copyWith(calculatorType: value);
+  TextEditingController get priceInputController => state.priceInputController;
+  TextEditingController get advanceInputController =>
+      state.advanceInputController;
+  TextEditingController get loanInputController => state.loanInputController;
+  TextEditingController get yearsInputController => state.yearsInputController;
+  TextEditingController get interestInputController =>
+      state.interestInputController;
+  FocusNode get priceInputFocusNode => state.priceInputFocusNode;
+  FocusNode get advanceInputFocusNode => state.advanceInputFocusNode;
+  FocusNode get loanInputFocusNode => state.loanInputFocusNode;
+  FocusNode get yearsInputFocusNode => state.yearsInputFocusNode;
+  FocusNode get interestInputFocusNode => state.interestInputFocusNode;
   // Legacy calculator state (kept for reference).
   // RxDouble propertyPrice = 8000000.0.obs;
   // RxDouble advancePayment = 26.0.obs;
@@ -65,66 +272,79 @@ class MortgageController extends GetxController {
   // RxDouble advancePercentage = 0.2.obs;
   // RxString advance = "20%".obs;
   // RxString calculatorType = "UAE National".obs;
-  AuthManager authManager = Get.find();
-  AppLoadingController appLoadingController = AppLoadingController();
-  Rx<TextEditingController> personalNameController =
-      TextEditingController().obs;
+  AppLoadingController get appLoadingController => state.appLoadingController;
+  TextEditingController get personalNameController =>
+      state.personalNameController;
+  TextEditingController get personalPhoneNumberController =>
+      state.personalPhoneNumberController;
+  TextEditingController get personalEmailController =>
+      state.personalEmailController;
 
-  Rx<TextEditingController> personalPhoneNumberController =
-      TextEditingController().obs;
-  Rx<TextEditingController> personalEmailController =
-      TextEditingController().obs;
+  DocumentModel get passportDocument => state.passportDocument;
+  set passportDocument(DocumentModel value) =>
+      state = state.copyWith(passportDocument: value);
+  DocumentModel get emiratesIdDocument => state.emiratesIdDocument;
+  set emiratesIdDocument(DocumentModel value) =>
+      state = state.copyWith(emiratesIdDocument: value);
+  DocumentModel get salaryCertificateDocument =>
+      state.salaryCertificateDocument;
+  set salaryCertificateDocument(DocumentModel value) =>
+      state = state.copyWith(salaryCertificateDocument: value);
+  DocumentModel get bankStatementDocument => state.bankStatementDocument;
+  set bankStatementDocument(DocumentModel value) =>
+      state = state.copyWith(bankStatementDocument: value);
+  DocumentModel get etihadBureauDocument => state.etihadBureauDocument;
+  set etihadBureauDocument(DocumentModel value) =>
+      state = state.copyWith(etihadBureauDocument: value);
+  DocumentModel get tradeLicenseDocument => state.tradeLicenseDocument;
+  set tradeLicenseDocument(DocumentModel value) =>
+      state = state.copyWith(tradeLicenseDocument: value);
+  DocumentModel get fourVATPaymentsDocument => state.fourVATPaymentsDocument;
+  set fourVATPaymentsDocument(DocumentModel value) =>
+      state = state.copyWith(fourVATPaymentsDocument: value);
 
-  Rx<DocumentModel> passportDocument = DocumentModel().obs;
-  Rx<DocumentModel> emiratesIdDocument = DocumentModel().obs;
-  Rx<DocumentModel> salaryCertificateDocument = DocumentModel().obs;
-  Rx<DocumentModel> bankStatementDocument = DocumentModel().obs;
-  Rx<DocumentModel> etihadBureauDocument = DocumentModel().obs;
-  Rx<DocumentModel> tradeLicenseDocument = DocumentModel().obs;
-  Rx<DocumentModel> fourVATPaymentsDocument = DocumentModel().obs;
+  String get nationalityType => state.nationalityType;
+  set nationalityType(String value) =>
+      state = state.copyWith(nationalityType: value);
+  String get propertyType => state.propertyType;
+  set propertyType(String value) =>
+      state = state.copyWith(propertyType: value);
+  String get propertyLocation => state.propertyLocation;
+  set propertyLocation(String value) =>
+      state = state.copyWith(propertyLocation: value);
+  String get propertyCondition => state.propertyCondition;
+  set propertyCondition(String value) =>
+      state = state.copyWith(propertyCondition: value);
+  List get emirates => state.emirates;
+  List get nationalities => state.nationalities;
+  List get conditions => state.conditions;
+  List get properties => state.properties;
 
-  RxString nationalityType = 'UAE National'.obs;
-  RxString propertyType = 'Villa'.obs;
-  RxString propertyLocation = 'Abu Dhabi'.obs;
-  RxString propertyCondition = 'New'.obs;
-  List emirates = [
-    "Abu Dhabi",
-    "Dubai",
-    "Sharjah",
-    "Ajman",
-    "Umm Al Quwain",
-    "Ras Al Khaimah",
-    "Fujairah",
-  ];
-  List nationalities = ["UAE National", "Expat"];
-  List conditions = ["New", "Old", "Off Plan"];
-  List properties = ["Villa", "Apartment", "Townhouse", "Land"];
-
-  bool get isNonResident => calculatorType.value == calculatorNonResident;
+  bool get isNonResident => calculatorType == calculatorNonResident;
 
   double get advanceMin =>
-      propertyPrice.value *
+      propertyPrice *
       (isNonResident ? advanceMinPercentNonResident : advanceMinPercent);
 
-  double get advanceMax => propertyPrice.value * advanceMaxPercent;
+  double get advanceMax => propertyPrice * advanceMaxPercent;
 
-  double get loanMin => propertyPrice.value * loanMinPercent;
+  double get loanMin => propertyPrice * loanMinPercent;
 
   double get loanMax =>
-      propertyPrice.value *
+      propertyPrice *
       (isNonResident ? loanMaxPercentNonResident : loanMaxPercent);
 
   void resetMortgageDefaults() {
-    propertyPrice.value = mortgageDefaultPrice;
-    propertyPeriod.value = mortgageDefaultYears;
-    interestRate.value = mortgageDefaultInterest;
-    advancePayment.value = mortgageDefaultAdvance;
-    loanAmount.value = mortgageDefaultLoan;
+    propertyPrice = mortgageDefaultPrice;
+    propertyPeriod = mortgageDefaultYears;
+    interestRate = mortgageDefaultInterest;
+    advancePayment = mortgageDefaultAdvance;
+    loanAmount = mortgageDefaultLoan;
     _syncMortgageAmounts();
   }
 
   void setCalculatorType(String type) {
-    calculatorType.value = type;
+    calculatorType = type;
     _syncMortgageAmounts();
     // Legacy logic (percentage based).
     // if (type == "UAE National") {
@@ -139,7 +359,7 @@ class MortgageController extends GetxController {
   }
 
   void updatePropertyPrice(double value) {
-    propertyPrice.value = value;
+    propertyPrice = value;
     _syncMortgageAmounts();
     // Legacy logic (percentage based).
     // advancePayment.value =
@@ -148,14 +368,14 @@ class MortgageController extends GetxController {
 
   void updateAdvancePayment(double value) {
     final double newAdvance = _clampDouble(value, advanceMin, advanceMax);
-    advancePayment.value = newAdvance;
-    loanAmount.value = propertyPrice.value - newAdvance;
+    advancePayment = newAdvance;
+    loanAmount = propertyPrice - newAdvance;
   }
 
   void updateLoanAmount(double value) {
     final double newLoan = _clampDouble(value, loanMin, loanMax);
-    loanAmount.value = newLoan;
-    advancePayment.value = propertyPrice.value - newLoan;
+    loanAmount = newLoan;
+    advancePayment = propertyPrice - newLoan;
   }
 
   void _syncMortgageAmounts() {
@@ -165,53 +385,21 @@ class MortgageController extends GetxController {
     final double maxLoan = loanMax;
 
     double newAdvance = _clampDouble(
-      advancePayment.value,
+      advancePayment,
       minAdvance,
       maxAdvance,
     );
-    double newLoan = propertyPrice.value - newAdvance;
+    double newLoan = propertyPrice - newAdvance;
     newLoan = _clampDouble(newLoan, minLoan, maxLoan);
-    newAdvance = propertyPrice.value - newLoan;
+    newAdvance = propertyPrice - newLoan;
 
-    advancePayment.value = newAdvance;
-    loanAmount.value = newLoan;
+    state = state.copyWith(advancePayment: newAdvance, loanAmount: newLoan);
   }
 
   double _clampDouble(double value, double min, double max) {
     if (value < min) return min;
     if (value > max) return max;
     return value;
-  }
-
-  @override
-  onInit() {
-    resetMortgageDefaults();
-    // Legacy init.
-    // advancePayment.value = advancePercentage * propertyPrice.value;
-    super.onInit();
-  }
-
-  @override
-  onReady() {
-    calculateEMI();
-    // Legacy ready.
-    // advancePayment.value = advancePercentage * propertyPrice.value;
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    priceInputController.dispose();
-    advanceInputController.dispose();
-    loanInputController.dispose();
-    yearsInputController.dispose();
-    interestInputController.dispose();
-    priceInputFocusNode.dispose();
-    advanceInputFocusNode.dispose();
-    loanInputFocusNode.dispose();
-    yearsInputFocusNode.dispose();
-    interestInputFocusNode.dispose();
-    super.onClose();
   }
 
   Future<void> applyMortgageLoan() async {
@@ -226,8 +414,8 @@ class MortgageController extends GetxController {
         appTools.showSuccessSnackBar(
           "Your application is successfully submitted. We will get back to you after a short review.",
         );
-        goToLoginScreen();
-        await updateData();
+        goToLoginScreen(ref.read);
+        await updateData(ref.read);
       },
       onError: (error) {
         appLoadingController.stop();
@@ -244,21 +432,21 @@ class MortgageController extends GetxController {
   Future<Map<String, dynamic>> getMortgageLoanData() async {
     Map<String, dynamic> mortgageLoanData = {};
 
-    mortgageLoanData["client"] = authManager.appUser.value.id;
+    mortgageLoanData["client"] = ref.read(authManagerProvider).appUser?.id;
 
     mortgageLoanData["product"] = "Mortgage Loan";
 
     mortgageLoanData["description"] =
-        "Loan Amount: ${propertyPrice.value}, Payment Period: ${propertyPeriod.value} Years, Name: ${personalNameController.value.text}, Nationality: ${nationalityType.value}, Phone: ${mobileCountryCode.value.startsWith("+") ? "" : "+"}${mobileCountryCode.value}${personalPhoneNumberController.value.text}, Email: ${personalEmailController.value.text}, Property Type: ${propertyType.value}, Property Location: ${propertyLocation.value}, Property Condition: ${propertyCondition.value}";
+        "Loan Amount: $propertyPrice, Payment Period: $propertyPeriod Years, Name: ${personalNameController.text}, Nationality: $nationalityType, Phone: ${mobileCountryCode.startsWith("+") ? "" : "+"}$mobileCountryCode${personalPhoneNumberController.text}, Email: ${personalEmailController.text}, Property Type: $propertyType, Property Location: $propertyLocation, Property Condition: $propertyCondition";
 
     List<DocumentModel> documents = [
-      passportDocument.value,
-      emiratesIdDocument.value,
-      salaryCertificateDocument.value,
-      bankStatementDocument.value,
-      etihadBureauDocument.value,
-      tradeLicenseDocument.value,
-      fourVATPaymentsDocument.value,
+      passportDocument,
+      emiratesIdDocument,
+      salaryCertificateDocument,
+      bankStatementDocument,
+      etihadBureauDocument,
+      tradeLicenseDocument,
+      fourVATPaymentsDocument,
     ];
 
     List<mp.MultipartFile> fileList = [];
@@ -287,11 +475,11 @@ class MortgageController extends GetxController {
   double calculateEMI() {
     // Legacy principal calculation.
     // double loanAmount = propertyPrice.value - advancePayment.value;
-    double principal = loanAmount.value;
-    double monthlyRate = interestRate.value / 12 / 100;
-    int totalMonths = propertyPeriod.value * 12;
+    double principal = loanAmount;
+    double monthlyRate = interestRate / 12 / 100;
+    int totalMonths = propertyPeriod * 12;
     if (kDebugMode) {
-      print(advancePayment.value);
+      print(advancePayment);
     }
     if (monthlyRate == 0) {
       return principal / totalMonths;
@@ -312,17 +500,17 @@ class MortgageController extends GetxController {
       context,
       () async {
         photoCopy = await pickfromGallery();
-        passportDocument.value.filePath = getDocument(photoCopy);
+        passportDocument.filePath = getDocument(photoCopy);
         initPassportDocument();
       },
       () async {
         photoCopy = await pickPdf();
-        passportDocument.value.filePath = getDocument(photoCopy);
+        passportDocument.filePath = getDocument(photoCopy);
         initPassportDocument();
       },
       () async {
         final XFile? image = await pickfromCamera();
-        passportDocument.value.filePath = getImage(image);
+        passportDocument.filePath = getImage(image);
         initPassportDocument();
       },
     );
@@ -334,18 +522,18 @@ class MortgageController extends GetxController {
       context,
       () async {
         photoCopy = await pickfromGallery();
-        tradeLicenseDocument.value.filePath = getDocument(photoCopy);
-        if (kDebugMode) print(tradeLicenseDocument.value.filePath);
+        tradeLicenseDocument.filePath = getDocument(photoCopy);
+        if (kDebugMode) print(tradeLicenseDocument.filePath);
         initTradeLicenseDocument();
       },
       () async {
         photoCopy = await pickPdf();
-        tradeLicenseDocument.value.filePath = getDocument(photoCopy);
+        tradeLicenseDocument.filePath = getDocument(photoCopy);
         initTradeLicenseDocument();
       },
       () async {
         final XFile? image = await pickfromCamera();
-        tradeLicenseDocument.value.filePath = getImage(image);
+        tradeLicenseDocument.filePath = getImage(image);
         initTradeLicenseDocument();
       },
     );
@@ -357,17 +545,17 @@ class MortgageController extends GetxController {
       context,
       () async {
         photoCopy = await pickfromGallery();
-        emiratesIdDocument.value.filePath = getDocument(photoCopy);
+        emiratesIdDocument.filePath = getDocument(photoCopy);
         initEmiratesIdDocument();
       },
       () async {
         photoCopy = await pickPdf();
-        emiratesIdDocument.value.filePath = getDocument(photoCopy);
+        emiratesIdDocument.filePath = getDocument(photoCopy);
         initEmiratesIdDocument();
       },
       () async {
         final XFile? image = await pickfromCamera();
-        emiratesIdDocument.value.filePath = getImage(image);
+        emiratesIdDocument.filePath = getImage(image);
         initEmiratesIdDocument();
       },
     );
@@ -379,17 +567,17 @@ class MortgageController extends GetxController {
       context,
       () async {
         photoCopy = await pickfromGallery();
-        salaryCertificateDocument.value.filePath = getDocument(photoCopy);
+        salaryCertificateDocument.filePath = getDocument(photoCopy);
         initSalaryDocument();
       },
       () async {
         photoCopy = await pickPdf();
-        salaryCertificateDocument.value.filePath = getDocument(photoCopy);
+        salaryCertificateDocument.filePath = getDocument(photoCopy);
         initSalaryDocument();
       },
       () async {
         final XFile? image = await pickfromCamera();
-        salaryCertificateDocument.value.filePath = getImage(image);
+        salaryCertificateDocument.filePath = getImage(image);
         initSalaryDocument();
       },
     );
@@ -401,17 +589,17 @@ class MortgageController extends GetxController {
       context,
       () async {
         photoCopy = await pickfromGallery();
-        bankStatementDocument.value.filePath = getDocument(photoCopy);
+        bankStatementDocument.filePath = getDocument(photoCopy);
         initBankStatementDocument();
       },
       () async {
         photoCopy = await pickPdf();
-        bankStatementDocument.value.filePath = getDocument(photoCopy);
+        bankStatementDocument.filePath = getDocument(photoCopy);
         initBankStatementDocument();
       },
       () async {
         final XFile? image = await pickfromCamera();
-        bankStatementDocument.value.filePath = getImage(image);
+        bankStatementDocument.filePath = getImage(image);
         initBankStatementDocument();
       },
     );
@@ -423,17 +611,17 @@ class MortgageController extends GetxController {
       context,
       () async {
         photoCopy = await pickfromGallery();
-        etihadBureauDocument.value.filePath = getDocument(photoCopy);
+        etihadBureauDocument.filePath = getDocument(photoCopy);
         initEtihadDocument();
       },
       () async {
         photoCopy = await pickPdf();
-        etihadBureauDocument.value.filePath = getDocument(photoCopy);
+        etihadBureauDocument.filePath = getDocument(photoCopy);
         initEtihadDocument();
       },
       () async {
         final XFile? image = await pickfromCamera();
-        etihadBureauDocument.value.filePath = getImage(image);
+        etihadBureauDocument.filePath = getImage(image);
         initEtihadDocument();
       },
     );
@@ -445,17 +633,17 @@ class MortgageController extends GetxController {
       context,
       () async {
         photoCopy = await pickfromGallery();
-        fourVATPaymentsDocument.value.filePath = getDocument(photoCopy);
+        fourVATPaymentsDocument.filePath = getDocument(photoCopy);
         initVATDocument();
       },
       () async {
         photoCopy = await pickPdf();
-        fourVATPaymentsDocument.value.filePath = getDocument(photoCopy);
+        fourVATPaymentsDocument.filePath = getDocument(photoCopy);
         initVATDocument();
       },
       () async {
         final XFile? image = await pickfromCamera();
-        fourVATPaymentsDocument.value.filePath = getImage(image);
+        fourVATPaymentsDocument.filePath = getImage(image);
         initVATDocument();
       },
     );
@@ -480,7 +668,7 @@ class MortgageController extends GetxController {
   }
 
   pickPdf() async {
-    Get.back();
+    AppNavigator.pop();
     return await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['pdf'],
@@ -488,68 +676,92 @@ class MortgageController extends GetxController {
   }
 
   pickfromGallery() async {
-    Get.back();
+    AppNavigator.pop();
     return await FilePicker.platform.pickFiles(type: FileType.image);
   }
 
   pickfromCamera() async {
-    Get.back();
+    AppNavigator.pop();
     return ImagePicker().pickImage(source: ImageSource.camera);
   }
 
   initPassportDocument() {
-    if (passportDocument.value.fileName != "") {
-      passportDocument.value.fileName =
-          "passport.${passportDocument.value.filePath?.split('.').last}";
+    if (passportDocument.fileName != "") {
+      passportDocument.fileName =
+          "passport.${passportDocument.filePath?.split('.').last}";
     }
-    passportDocument.update(passportDocument.call);
+    state = state.copyWith(passportDocument: passportDocument);
   }
 
   initEmiratesIdDocument() {
-    if (emiratesIdDocument.value.fileName != "") {
-      emiratesIdDocument.value.fileName =
-          "emiratesId.${emiratesIdDocument.value.filePath?.split('.').last}";
+    if (emiratesIdDocument.fileName != "") {
+      emiratesIdDocument.fileName =
+          "emiratesId.${emiratesIdDocument.filePath?.split('.').last}";
     }
-    emiratesIdDocument.update(emiratesIdDocument.call);
+    state = state.copyWith(emiratesIdDocument: emiratesIdDocument);
   }
 
   initTradeLicenseDocument() {
-    if (tradeLicenseDocument.value.fileName != "") {
-      tradeLicenseDocument.value.fileName =
-          "trade_license.${tradeLicenseDocument.value.filePath?.split('.').last}";
+    if (tradeLicenseDocument.fileName != "") {
+      tradeLicenseDocument.fileName =
+          "trade_license.${tradeLicenseDocument.filePath?.split('.').last}";
     }
-    tradeLicenseDocument.update(tradeLicenseDocument.call);
+    state = state.copyWith(tradeLicenseDocument: tradeLicenseDocument);
   }
 
   initSalaryDocument() {
-    if (salaryCertificateDocument.value.fileName != "") {
-      salaryCertificateDocument.value.fileName =
-          "salary_certificate.${salaryCertificateDocument.value.filePath?.split('.').last}";
+    if (salaryCertificateDocument.fileName != "") {
+      salaryCertificateDocument.fileName =
+          "salary_certificate.${salaryCertificateDocument.filePath?.split('.').last}";
     }
-    salaryCertificateDocument.update(salaryCertificateDocument.call);
+    state = state.copyWith(salaryCertificateDocument: salaryCertificateDocument);
   }
 
   initBankStatementDocument() {
-    if (bankStatementDocument.value.fileName != "") {
-      bankStatementDocument.value.fileName =
-          "bank_statement.${bankStatementDocument.value.filePath?.split('.').last}";
+    if (bankStatementDocument.fileName != "") {
+      bankStatementDocument.fileName =
+          "bank_statement.${bankStatementDocument.filePath?.split('.').last}";
     }
-    bankStatementDocument.update(bankStatementDocument.call);
+    state = state.copyWith(bankStatementDocument: bankStatementDocument);
   }
 
   initEtihadDocument() {
-    if (etihadBureauDocument.value.fileName != "") {
-      etihadBureauDocument.value.fileName =
-          "etihad_bureau.${etihadBureauDocument.value.filePath?.split('.').last}";
+    if (etihadBureauDocument.fileName != "") {
+      etihadBureauDocument.fileName =
+          "etihad_bureau.${etihadBureauDocument.filePath?.split('.').last}";
     }
-    etihadBureauDocument.update(etihadBureauDocument.call);
+    state = state.copyWith(etihadBureauDocument: etihadBureauDocument);
   }
 
   initVATDocument() {
-    if (fourVATPaymentsDocument.value.fileName != "") {
-      fourVATPaymentsDocument.value.fileName =
-          "VAT_payments.${fourVATPaymentsDocument.value.filePath?.split('.').last}";
+    if (fourVATPaymentsDocument.fileName != "") {
+      fourVATPaymentsDocument.fileName =
+          "VAT_payments.${fourVATPaymentsDocument.filePath?.split('.').last}";
     }
-    fourVATPaymentsDocument.update(fourVATPaymentsDocument.call);
+    state = state.copyWith(fourVATPaymentsDocument: fourVATPaymentsDocument);
+  }
+
+  @override
+  void dispose() {
+    priceInputController.dispose();
+    advanceInputController.dispose();
+    loanInputController.dispose();
+    yearsInputController.dispose();
+    interestInputController.dispose();
+    priceInputFocusNode.dispose();
+    advanceInputFocusNode.dispose();
+    loanInputFocusNode.dispose();
+    yearsInputFocusNode.dispose();
+    interestInputFocusNode.dispose();
+    appLoadingController.dispose();
+    personalNameController.dispose();
+    personalPhoneNumberController.dispose();
+    personalEmailController.dispose();
+    super.dispose();
   }
 }
+
+final mortgageControllerProvider =
+    StateNotifierProvider<MortgageController, MortgageState>((ref) {
+      return MortgageController(ref);
+    });

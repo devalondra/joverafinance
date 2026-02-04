@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jovera_finance/screens/mortgage/controller/mortgage_controller.dart';
 import 'package:jovera_finance/screens/mortgage/company/mortgage_company_details_view.dart';
 import 'package:jovera_finance/screens/mortgage/personal/mortgage_personal_details_view.dart';
 import 'package:jovera_finance/screens/mortgage/widget/transaction_type_widget.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
+import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
+import 'package:jovera_finance/utilities/navigation/app_navigator.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
 import 'package:jovera_finance/widgets/custom_page_title.dart';
 
-class ApplyAsView extends GetView<MortgageController> {
+class ApplyAsView extends ConsumerWidget {
   const ApplyAsView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.read(mortgageControllerProvider.notifier);
+    ref.watch(mortgageControllerProvider);
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: Column(
@@ -30,7 +34,7 @@ class ApplyAsView extends GetView<MortgageController> {
               children: [
                 TransactionTypeWidget(
                   onTap: () {
-                    controller.applicantType.value = "Salary";
+                    controller.applicantType = "Salary";
                   },
                   title: "Salary",
                   controller: controller,
@@ -38,7 +42,7 @@ class ApplyAsView extends GetView<MortgageController> {
                 SizedBox(height: fullHeight * 0.02),
                 TransactionTypeWidget(
                   onTap: () {
-                    controller.applicantType.value = "Self Employed";
+                    controller.applicantType = "Self Employed";
                   },
                   title: "Self Employed",
                   controller: controller,
@@ -49,9 +53,9 @@ class ApplyAsView extends GetView<MortgageController> {
 
           CustomButton(
             onPressed: () {
-              controller.applicantType.value == "Salary"
-                  ? Get.to(() => MortgagePersonalDetailsView())
-                  : Get.to(() => MortgageCompanyDetailsView());
+              controller.applicantType == "Salary"
+                  ? AppNavigator.push( MortgagePersonalDetailsView())
+                  : AppNavigator.push(const MortgageCompanyDetailsView());
             },
             text: "Next",
           ),

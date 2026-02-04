@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jovera_finance/screens/auth/app_permissions/controller/app_permissions_controller.dart';
-import 'package:jovera_finance/utilities/authentication/auth_manager.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
+import 'package:jovera_finance/utilities/constants/app_tools.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
+import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
+import 'package:jovera_finance/utilities/localization/string_extensions.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class AppPermissionsView extends GetView<AppPermissionsController> {
+class AppPermissionsView extends ConsumerWidget {
   const AppPermissionsView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.read(appPermissionsControllerProvider.notifier);
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor,

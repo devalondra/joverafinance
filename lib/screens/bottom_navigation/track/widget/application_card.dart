@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:jovera_finance/screens/bottom_navigation/track/controller/dashboard_controller.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
+import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
+import 'package:jovera_finance/utilities/localization/string_extensions.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
 class ApplicationCard extends StatelessWidget {
@@ -18,7 +19,7 @@ class ApplicationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        controller.selectedVisaApplicationModel.value =
+        controller.selectedVisaApplicationModel =
             controller.myVisaApplications[index];
         controller.getLeadById(index);
       },

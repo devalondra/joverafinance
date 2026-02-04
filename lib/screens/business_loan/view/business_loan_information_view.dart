@@ -1,26 +1,29 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jovera_finance/screens/business_loan/controller/business_loan_controller.dart';
 import 'package:jovera_finance/screens/business_loan/view/business_loan_details_view.dart';
 
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
+import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
+import 'package:jovera_finance/utilities/navigation/app_navigator.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
 import 'package:jovera_finance/widgets/instructions_widget.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
-class BusinessLoanInformationView extends GetView<BusinessLoanController> {
+class BusinessLoanInformationView extends ConsumerWidget {
   const BusinessLoanInformationView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(businessLoanControllerProvider);
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: ListView(
         children: [
           SizedBox(height: verticalPagePadding),
-         MainText(
+          MainText(
             text: "Apply in just minutes.",
             fontSize: 22,
             fontWeight: FontWeight.w600,
@@ -50,7 +53,7 @@ class BusinessLoanInformationView extends GetView<BusinessLoanController> {
           CustomButton(
             onPressed: () {
               if (kDebugMode) print("hjhgjhj");
-              Get.to(() => BusinessLoanDetailsView());
+              AppNavigator.push( BusinessLoanDetailsView());
             },
             text: "Apply",
           ),

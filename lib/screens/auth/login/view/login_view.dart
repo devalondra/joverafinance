@@ -1,27 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jovera_finance/screens/bottom_navigation/bottom/controller/bottom_navigation_bar_controller.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
-import 'package:jovera_finance/screens/auth/forgot_password/binding/forgot_password_binding.dart';
 import 'package:jovera_finance/screens/auth/forgot_password/view/forgot_password_view.dart';
 import 'package:jovera_finance/screens/auth/login/controller/login_controller.dart';
 import 'package:jovera_finance/screens/auth/login/widget/login_textfields.dart';
+import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
+import 'package:jovera_finance/utilities/localization/string_extensions.dart';
+import 'package:jovera_finance/utilities/navigation/app_navigator.dart';
 import 'package:jovera_finance/widgets/background.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
-class LoginView extends GetView<LoginController> {
+class LoginView extends ConsumerWidget {
   const LoginView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.read(loginControllerProvider.notifier);
+    ref.watch(loginControllerProvider);
     final formKey = GlobalKey<FormState>();
     return Background(
       appLoadingController: controller.appLoadingController,
       // safeAreaBottom: true,
       child: Scaffold(
-        key: controller.scaffoldKey,
         backgroundColor: AppColors.backgroundColor,
         body: ListView(
           // mainAxisAlignment: MainAxisAlignment.center,
@@ -42,44 +45,39 @@ class LoginView extends GetView<LoginController> {
               children: [
                 Row(
                   children: [
-                    Obx(
-                      () => Checkbox(
-                        value: controller.keepSignIn.value,
-                        onChanged: (value) {
-                          controller.keepSignIn.value = value!;
-                        },
+                    Checkbox(
+                      value: controller.keepSignIn,
+                      onChanged: (value) {
+                        controller.keepSignIn = value ?? false;
+                      },
 
-                        side: BorderSide(color: AppColors.white, width: 2),
-                        checkColor: AppColors.white,
+                      side: BorderSide(color: AppColors.white, width: 2),
+                      checkColor: AppColors.white,
 
-                        activeColor: AppColors.backgroundColor,
-                        overlayColor: WidgetStateProperty.resolveWith<Color>((
-                          states,
-                        ) {
-                          if (states.contains(WidgetState.selected)) {
-                            return AppColors.white;
-                          }
+                      activeColor: AppColors.backgroundColor,
+                      overlayColor: WidgetStateProperty.resolveWith<Color>((
+                        states,
+                      ) {
+                        if (states.contains(WidgetState.selected)) {
                           return AppColors.white;
-                        }),
-                        fillColor: WidgetStateProperty.resolveWith<Color>((
-                          states,
-                        ) {
-                          if (states.contains(WidgetState.selected)) {
-                            return AppColors.primary;
-                          }
-                          return AppColors.transparent;
-                        }),
-                      ),
+                        }
+                        return AppColors.white;
+                      }),
+                      fillColor: WidgetStateProperty.resolveWith<Color>((
+                        states,
+                      ) {
+                        if (states.contains(WidgetState.selected)) {
+                          return AppColors.primary;
+                        }
+                        return AppColors.transparent;
+                      }),
                     ),
                     MainText(text: "Keep me signed in".tr, fontSize: 14),
                   ],
                 ),
                 InkWell(
                   onTap: () {
-                    Get.to(
-                      () => ForgotPasswordView(),
-                      binding: ForgotpasswordBinding(),
-                    );
+                    AppNavigator.push(ForgotPasswordView());
                   },
                   child: MainText(
                     text: "Forgot password?".tr,
@@ -224,10 +222,10 @@ class LoginView extends GetView<LoginController> {
                 SizedBox(width: fullWidth * 0.02),
                 InkWell(
                   onTap: () {
-                    BottomNavigationBarController cont = Get.find();
-                    cont.isLogin.value = false;
-
-                    cont.changelogin();
+                    final bottomNav = ref.read(
+                      bottomNavigationBarControllerProvider.notifier,
+                    );
+                    bottomNav.isLogin = false;
                   },
                   child: MainText(
                     text: 'Sign Up'.tr,

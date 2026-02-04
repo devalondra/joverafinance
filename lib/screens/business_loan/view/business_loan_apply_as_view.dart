@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jovera_finance/screens/business_loan/controller/business_loan_controller.dart';
 import 'package:jovera_finance/screens/business_loan/view/business_loan_information_view.dart';
 import 'package:jovera_finance/screens/business_loan/widget/transaction_type_widget.dart';
 
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
+import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
+import 'package:jovera_finance/utilities/navigation/app_navigator.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
 import 'package:jovera_finance/widgets/custom_page_title.dart';
 
-class BusinessLoanApplyAsView extends GetView<BusinessLoanController> {
+class BusinessLoanApplyAsView extends ConsumerWidget {
   const BusinessLoanApplyAsView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.read(businessLoanControllerProvider.notifier);
+    ref.watch(businessLoanControllerProvider);
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: Column(
@@ -26,8 +30,7 @@ class BusinessLoanApplyAsView extends GetView<BusinessLoanController> {
               children: [
                 TransactionTypeWidget(
                   onTap: () {
-                    controller.applicantType.value =
-                        "SME - Small, Medium Company";
+                    controller.applicantType = "SME - Small, Medium Company";
                   },
                   title: "SME - Small, Medium Company",
                   controller: controller,
@@ -35,10 +38,10 @@ class BusinessLoanApplyAsView extends GetView<BusinessLoanController> {
                 SizedBox(height: fullHeight * 0.02),
                 TransactionTypeWidget(
                   onTap: () {
-                    controller.applicantType.value = "Cash";
-                    controller.paymentMaxPeriod.value = 60;
-                    controller.paymentPeriod.value = 20;
-                    controller.interestRate.value = 8.5;
+                    controller.applicantType = "Cash";
+                    controller.paymentMaxPeriod = 60;
+                    controller.paymentPeriod = 20;
+                    controller.interestRate = 8.5;
                   },
                   title: "Cash",
                   controller: controller,
@@ -46,7 +49,7 @@ class BusinessLoanApplyAsView extends GetView<BusinessLoanController> {
                 SizedBox(height: fullHeight * 0.02),
                 TransactionTypeWidget(
                   onTap: () {
-                    controller.applicantType.value = "Car Loan";
+                    controller.applicantType = "Car Loan";
                   },
                   title: "Car Loan",
                   controller: controller,
@@ -54,10 +57,10 @@ class BusinessLoanApplyAsView extends GetView<BusinessLoanController> {
                 SizedBox(height: fullHeight * 0.02),
                 TransactionTypeWidget(
                   onTap: () {
-                    controller.applicantType.value = "Equipment Loan";
-                    controller.paymentMaxPeriod.value = 60;
-                    controller.paymentPeriod.value = 20;
-                    controller.interestRate.value = 8.5;
+                    controller.applicantType = "Equipment Loan";
+                    controller.paymentMaxPeriod = 60;
+                    controller.paymentPeriod = 20;
+                    controller.interestRate = 8.5;
                   },
                   title: "Equipment Loan",
                   controller: controller,
@@ -68,7 +71,7 @@ class BusinessLoanApplyAsView extends GetView<BusinessLoanController> {
 
           CustomButton(
             onPressed: () {
-              Get.to(() => BusinessLoanInformationView());
+              AppNavigator.push(const BusinessLoanInformationView());
             },
             text: "Next",
           ),

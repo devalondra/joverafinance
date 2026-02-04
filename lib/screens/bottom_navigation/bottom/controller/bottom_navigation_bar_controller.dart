@@ -5,15 +5,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart' as mp;
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:jovera_finance/screens/auth/login/controller/login_controller.dart';
 import 'package:jovera_finance/screens/auth/login/model/users.dart';
 import 'package:jovera_finance/screens/auth/login/view/login_view.dart';
-import 'package:jovera_finance/screens/auth/signup/controller/signup_controller.dart';
 import 'package:jovera_finance/screens/auth/signup/view/signup_view.dart';
+import 'package:jovera_finance/screens/bottom_navigation/bottom/view/bottom_navigation_bar_view.dart';
 import 'package:jovera_finance/screens/bottom_navigation/calculator/view/calculator_view.dart';
 import 'package:jovera_finance/screens/bottom_navigation/chat/controller/chat_controller.dart';
 import 'package:jovera_finance/screens/bottom_navigation/chat/view/chat_view.dart';
@@ -27,174 +26,333 @@ import 'package:jovera_finance/utilities/api/api_service.dart';
 
 import 'package:jovera_finance/utilities/authentication/auth_manager.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
+import 'package:jovera_finance/utilities/constants/app_tools.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
 import 'package:jovera_finance/utilities/services/notification_service.dart';
-import 'package:jovera_finance/utilities/services/translation_service.dart';
+import 'package:jovera_finance/utilities/localization/locale_controller.dart';
+import 'package:jovera_finance/utilities/navigation/app_navigator.dart';
 import 'package:jovera_finance/widgets/app_loading_controller.dart';
 import 'package:jovera_finance/widgets/document_picker_widget.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-updateData() async {
-  ChatController chatCont = Get.find();
-  await chatCont.getMyApplications();
+typedef ReadFn = T Function<T>(ProviderListenable<T> provider);
 
-  DashboardController cont = Get.find();
-  await cont.getMyApplications();
+Future<void> updateData(ReadFn read) async {
+  await read(chatControllerProvider.notifier).getMyApplications();
+  await read(dashboardControllerProvider.notifier).getMyApplications();
 }
 
-void goToLoginScreen() {
-  final BottomNavigationBarController navController = Get.find();
-  Get.until((route) => route.settings.name == '/BottomnavigationBarView');
-  navController.onItemTapped(4);
+void goToLoginScreen(ReadFn read) {
+  AppNavigator.pushAndRemoveUntil(const BottomnavigationBarView());
+  read(bottomNavigationBarControllerProvider.notifier).onItemTapped(4);
 }
 
-void goToHomeScreen() {
-  final BottomNavigationBarController navController = Get.find();
-  Get.until((route) => route.settings.name == '/BottomnavigationBarView');
-  navController.onItemTapped(0);
+void goToHomeScreen(ReadFn read) {
+  AppNavigator.pushAndRemoveUntil(const BottomnavigationBarView());
+  read(bottomNavigationBarControllerProvider.notifier).onItemTapped(0);
 }
 
-class BottomNavigationBarController extends GetxController {
-  RxInt selectedIndex = 0.obs;
-  RxInt selectedHomeSubPage = 0.obs;
-  RxBool isLogin = true.obs;
+class BottomNavigationBarState {
+   BottomNavigationBarState({
+    required this.passwordController,
+    required this.currentPasswordController,
+    required this.deleteReasonController,
+    required this.nameController,
+    required this.emailController,
+    required this.profileWhatsappController,
+    required this.confirmPasswordController,
+    required this.phoneNumberController,
+    required this.callBackFullNameController,
+    required this.callBackPhoneController,
+    required this.callBackEmailController,
+    required this.callBackMessageController,
+    required this.appLoadingController,
+    required this.contactList,
+    this.selectedIndex = 0,
+    this.selectedHomeSubPage = 0,
+    this.isLogin = true,
+    this.selectedContactIndex = 0,
+    this.profilePicturePath = '',
+    this.currentPasswordIsVisible = false,
+    this.passwordIsVisible = false,
+    this.confirmPasswordIsVisible = false,
+    this.whatsappCountryCode = '',
+    this.countryCode = '',
+    this.callbackCountryCode = '',
+    DateTime? selectedDate,
+    this.language = true,
+    this.notification = true,
+    this.retypePasswordIsVisible = false,
+    this.selectedLanguage = '',
+    this.appUser,
+    this.selectedLoanType = 'Business Loan',
+  }) : selectedDate = selectedDate ?? DateTime.now();
 
-  AuthManager authManager = Get.find();
+  final int selectedIndex;
+  final int selectedHomeSubPage;
+  final bool isLogin;
+  final int selectedContactIndex;
+  final String profilePicturePath;
+  final TextEditingController passwordController;
+  final TextEditingController currentPasswordController;
+  final TextEditingController deleteReasonController;
+  final TextEditingController nameController;
+  final TextEditingController emailController;
+  final TextEditingController profileWhatsappController;
+  final TextEditingController confirmPasswordController;
+  final TextEditingController phoneNumberController;
+  final bool currentPasswordIsVisible;
+  final bool passwordIsVisible;
+  final bool confirmPasswordIsVisible;
+  final String whatsappCountryCode;
+  final String countryCode;
+  final String callbackCountryCode;
+  final AppLoadingController appLoadingController;
+  final DateTime selectedDate;
+  final bool language;
+  final bool notification;
+  final bool retypePasswordIsVisible;
+  final String selectedLanguage;
+  final AppUser? appUser;
+  final TextEditingController callBackFullNameController;
+  final TextEditingController callBackPhoneController;
+  final TextEditingController callBackEmailController;
+  final TextEditingController callBackMessageController;
+  final String selectedLoanType;
+  final List<ContactModel> contactList;
 
-  RxList<Widget> widgetOptions = <Widget>[].obs;
-  @override
-  onInit() async {
-    super.onInit();
-    widgetOptions.value = <Widget>[
-      const HomeView(),
-      const ServicesView(),
+  BottomNavigationBarState copyWith({
+    int? selectedIndex,
+    int? selectedHomeSubPage,
+    bool? isLogin,
+    int? selectedContactIndex,
+    String? profilePicturePath,
+    bool? currentPasswordIsVisible,
+    bool? passwordIsVisible,
+    bool? confirmPasswordIsVisible,
+    String? whatsappCountryCode,
+    String? countryCode,
+    String? callbackCountryCode,
+    DateTime? selectedDate,
+    bool? language,
+    bool? notification,
+    bool? retypePasswordIsVisible,
+    String? selectedLanguage,
+    AppUser? appUser,
+    String? selectedLoanType,
+  }) {
+    return BottomNavigationBarState(
+      passwordController: passwordController,
+      currentPasswordController: currentPasswordController,
+      deleteReasonController: deleteReasonController,
+      nameController: nameController,
+      emailController: emailController,
+      profileWhatsappController: profileWhatsappController,
+      confirmPasswordController: confirmPasswordController,
+      phoneNumberController: phoneNumberController,
+      callBackFullNameController: callBackFullNameController,
+      callBackPhoneController: callBackPhoneController,
+      callBackEmailController: callBackEmailController,
+      callBackMessageController: callBackMessageController,
+      appLoadingController: appLoadingController,
+      contactList: contactList,
+      selectedIndex: selectedIndex ?? this.selectedIndex,
+      selectedHomeSubPage: selectedHomeSubPage ?? this.selectedHomeSubPage,
+      isLogin: isLogin ?? this.isLogin,
+      selectedContactIndex: selectedContactIndex ?? this.selectedContactIndex,
+      profilePicturePath: profilePicturePath ?? this.profilePicturePath,
+      currentPasswordIsVisible:
+          currentPasswordIsVisible ?? this.currentPasswordIsVisible,
+      passwordIsVisible: passwordIsVisible ?? this.passwordIsVisible,
+      confirmPasswordIsVisible:
+          confirmPasswordIsVisible ?? this.confirmPasswordIsVisible,
+      whatsappCountryCode: whatsappCountryCode ?? this.whatsappCountryCode,
+      countryCode: countryCode ?? this.countryCode,
+      callbackCountryCode: callbackCountryCode ?? this.callbackCountryCode,
+      selectedDate: selectedDate ?? this.selectedDate,
+      language: language ?? this.language,
+      notification: notification ?? this.notification,
+      retypePasswordIsVisible:
+          retypePasswordIsVisible ?? this.retypePasswordIsVisible,
+      selectedLanguage: selectedLanguage ?? this.selectedLanguage,
+      appUser: appUser ?? this.appUser,
+      selectedLoanType: selectedLoanType ?? this.selectedLoanType,
+    );
+  }
+}
 
-      const CalculatorView(),
-      loggedIn()
-          ? const ChatView()
-          : isLogin.value
-          ? LoginView()
-          : SignupView(),
-      loggedIn()
-          ? const DashboardView()
-          : isLogin.value
-          ? LoginView()
-          : SignupView(),
-    ];
+class BottomNavigationBarController
+    extends StateNotifier<BottomNavigationBarState> {
+  BottomNavigationBarController(this.ref)
+    : super(
+        BottomNavigationBarState(
+          passwordController: TextEditingController(),
+          currentPasswordController: TextEditingController(),
+          deleteReasonController: TextEditingController(),
+          nameController: TextEditingController(),
+          emailController: TextEditingController(),
+          profileWhatsappController: TextEditingController(),
+          confirmPasswordController: TextEditingController(),
+          phoneNumberController: TextEditingController(),
+          callBackFullNameController: TextEditingController(),
+          callBackPhoneController: TextEditingController(),
+          callBackEmailController: TextEditingController(),
+          callBackMessageController: TextEditingController(),
+          appLoadingController: AppLoadingController(),
+          contactList: [
+            ContactModel(icon: "assets/icons/contact_icon.svg", title: "Help"),
+            ContactModel(icon: "assets/icons/address_icon.svg", title: "Address"),
+            ContactModel(icon: "assets/icons/call_icon.svg", title: "Call Back"),
+          ],
+        ),
+      ) {
+    _init();
+  }
 
-    language.value = selectedLanguage.value == 'en_US';
+  final Ref ref;
+  int get selectedIndex => state.selectedIndex;
+  int get selectedHomeSubPage => state.selectedHomeSubPage;
+  bool get isLogin => state.isLogin;
+  set isLogin(bool value) => state = state.copyWith(isLogin: value);
+  set selectedIndex(int value) => state = state.copyWith(selectedIndex: value);
+  set selectedHomeSubPage(int value) =>
+      state = state.copyWith(selectedHomeSubPage: value);
+
+  Future<void> _init() async {
+    selectedLanguage = ref.read(localeControllerProvider).toString();
+
+    language = selectedLanguage == 'en_US';
     await checkNotificationStatus();
     populateUserData();
   }
 
   bool loggedIn() {
-    if (authManager.isLogged.value) {
+    if (ref.read(authManagerProvider).isLogged) {
       return true;
     } else {
-      Get.lazyPut<LoginController>(() => LoginController());
-      Get.lazyPut<SignUpController>(() => SignUpController());
       return false;
     }
   }
 
   void onItemTapped(int index) {
-    selectedIndex.value = index;
+    selectedIndex = index;
   }
 
-  void changelogin() {
-    widgetOptions.value = <Widget>[
-      const HomeView(),
-      loggedIn()
-          ? const ServicesView()
-          : isLogin.value
-          ? LoginView()
-          : SignupView(),
-      const CalculatorView(),
-      loggedIn()
-          ? const ChatView()
-          : isLogin.value
-          ? LoginView()
-          : SignupView(),
-      loggedIn()
-          ? const DashboardView()
-          : isLogin.value
-          ? LoginView()
-          : SignupView(),
-    ];
-    widgetOptions.refresh();
+  void setIndex(int index) {
+    onItemTapped(index);
   }
 
-  RxInt selectedContactIndex = 0.obs;
+  List<Widget> get widgetOptions => <Widget>[
+    const HomeView(),
+    const ServicesView(),
+    const CalculatorView(),
+    loggedIn()
+        ? const ChatView()
+        : isLogin
+        ? LoginView()
+        : SignupView(),
+    loggedIn()
+        ? const DashboardView()
+        : isLogin
+        ? LoginView()
+        : SignupView(),
+  ];
 
-  RxString profilePicturePath = ''.obs;
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  Rx<TextEditingController> passwordController = TextEditingController().obs;
-  Rx<TextEditingController> currentPasswordController =
-      TextEditingController().obs;
-  Rx<TextEditingController> deleteReasonController =
-      TextEditingController().obs;
-  Rx<TextEditingController> nameController = TextEditingController().obs;
-  Rx<TextEditingController> emailController = TextEditingController().obs;
+  int get selectedContactIndex => state.selectedContactIndex;
+  set selectedContactIndex(int value) =>
+      state = state.copyWith(selectedContactIndex: value);
 
-  Rx<TextEditingController> profileWhatsappController =
-      TextEditingController().obs;
-  Rx<TextEditingController> confirmPasswordController =
-      TextEditingController().obs;
+  String get profilePicturePath => state.profilePicturePath;
+  set profilePicturePath(String value) =>
+      state = state.copyWith(profilePicturePath: value);
+  TextEditingController get passwordController => state.passwordController;
+  TextEditingController get currentPasswordController =>
+      state.currentPasswordController;
+  TextEditingController get deleteReasonController => state.deleteReasonController;
+  TextEditingController get nameController => state.nameController;
+  TextEditingController get emailController => state.emailController;
 
-  Rx<TextEditingController> phoneNumberController = TextEditingController().obs;
-  RxBool currentPasswordIsVisible = false.obs;
-  RxBool passwordIsVisible = false.obs;
-  RxBool confirmPasswordIsVisible = false.obs;
-  RxString whatsappCountryCode = ''.obs;
-  RxString countryCode = ''.obs;
-  RxString callbackCountryCode = ''.obs;
-  AppLoadingController appLoadingController = AppLoadingController();
-  var selectedDate = DateTime.now().obs;
-  RxBool language = true.obs;
-  RxBool notification = true.obs;
-  RxBool retypePasswordIsVisible = false.obs;
-  RxString selectedLanguage = TranslationService().getLocale().toString().obs;
-  AppUser? appUser;
+  TextEditingController get profileWhatsappController =>
+      state.profileWhatsappController;
+  TextEditingController get confirmPasswordController =>
+      state.confirmPasswordController;
 
-  final TextEditingController callBackFullNameController =
-      TextEditingController();
-  final TextEditingController callBackPhoneController = TextEditingController();
-  final TextEditingController callBackEmailController = TextEditingController();
-  final TextEditingController callBackMessageController =
-      TextEditingController();
+  TextEditingController get phoneNumberController => state.phoneNumberController;
+  bool get currentPasswordIsVisible => state.currentPasswordIsVisible;
+  set currentPasswordIsVisible(bool value) =>
+      state = state.copyWith(currentPasswordIsVisible: value);
+  bool get passwordIsVisible => state.passwordIsVisible;
+  set passwordIsVisible(bool value) =>
+      state = state.copyWith(passwordIsVisible: value);
+  bool get confirmPasswordIsVisible => state.confirmPasswordIsVisible;
+  set confirmPasswordIsVisible(bool value) =>
+      state = state.copyWith(confirmPasswordIsVisible: value);
+  String get whatsappCountryCode => state.whatsappCountryCode;
+  set whatsappCountryCode(String value) =>
+      state = state.copyWith(whatsappCountryCode: value);
+  String get countryCode => state.countryCode;
+  set countryCode(String value) => state = state.copyWith(countryCode: value);
+  String get callbackCountryCode => state.callbackCountryCode;
+  set callbackCountryCode(String value) =>
+      state = state.copyWith(callbackCountryCode: value);
+  AppLoadingController get appLoadingController => state.appLoadingController;
+  DateTime get selectedDate => state.selectedDate;
+  set selectedDate(DateTime value) => state = state.copyWith(selectedDate: value);
+  bool get language => state.language;
+  set language(bool value) => state = state.copyWith(language: value);
+  bool get notification => state.notification;
+  set notification(bool value) => state = state.copyWith(notification: value);
+  bool get retypePasswordIsVisible => state.retypePasswordIsVisible;
+  set retypePasswordIsVisible(bool value) =>
+      state = state.copyWith(retypePasswordIsVisible: value);
+  String get selectedLanguage => state.selectedLanguage;
+  set selectedLanguage(String value) =>
+      state = state.copyWith(selectedLanguage: value);
+  AppUser? get appUser => state.appUser;
+  set appUser(AppUser? value) => state = state.copyWith(appUser: value);
 
-  final RxString selectedLoanType = 'Business Loan'.obs;
+  TextEditingController get callBackFullNameController =>
+      state.callBackFullNameController;
+  TextEditingController get callBackPhoneController =>
+      state.callBackPhoneController;
+  TextEditingController get callBackEmailController =>
+      state.callBackEmailController;
+  TextEditingController get callBackMessageController =>
+      state.callBackMessageController;
+
+  String get selectedLoanType => state.selectedLoanType;
+  set selectedLoanType(String value) =>
+      state = state.copyWith(selectedLoanType: value);
+
+  List<ContactModel> get contactList => state.contactList;
 
   void changeLanguage(String languageCode) {
-    TranslationService().changeLocale(languageCode);
-    selectedLanguage.value = languageCode;
+    ref.read(localeControllerProvider.notifier).setLocale(languageCode);
+    selectedLanguage = languageCode;
   }
 
   Future<void> checkNotificationStatus() async {
-    final NotificationService notificationService = Get.find();
-    notification.value = await notificationService.areNotificationsEnabled();
+    final NotificationService notificationService =
+        ref.read(notificationServiceProvider);
+    notification = await notificationService.areNotificationsEnabled();
   }
 
-  final List<ContactModel> contactList = [
-    ContactModel(icon: "assets/icons/contact_icon.svg", title: "Help"),
-    ContactModel(icon: "assets/icons/address_icon.svg", title: "Address"),
-    ContactModel(icon: "assets/icons/call_icon.svg", title: "Call Back"),
-  ];
+
   Future<void> changePassword() async {
     appLoadingController.loading();
     MainDrawerProvider().changePassword(
-      newPassword: passwordController.value.text,
-      currentPassword: currentPasswordController.value.text,
+      newPassword: passwordController.text,
+      currentPassword: currentPasswordController.text,
 
       onSuccess: (response) {
         appLoadingController.stop();
         if (kDebugMode) print(response);
         appTools.showSuccessSnackBar("Password Reset Successful.");
-        passwordController.value.clear();
-        confirmPasswordController.value.clear();
-        currentPasswordController.value.clear();
-        Get.back();
+        passwordController.clear();
+        confirmPasswordController.clear();
+        currentPasswordController.clear();
+        AppNavigator.pop();
       },
       onError: (error) {
         appLoadingController.stop();
@@ -211,17 +369,17 @@ class BottomNavigationBarController extends GetxController {
   Future<void> requestCallBack() async {
     appLoadingController.loading();
     MainDrawerProvider().requestCallBack(
-      name: callBackFullNameController.value.text,
+      name: callBackFullNameController.text,
       phone:
-          "${callBackPhoneController.value.text.startsWith("+") ? "" : "+"}${callbackCountryCode.value}${callBackPhoneController.value.text}",
-      email: callBackEmailController.value.text,
-      description: callBackMessageController.value.text,
-      product: selectedLoanType.value,
+          "${callBackPhoneController.text.startsWith("+") ? "" : "+"}$callbackCountryCode${callBackPhoneController.text}",
+      email: callBackEmailController.text,
+      description: callBackMessageController.text,
+      product: selectedLoanType,
 
       onSuccess: (response) {
         appLoadingController.stop();
         if (kDebugMode) print(response);
-        Get.back();
+        AppNavigator.pop();
         appTools.showSuccessSnackBar(
           'Your request has been submitted. We will get back to you soon.',
         );
@@ -245,7 +403,7 @@ class BottomNavigationBarController extends GetxController {
   Future<void> deleteAccount() async {
     appLoadingController.loading();
     MainDrawerProvider().deleteAccount(
-      reason: deleteReasonController.value.text,
+      reason: deleteReasonController.text,
 
       onSuccess: (response) {
         appLoadingController.stop();
@@ -253,7 +411,7 @@ class BottomNavigationBarController extends GetxController {
           "Request for Deleting the account is submitted successfully. After short review, you will be notified.",
         );
 
-        deleteReasonController.value.clear();
+        deleteReasonController.clear();
       },
       onError: (error) {
         appLoadingController.stop();
@@ -268,7 +426,7 @@ class BottomNavigationBarController extends GetxController {
   }
 
   Future<void> openNotificationSettings(bool value) async {
-    final notificationService = Get.find<NotificationService>();
+    final notificationService = ref.read(notificationServiceProvider);
 
     if (Platform.isAndroid) {
       const platform = MethodChannel('app.settings.channel');
@@ -278,11 +436,11 @@ class BottomNavigationBarController extends GetxController {
           await notificationService.initFirebaseNotification();
           final enabledNow =
               await notificationService.areNotificationsEnabled();
-          notification.value = enabledNow;
+          notification = enabledNow;
         }
 
         final enabledNow = await notificationService.areNotificationsEnabled();
-        notification.value = enabledNow;
+        notification = enabledNow;
       } on PlatformException catch (e) {
         appTools.showErrorSnackBar("Something went wrong $e");
       }
@@ -296,15 +454,15 @@ class BottomNavigationBarController extends GetxController {
   }
 
   populateUserData() {
-    appUser = authManager.appUser.value;
-    nameController.value.text = appUser?.name ?? "";
+    appUser = ref.read(authManagerProvider).appUser;
+    nameController.text = appUser?.name ?? "";
 
-    emailController.value.text = appUser?.email ?? "";
-    phoneNumberController.value.text = appUser?.phone ?? "";
-    profilePicturePath.value = appUser?.picture ?? "";
-    profileWhatsappController.value.text = appUser?.whatsapp ?? "";
-    whatsappCountryCode.value = '';
-    countryCode.value = '';
+    emailController.text = appUser?.email ?? "";
+    phoneNumberController.text = appUser?.phone ?? "";
+    profilePicturePath = appUser?.picture ?? "";
+    profileWhatsappController.text = appUser?.whatsapp ?? "";
+    whatsappCountryCode = '';
+    countryCode = '';
   }
 
   Future<void> editProfile() async {
@@ -315,11 +473,14 @@ class BottomNavigationBarController extends GetxController {
 
       onSuccess: (response) async {
         appLoadingController.stop();
-        final ApiService apiService = Get.find();
-        await apiService.getUserDataByToken(authManager.getToken()!);
+        final ApiService apiService = ref.read(apiServiceProvider);
+        final token = ref.read(authManagerProvider.notifier).getToken();
+        if (token != null) {
+          await apiService.getUserDataByToken(token);
+        }
         populateUserData();
         appTools.showSuccessSnackBar("Profile updated.");
-        Get.back();
+        AppNavigator.pop();
       },
       onError: (error) {
         appLoadingController.stop();
@@ -335,28 +496,28 @@ class BottomNavigationBarController extends GetxController {
   Future<Map<String, dynamic>> getProfileFormData() async {
     Map<String, dynamic> profileFormData = {};
 
-    if (nameController.value.text != appUser?.name) {
-      profileFormData["name"] = nameController.value.text;
+    if (nameController.text != appUser?.name) {
+      profileFormData["name"] = nameController.text;
     }
 
-    if (profileWhatsappController.value.text.isNotEmpty &&
-        ("${whatsappCountryCode.value}${profileWhatsappController.value.text}" !=
+    if (profileWhatsappController.text.isNotEmpty &&
+        ("$whatsappCountryCode${profileWhatsappController.text}" !=
             appUser?.whatsapp)) {
       profileFormData["w_phone"] =
-          "${profileWhatsappController.value.text.startsWith("+") ? "" : "+"}${whatsappCountryCode.value}${profileWhatsappController.value.text}";
+          "${profileWhatsappController.text.startsWith("+") ? "" : "+"}$whatsappCountryCode${profileWhatsappController.text}";
     }
     if (kDebugMode) print(profileFormData);
     if (profilePicturePath.isNotEmpty) {
       if (!profilePicturePath.startsWith("https")) {
-        String ext = profilePicturePath.value.split('.').last.toLowerCase();
+        String ext = profilePicturePath.split('.').last.toLowerCase();
         profileFormData["picture"] = await mp.MultipartFile.fromFile(
-          profilePicturePath.value,
+          profilePicturePath,
           contentType: MediaType(
             ext == 'pdf' ? 'application' : 'image',
             ext == 'jpg' ? 'jpeg' : ext,
           ),
           filename:
-              "profile_picture_${profilePicturePath.value.split('/').last}",
+              "profile_picture_${profilePicturePath.split('/').last}",
         );
       }
     }
@@ -369,21 +530,21 @@ class BottomNavigationBarController extends GetxController {
       context,
 
       () async {
-        Get.back();
+        AppNavigator.pop();
         doc = await FilePicker.platform.pickFiles(type: FileType.image);
 
         if (doc != null) {
           File file = File(doc!.files.single.path!);
-          profilePicturePath.value = file.path;
+          profilePicturePath = file.path;
         } else {}
       },
 
       () async {
-        Get.back();
+        AppNavigator.pop();
       },
 
       () async {
-        Get.back();
+        AppNavigator.pop();
 
         final XFile? image = await ImagePicker().pickImage(
           source: ImageSource.camera,
@@ -391,17 +552,18 @@ class BottomNavigationBarController extends GetxController {
 
         if (image != null) {
           File file = File(image.path);
-          profilePicturePath.value = file.path;
+          profilePicturePath = file.path;
         } else {}
       },
     );
   }
 
   Future<bool> showNotificationsDialog(value) async {
-    return await Get.dialog<bool>(
-          AlertDialog(
-            backgroundColor: AppColors.black2,
-            title: MainText(
+    return await AppNavigator.showDialog<bool>(
+          builder: (_) {
+            return AlertDialog(
+              backgroundColor: AppColors.black2,
+              title: MainText(
               text: "Update Notification Permissions",
 
               fontSize: 16.sp,
@@ -421,12 +583,12 @@ class BottomNavigationBarController extends GetxController {
             ),
             actions: [
               TextButton(
-                onPressed: () => Get.back(result: false),
+                onPressed: () => AppNavigator.pop(false),
                 child: MainText(text: "Cancel"),
               ),
               TextButton(
                 onPressed: () {
-                  Get.back();
+                  AppNavigator.pop();
                   toggleNotificationPermission(value);
                 },
                 child: MainText(
@@ -435,8 +597,33 @@ class BottomNavigationBarController extends GetxController {
                 ),
               ),
             ],
-          ),
+          );
+          },
         ) ??
         false;
   }
+
+  @override
+  void dispose() {
+    passwordController.dispose();
+    currentPasswordController.dispose();
+    deleteReasonController.dispose();
+    nameController.dispose();
+    emailController.dispose();
+    profileWhatsappController.dispose();
+    confirmPasswordController.dispose();
+    phoneNumberController.dispose();
+    callBackFullNameController.dispose();
+    callBackPhoneController.dispose();
+    callBackEmailController.dispose();
+    callBackMessageController.dispose();
+    appLoadingController.dispose();
+    super.dispose();
+  }
 }
+
+final bottomNavigationBarControllerProvider =
+    StateNotifierProvider<BottomNavigationBarController, BottomNavigationBarState>(
+      (ref) {
+  return BottomNavigationBarController(ref);
+});

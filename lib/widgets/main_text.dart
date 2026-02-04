@@ -1,7 +1,8 @@
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
+import 'package:jovera_finance/utilities/localization/string_extensions.dart';
+import 'package:jovera_finance/utilities/navigation/app_context.dart';
 
 class MainText extends StatelessWidget {
   final String text;
@@ -38,7 +39,7 @@ class MainText extends StatelessWidget {
       overflow: overflow,
       textAlign: textAlign,
       softWrap: softWrap,
-      style: Get.textTheme.bodyLarge?.copyWith(
+      style: AppContext.textTheme.bodyLarge?.copyWith(
         letterSpacing: letterSpacing ?? 0,
         color: color ?? AppColors.white,
         fontSize: fontSize ?? 16.spMin,

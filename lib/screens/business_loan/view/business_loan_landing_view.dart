@@ -1,23 +1,28 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jovera_finance/screens/bottom_navigation/bottom/controller/bottom_navigation_bar_controller.dart';
 import 'package:jovera_finance/screens/business_loan/calculator/business_loan_calculator_view.dart';
 import 'package:jovera_finance/screens/business_loan/controller/business_loan_controller.dart';
 import 'package:jovera_finance/screens/business_loan/view/business_loan_apply_as_view.dart';
 import 'package:jovera_finance/screens/business_loan/widget/background_decoration.dart';
 
+import 'package:jovera_finance/utilities/authentication/auth_manager.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 import 'package:jovera_finance/utilities/constants/app_values.dart';
+import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
+import 'package:jovera_finance/utilities/navigation/app_navigator.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
 import 'package:jovera_finance/widgets/custom_page_title.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
-class BusinessLoanLandingView extends GetView<BusinessLoanController> {
+class BusinessLoanLandingView extends ConsumerWidget {
   const BusinessLoanLandingView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(businessLoanControllerProvider);
+    final isLogged = ref.watch(authManagerProvider).isLogged;
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: Stack(
@@ -60,16 +65,12 @@ class BusinessLoanLandingView extends GetView<BusinessLoanController> {
                     child: CustomButton(
                       onPressed: () {
                         if (kDebugMode) print("hjhgjhj");
-                        Get.lazyPut<BusinessLoanController>(
-                          () => BusinessLoanController(),
-                        );
-                        if (controller.authManager.isLogged.value) {
-                          Get.to(() => BusinessLoanApplyAsView());
+                        if (isLogged) {
+                          AppNavigator.push(
+                            const BusinessLoanApplyAsView(),
+                          );
                         } else {
-                          Get.back();
-
-                          BottomNavigationBarController cont = Get.find();
-                          cont.selectedIndex.value = 4;
+                          goToLoginScreen(ref.read);
                         }
                       },
                       text: "Apply",
@@ -82,10 +83,9 @@ class BusinessLoanLandingView extends GetView<BusinessLoanController> {
                       borderColor: AppColors.white,
                       onPressed: () {
                         if (kDebugMode) print("hjhgjhj");
-                        Get.lazyPut<BusinessLoanController>(
-                          () => BusinessLoanController(),
+                        AppNavigator.push(
+                          const BusinessLoanCalculatorView(),
                         );
-                        Get.to(() => BusinessLoanCalculatorView());
                       },
                       text: "Calculator",
                     ),

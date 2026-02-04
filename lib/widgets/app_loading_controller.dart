@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:get/get.dart';
 import 'package:jovera_finance/utilities/constants/app_colors.dart';
 
 class AppLoadingController {
-  RxBool isLoading = false.obs;
+  final ValueNotifier<bool> isLoading = ValueNotifier(false);
   var loadingWidget = SpinKitCircle(color: AppColors.primaryLight, size: 40.0);
 
   void loading() {
@@ -15,5 +14,9 @@ class AppLoadingController {
   void stop() {
     debugPrint("stop loaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaading");
     isLoading.value = false;
+  }
+
+  void dispose() {
+    isLoading.dispose();
   }
 }
