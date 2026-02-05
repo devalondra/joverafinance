@@ -8,6 +8,7 @@ import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
 import 'package:jovera_finance/utilities/localization/string_extensions.dart';
 import 'package:jovera_finance/widgets/background.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
+import 'package:jovera_finance/widgets/custom_page_title.dart';
 import 'package:jovera_finance/widgets/custom_text_field.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
@@ -29,7 +30,12 @@ class ForgotPasswordView extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              SizedBox(height: fullHeight * 0.1),
+              CustomPageTitle(
+                back: true,
+                notification: false,
+                title: 'Forgot Password?',
+              ),
+              SizedBox(height: fullHeight * 0.02),
               Center(
                 child: Image.asset(
                   'assets/images/jovera_logo.png',
@@ -37,13 +43,6 @@ class ForgotPasswordView extends ConsumerWidget {
                   height: fullWidth * 0.5,
                 ),
               ),
-
-              MainText(
-                text: 'Forgot Password?'.tr,
-
-                fontSize: 22,
-                fontWeight: FontWeight.w500,
-              ).paddingOnly(bottom: fullHeight * 0.01),
               MainText(
                 text:
                     'Enter your Email, we will send you a\nverification code.',

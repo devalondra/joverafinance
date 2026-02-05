@@ -11,6 +11,7 @@ import 'package:jovera_finance/utilities/localization/string_extensions.dart';
 import 'package:jovera_finance/utilities/navigation/app_navigator.dart';
 import 'package:jovera_finance/widgets/background.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
+import 'package:jovera_finance/widgets/custom_page_title.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
 class LoginView extends ConsumerWidget {
@@ -30,6 +31,11 @@ class LoginView extends ConsumerWidget {
           // mainAxisAlignment: MainAxisAlignment.center,
           // crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
+            CustomPageTitle(
+              back: true,
+              notification: false,
+              title: 'Log In',
+            ),
             Center(
               child: Image.asset(
                 'assets/images/jovera_logo.png',

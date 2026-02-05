@@ -10,9 +10,9 @@ import 'package:jovera_finance/screens/auth/signup/widget/fill_profile_textfield
 import 'package:jovera_finance/utilities/constants/app_tools.dart';
 import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
 import 'package:jovera_finance/utilities/localization/string_extensions.dart';
-import 'package:jovera_finance/utilities/navigation/app_navigator.dart';
 import 'package:jovera_finance/widgets/background.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
+import 'package:jovera_finance/widgets/custom_page_title.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
 class FillProfileView extends ConsumerWidget {
@@ -36,22 +36,10 @@ class FillProfileView extends ConsumerWidget {
                 child: ListView(
                   children: [
                     SizedBox(height: fullHeight * 0.01),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            AppNavigator.pop();
-                          },
-                          child: Icon(
-                            Icons.arrow_back_ios,
-                            color: AppColors.grey,
-                          ),
-                        ),
-
-                        MainText(text: "Sign Up".tr),
-                        SizedBox(width: fullWidth * 0.05),
-                      ],
+                    CustomPageTitle(
+                      back: true,
+                      notification: false,
+                      title: 'Sign Up',
                     ),
                     SizedBox(height: fullHeight * 0.01),
                     // Row(

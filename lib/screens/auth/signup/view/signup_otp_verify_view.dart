@@ -7,6 +7,7 @@ import 'package:jovera_finance/utilities/constants/app_values.dart';
 import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
 import 'package:jovera_finance/utilities/localization/string_extensions.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
+import 'package:jovera_finance/widgets/custom_page_title.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
 class SignupOtpVerifyView extends ConsumerWidget {
@@ -22,7 +23,12 @@ class SignupOtpVerifyView extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(height: fullHeight * 0.1),
+            CustomPageTitle(
+              back: true,
+              notification: false,
+              title: 'Verify Code',
+            ),
+            SizedBox(height: fullHeight * 0.02),
             Center(
               child: Image.asset(
                 'assets/images/jovera_logo.png',
@@ -30,13 +36,6 @@ class SignupOtpVerifyView extends ConsumerWidget {
                 height: fullWidth * 0.5,
               ),
             ),
-
-            MainText(
-              text: 'Verify Code'.tr,
-
-              fontSize: 20,
-              fontWeight: FontWeight.w400,
-            ).paddingOnly(bottom: fullHeight * 0.01),
             MainText(
               text:
                   'Stay signed in with your account\nto make searching easier'

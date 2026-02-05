@@ -7,6 +7,7 @@ import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
 import 'package:jovera_finance/utilities/localization/string_extensions.dart';
 import 'package:jovera_finance/widgets/background.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
+import 'package:jovera_finance/widgets/custom_page_title.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
 class LanguageView extends ConsumerWidget {
@@ -20,9 +21,12 @@ class LanguageView extends ConsumerWidget {
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor,
         body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
+            CustomPageTitle(
+              back: true,
+              notification: false,
+              title: 'Language',
+            ),
             Expanded(
               child: Center(
                 child: Column(

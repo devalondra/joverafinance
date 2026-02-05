@@ -9,6 +9,7 @@ import 'package:jovera_finance/utilities/constants/app_tools.dart';
 import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
 import 'package:jovera_finance/utilities/localization/string_extensions.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
+import 'package:jovera_finance/widgets/custom_page_title.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
 class CreateNewPasswordView extends ConsumerWidget {
@@ -27,7 +28,12 @@ class CreateNewPasswordView extends ConsumerWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: fullHeight * 0.1),
+              CustomPageTitle(
+                back: true,
+                notification: false,
+                title: 'Create New Password',
+              ),
+              SizedBox(height: fullHeight * 0.02),
               Center(
                 child: Image.asset(
                   'assets/images/jovera_logo.png',
@@ -35,13 +41,6 @@ class CreateNewPasswordView extends ConsumerWidget {
                   height: fullWidth * 0.5,
                 ),
               ),
-
-              MainText(
-                text: 'Create New Password',
-
-                fontSize: 20,
-                fontWeight: FontWeight.w400,
-              ).paddingOnly(bottom: fullHeight * 0.01),
               MainText(
                 text:
                     'Your new password must be different\nform previously used password'

@@ -10,6 +10,7 @@ import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
 import 'package:jovera_finance/utilities/localization/string_extensions.dart';
 import 'package:jovera_finance/widgets/background.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
+import 'package:jovera_finance/widgets/custom_page_title.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
 class SignupView extends ConsumerWidget {
@@ -26,13 +27,18 @@ class SignupView extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Expanded(
-            child: ListView(
-              children: [
-                SizedBox(height: fullHeight * 0.01),
-                Center(
-                  child: Image.asset(
-                    'assets/images/jovera_finance_logo.png',
+              Expanded(
+                child: ListView(
+                  children: [
+                    CustomPageTitle(
+                      back: true,
+                      notification: false,
+                      title: 'Sign Up',
+                    ),
+                    SizedBox(height: fullHeight * 0.01),
+                    Center(
+                      child: Image.asset(
+                        'assets/images/jovera_finance_logo.png',
                     width: fullWidth * 0.4,
                     height: fullWidth * 0.4,
                   ),

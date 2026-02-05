@@ -8,23 +8,41 @@ class AppNavigator {
 
   static BuildContext? get context => key.currentContext;
 
-  static Future<T?> push<T>(Widget page) {
-    return _navigator!.push<T>(
-      MaterialPageRoute(builder: (_) => page),
+  static PageRoute<T> _route<T>(Widget page) {
+    return PageRouteBuilder<T>(
+      pageBuilder: (_, __, ___) => page,
+      transitionDuration: const Duration(milliseconds: 280),
+      reverseTransitionDuration: const Duration(milliseconds: 220),
+      transitionsBuilder: (_, animation, __, child) {
+        final curved = CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOutCubic,
+          reverseCurve: Curves.easeInCubic,
+        );
+        return FadeTransition(
+          opacity: curved,
+          child: SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(0.0, 0.04),
+              end: Offset.zero,
+            ).animate(curved),
+            child: child,
+          ),
+        );
+      },
     );
+  }
+
+  static Future<T?> push<T>(Widget page) {
+    return _navigator!.push<T>(_route(page));
   }
 
   static Future<T?> pushReplacement<T, TO>(Widget page) {
-    return _navigator!.pushReplacement<T, TO>(
-      MaterialPageRoute(builder: (_) => page),
-    );
+    return _navigator!.pushReplacement<T, TO>(_route(page));
   }
 
   static Future<T?> pushAndRemoveUntil<T>(Widget page) {
-    return _navigator!.pushAndRemoveUntil<T>(
-      MaterialPageRoute(builder: (_) => page),
-      (route) => false,
-    );
+    return _navigator!.pushAndRemoveUntil<T>(_route(page), (route) => false);
   }
 
   static void pop<T extends Object?>([T? result]) {

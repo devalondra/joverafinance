@@ -8,6 +8,7 @@ import 'package:jovera_finance/utilities/constants/app_values.dart';
 import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
 import 'package:jovera_finance/utilities/navigation/app_navigator.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
+import 'package:jovera_finance/widgets/custom_page_title.dart';
 import 'package:jovera_finance/widgets/instructions_widget.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 
@@ -21,6 +22,11 @@ class MortgageInformationView extends ConsumerWidget {
       backgroundColor: AppColors.backgroundColor,
       body: ListView(
         children: [
+          CustomPageTitle(
+            back: true,
+            notification: false,
+            title: 'Mortgage',
+          ),
           SizedBox(height: verticalPagePadding),
           MainText(
             text: "Apply in just minutes.",

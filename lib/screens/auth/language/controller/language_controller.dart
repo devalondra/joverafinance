@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jovera_finance/screens/auth/app_permissions/view/app_permissions_view.dart';
 import 'package:jovera_finance/utilities/localization/locale_controller.dart';

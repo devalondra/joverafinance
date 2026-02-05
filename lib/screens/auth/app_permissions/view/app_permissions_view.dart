@@ -7,6 +7,7 @@ import 'package:jovera_finance/utilities/constants/app_values.dart';
 import 'package:jovera_finance/utilities/extensions/widget_extensions.dart';
 import 'package:jovera_finance/utilities/localization/string_extensions.dart';
 import 'package:jovera_finance/widgets/custom_button.dart';
+import 'package:jovera_finance/widgets/custom_page_title.dart';
 import 'package:jovera_finance/widgets/main_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -23,15 +24,12 @@ class AppPermissionsView extends ConsumerWidget {
         backgroundColor: AppColors.backgroundColor,
         body: ListView(
           children: [
-            SizedBox(height: 0.03.sh),
-
-            MainText(
-              textAlign: TextAlign.center,
-
-              text: 'User Consent Statement'.tr,
-
-              fontSize: 18.sp,
+            CustomPageTitle(
+              back: true,
+              notification: false,
+              title: 'User Consent Statement',
             ),
+            SizedBox(height: 0.03.sh),
             SizedBox(height: 0.05.sh),
             MainText(
               textAlign: TextAlign.justify,
