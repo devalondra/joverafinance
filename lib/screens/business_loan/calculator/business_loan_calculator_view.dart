@@ -185,15 +185,7 @@ class BusinessLoanCalculatorView extends ConsumerWidget {
               )
               : CustomButton(
                 onPressed: () {
-                  // Get.offAll(
-                  //   () => BottomnavigationBarView(),
-                  //   binding: BottomNavigationBarBinding(),
-                  // );
-                  // BottomNavigationBarController cont = Get.find();
-                  // cont.onItemTapped(4);
-                  // Get.until(
-                  //   (route) => Get.currentRoute == '/BottomNavigationBarView',
-                  // );
+              
                   goToLoginScreen(ref.read);
                 },
                 text: "Login to Apply",
